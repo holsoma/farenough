@@ -110,6 +110,8 @@ class AppJourneyTest {
             compose.onNodeWithText("Set up a pass").performClick()
             compose.onNodeWithText("Save pass").performScrollTo().performClick()
             compose.waitUntil(10_000) { runBlocking { repo.current().passes.size == 1 } }
+            // The database commit can precede the form's main-thread completion callback.
+            compose.waitUntil(15_000) { compose.onAllNodesWithContentDescription("Record a journey").fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithContentDescription("Record a journey").performClick()
             compose.onNodeWithText("From", useUnmergedTree = true).performScrollTo().performClick()
             compose.onNodeWithText("Station name or code").performTextInput("Toa Payoh")
@@ -121,6 +123,7 @@ class AppJourneyTest {
             compose.onNodeWithText("Reason for correction").performScrollTo().performTextInput("Example discount")
             compose.onNodeWithText("Save journey").performScrollTo().performClick()
             compose.waitUntil(10_000) { runBlocking { repo.current().trips.size == 1 } }
+            compose.waitUntil(15_000) { compose.onAllNodesWithText("S$46.50").fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithText("S$46.50").assertExists()
             compose.onNodeWithText("Trips", useUnmergedTree = true).performClick()
             compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
