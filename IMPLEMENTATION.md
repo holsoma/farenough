@@ -31,12 +31,13 @@ Implementation progress and verification are recorded here. A checked build alon
 ## Verified on 28 October 2026
 
 - Eighteen core tests pass. Public fixtures retain the acceptance totals using synthetic dates and station names.
-- Four Android instrumentation tests pass on an API 36 emulator, covering pass creation, trip entry, JSON import, transactional import undo, persistence and screenshot capture.
+- Three Android instrumentation tests pass on an API 36 emulator, covering pass creation, trip entry, JSON import, transactional import undo, persistence, light/dark system-bar contrast and screenshot capture. The former diagnostic fingerprint method is no longer counted as a test.
 - Android lint: no errors. Dependency update suggestions remain warnings.
 - Release APK is signed with the certificate in `SIGNING.md`; debug and release application IDs are separate.
 - Eight screenshots use invented records and example fares. Both light and dark themes were captured.
 - Website production build: 13 pages, no Astro diagnostic errors or warnings. The first independent visual review identified code contrast, link targets, mobile guide navigation and release wording for correction.
 - Station IDs are recorded in `data/station-ids.json` so adding a line code cannot silently change an existing journey's station identity.
 - Signed API 36 update check: installed version code 1, created a pass and corrected journey through the UI, restored a synthetic fixture containing saved fares, imports and preferences, then installed version code 2 without uninstalling. Exported data matches every field of the fixture. The pre-restore export matches the original records exactly.
+- The final candidate uses version code 3 to retain update compatibility with both local test candidates. A dark status-bar contrast correction is included. A 150% text-size check retained readable content and navigation.
 
 Physical handset testing and testing on Android 8 are not yet complete. The minimum supported version is a build configuration, not a claim that every supported Android version has been tested.

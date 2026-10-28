@@ -39,7 +39,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'APK signature verification failed.' }
     $verification | Set-Content -LiteralPath (Join-Path $artifacts 'signing-certificate.txt')
     $hash = (Get-FileHash -LiteralPath $apk -Algorithm SHA256).Hash.ToLowerInvariant()
-    "$hash  $OutputName" | Set-Content -LiteralPath (Join-Path $artifacts 'SHA256SUMS.txt')
+    $checksumName = if ($OutputName -eq "fairenough-v$version.apk") { 'SHA256SUMS.txt' } else { "$OutputName.sha256" }
+    "$hash  $OutputName" | Set-Content -LiteralPath (Join-Path $artifacts $checksumName)
     # Separate local encrypted-key copy. The DPAPI password remains tied to this Windows user.
     $backup = Join-Path $secretDirectory 'offline-backup'
     New-Item -ItemType Directory -Force -Path $backup | Out-Null

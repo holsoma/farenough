@@ -50,6 +50,9 @@ class AppJourneyTest {
             compose.waitUntil(15_000) { compose.onAllNodesWithText("Estimated savings").fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithText("S$9.20").assertIsDisplayed()
             capture("overview")
+            it.onActivity { activity ->
+                assertTrue(androidx.core.view.WindowCompat.getInsetsController(activity.window, activity.window.decorView).isAppearanceLightStatusBars)
+            }
             compose.onNodeWithText("How many more trips?").performScrollTo().performClick()
             compose.onNodeWithText("Your next stop: enough").assertIsDisplayed()
             capture("target")
@@ -80,6 +83,9 @@ class AppJourneyTest {
         ActivityScenario.launch(MainActivity::class.java).use {
             compose.waitUntil(15_000) { compose.onAllNodesWithText("Estimated savings").fetchSemanticsNodes().isNotEmpty() }
             capture("overview-dark")
+            it.onActivity { activity ->
+                assertFalse(androidx.core.view.WindowCompat.getInsetsController(activity.window, activity.window.decorView).isAppearanceLightStatusBars)
+            }
         }
     }
 
@@ -134,11 +140,4 @@ class AppJourneyTest {
         }
     }
 
-    @Test fun reportInstalledStateFingerprint() = runBlocking {
-        val state = LocalRepository(app).current()
-        val status = android.os.Bundle()
-        status.putString("snapshot_sha256", fingerprint(encodeBackup(state, "fixed-for-comparison")))
-        status.putString("snapshot_records", "${state.passes.size} passes, ${state.trips.size} trips, ${state.routeFares.size} fares")
-        InstrumentationRegistry.getInstrumentation().sendStatus(0, status)
-    }
 }

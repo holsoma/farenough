@@ -10,7 +10,21 @@ fairenough adds the regular adult fares for recorded journeys within the selecte
 
 The result is an estimate of the cost difference for the records you entered. Automatic transfer discounts, time-based discounts, rewards and bus travel are not calculated in this version.
 
-## Saved route fares
+## A worked example
+
+These are invented amounts to show the calculation, not current fare quotes.
+
+| Recorded journeys | Fare used | Total |
+| --- | --- | --- |
+| 20 journeys on a regular route | S$2.00 each | S$40.00 |
+| 2 journeys on another route | S$2.50 each | S$5.00 |
+| 1 journey with a known discount | S$1.20 correction, replacing its S$2.00 saved fare | S$1.20 |
+
+The 23 journeys add up to **S$46.20**. Against a S$48.00 pass, **S$1.80 remains**. One further journey at S$2.00 would bring the total to S$48.20.
+
+If you also record a journey whose fare is unknown, the app reports 23 priced journeys out of 24. The comparison is incomplete until you add that fare. The journey still appears in your trip count and map.
+
+## Saving a route fare
 
 The first release uses fares you check with the [official LTA calculator](https://www.lta.gov.sg/content/ltagov/en/map/fare-calculator.html). Choose the adult card fare and treat the recorded journey independently.
 
