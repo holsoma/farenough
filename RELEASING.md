@@ -1,5 +1,15 @@
 # Releasing fairenough
 
+## Research behind the release structure
+
+Reviewed on 28 October 2026:
+
+- [Mihon's release history](https://github.com/mihonapp/mihon/releases) uses named version releases, readable change categories and an explicit recommendation for the APK to choose. Its [repository](https://github.com/mihonapp/mihon) links to a separate FAQ, changelog and contribution guide. fairenough follows that separation between installation, usage documentation and development, with one APK to avoid a choice of builds.
+- [AntennaPod's releases](https://github.com/AntennaPod/AntennaPod/releases) describe concrete behaviour changes, including fixes to playback and statistics. fairenough release notes should explain changes to journeys, fare calculations, imports and backups in similarly specific terms.
+- [Fossify Gallery's releases](https://github.com/FossifyOrg/Gallery/releases) group changes and link to the full comparison between versions. fairenough keeps a versioned changelog and attaches installation files to releases.
+
+These are organisational references. fairenough's code and visual assets were created for this project. Its additional release requirements are a stable signing identity, a file checksum, explicit fare-data coverage and an update test that preserves existing records.
+
 ## Version and signing identity
 
 Update `version.properties`: public `versionName` and a strictly increasing integer `versionCode`. Update `CHANGELOG.md`. Keep the same application ID and signing key for all normal releases. Losing the key prevents compatible future APK updates.

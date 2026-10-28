@@ -9,7 +9,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 const nav = [[release.published ? 'Download' : 'Release preview', 'download/'], ['Guide', 'docs/'], ['Changelog', 'changelog/']];
 ---
 <!doctype html>
-<html lang="en-GB">
+<html lang="en-GB" transition:animate="none">
   <head>
     <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><meta name="theme-color" content="#F6F8FA" />
     <title>{title} | fairenough</title><meta name="description" content={description} /><link rel="canonical" href={canonical} />
