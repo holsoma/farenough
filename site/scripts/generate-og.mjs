@@ -1,0 +1,16 @@
+import sharp from 'sharp';
+import { writeFile } from 'node:fs/promises';
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<rect width="1200" height="630" fill="#f6f8fa"/>
+<text x="72" y="85" font-family="Arial,sans-serif" font-size="34" font-weight="700" fill="#006c67">fairenough.</text>
+<text x="68" y="230" font-family="Arial,sans-serif" font-size="78" font-weight="700" letter-spacing="-4" fill="#18242b">Has your pass</text>
+<text x="68" y="320" font-family="Arial,sans-serif" font-size="78" font-weight="700" letter-spacing="-4" fill="#18242b">paid for itself?</text>
+<path d="M78 438H1120" stroke="#d4dce1" stroke-width="7"/>
+<path d="M78 438H810" stroke="#006c67" stroke-width="7"/>
+<circle cx="810" cy="438" r="19" fill="#f6f8fa" stroke="#006c67" stroke-width="7"/>
+<circle cx="1000" cy="438" r="16" fill="#e8b339"/>
+<text x="1000" y="405" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" fill="#18242b">Enough</text>
+<text x="72" y="550" font-family="Arial,sans-serif" font-size="26" fill="#52616b">Your Singapore train pass, accounted for. On Android.</text>
+</svg>`;
+await writeFile('public/og.svg', svg);
+await sharp(Buffer.from(svg)).png().toFile('public/og.png');

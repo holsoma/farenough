@@ -1,0 +1,21 @@
+name: Report a problem
+description: Explain what happened using synthetic records.
+body:
+  - type: input
+    id: version
+    attributes:
+      label: App and Android versions
+    validations:
+      required: true
+  - type: textarea
+    id: behaviour
+    attributes:
+      label: Expected and actual behaviour
+      description: Include the steps needed to reproduce it. Do not attach private backups.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Synthetic example or screenshot
+      description: Replace private dates, routes and notes before sharing.

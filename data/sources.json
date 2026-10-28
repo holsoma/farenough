@@ -1,0 +1,28 @@
+{
+  "retrieved": "2026-10-28",
+  "licence": "https://datamall.lta.gov.sg/content/datamall/en/SingaporeOpenDataLicence.html",
+  "files": [
+    {
+      "file": "stations.zip",
+      "source": "https://datamall.lta.gov.sg/content/dam/datamall/datasets/Geospatial/TrainStation_Sep2026.zip",
+      "sha256": "f6d745bfd3f23af5656f58cbc1cd264e8185f61ec38ac786406a9e2958b2b8f4"
+    },
+    {
+      "file": "station-codes.zip",
+      "source": "https://datamall.lta.gov.sg/content/dam/datamall/datasets/Geospatial/Train%20Station%20Codes%20and%20Chinese%20Names.zip",
+      "sha256": "2d518f326e0e76444722caa96e784b5b86f8767652a2f730417294f1b4c4f2b6"
+    },
+    {
+      "file": "outline.geojson",
+      "source": "https://data.gov.sg/datasets/d_29f066d67df3eae91df8a42f443863c8/view",
+      "sha256": "80791c1e271c378f26ab8c618eb019848c89d0c77306adbaf559f744c5c9048b"
+    }
+  ],
+  "stationCount": 184,
+  "unmappedStations": [],
+  "catalogueSupplement": [
+    "https://www.lta.gov.sg/content/ltagov/en/newsroom/2026/5/news-releases/circle-line-stage-6-to-open-for-public-preview-on-4-july-2026.html",
+    "https://travelguide.simplygo.com.sg/MRT"
+  ],
+  "transformation": "Station footprint representative points converted from the supplied SVY21 projection to WGS84. Station codes grouped by exact official English name. Closed BP14 excluded. Coastal polygons simplified to 0.00015 degrees, exterior rings only, tiny polygons below 0.000001 square degrees excluded. No fare distances inferred."
+}

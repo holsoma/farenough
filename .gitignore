@@ -1,0 +1,15 @@
+.gradle/
+.tooling/
+**/build/
+local.properties
+.idea/
+*.iml
+*.jks
+*.keystore
+.secrets/
+site/node_modules/
+site/dist/
+site/.astro/
+.shots/
+artifacts/
+*.log

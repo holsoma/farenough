@@ -1,0 +1,1692 @@
+[
+  {
+    "id": "NS10",
+    "name": "Admiralty",
+    "codes": [
+      "NS10"
+    ],
+    "latitude": 1.440602,
+    "longitude": 103.800931
+  },
+  {
+    "id": "EW9",
+    "name": "Aljunied",
+    "codes": [
+      "EW9"
+    ],
+    "latitude": 1.31645,
+    "longitude": 103.88292
+  },
+  {
+    "id": "NS16",
+    "name": "Ang Mo Kio",
+    "codes": [
+      "NS16"
+    ],
+    "latitude": 1.36998,
+    "longitude": 103.849589
+  },
+  {
+    "id": "SE3",
+    "name": "Bakau",
+    "codes": [
+      "SE3"
+    ],
+    "latitude": 1.388047,
+    "longitude": 103.905469
+  },
+  {
+    "id": "BP9",
+    "name": "Bangkit",
+    "codes": [
+      "BP9"
+    ],
+    "latitude": 1.380016,
+    "longitude": 103.77266
+  },
+  {
+    "id": "CC12",
+    "name": "Bartley",
+    "codes": [
+      "CC12"
+    ],
+    "latitude": 1.34279,
+    "longitude": 103.879847
+  },
+  {
+    "id": "CC34",
+    "name": "Bayfront",
+    "codes": [
+      "CC34",
+      "CE1",
+      "DT16"
+    ],
+    "latitude": 1.281885,
+    "longitude": 103.859036
+  },
+  {
+    "id": "TE29",
+    "name": "Bayshore",
+    "codes": [
+      "TE29"
+    ],
+    "latitude": 1.313521,
+    "longitude": 103.943502
+  },
+  {
+    "id": "DT5",
+    "name": "Beauty World",
+    "codes": [
+      "DT5"
+    ],
+    "latitude": 1.341127,
+    "longitude": 103.775776
+  },
+  {
+    "id": "EW5",
+    "name": "Bedok",
+    "codes": [
+      "EW5"
+    ],
+    "latitude": 1.323998,
+    "longitude": 103.930152
+  },
+  {
+    "id": "DT29",
+    "name": "Bedok North",
+    "codes": [
+      "DT29"
+    ],
+    "latitude": 1.334782,
+    "longitude": 103.917797
+  },
+  {
+    "id": "DT30",
+    "name": "Bedok Reservoir",
+    "codes": [
+      "DT30"
+    ],
+    "latitude": 1.336585,
+    "longitude": 103.9321
+  },
+  {
+    "id": "DT21",
+    "name": "Bencoolen",
+    "codes": [
+      "DT21"
+    ],
+    "latitude": 1.298557,
+    "longitude": 103.850039
+  },
+  {
+    "id": "DT23",
+    "name": "Bendemeer",
+    "codes": [
+      "DT23"
+    ],
+    "latitude": 1.313698,
+    "longitude": 103.862961
+  },
+  {
+    "id": "CC15",
+    "name": "Bishan",
+    "codes": [
+      "CC15",
+      "NS17"
+    ],
+    "latitude": 1.35116,
+    "longitude": 103.849685
+  },
+  {
+    "id": "NE9",
+    "name": "Boon Keng",
+    "codes": [
+      "NE9"
+    ],
+    "latitude": 1.319151,
+    "longitude": 103.861415
+  },
+  {
+    "id": "EW27",
+    "name": "Boon Lay",
+    "codes": [
+      "EW27"
+    ],
+    "latitude": 1.338574,
+    "longitude": 103.705968
+  },
+  {
+    "id": "CC19",
+    "name": "Botanic Gardens",
+    "codes": [
+      "CC19",
+      "DT9"
+    ],
+    "latitude": 1.321914,
+    "longitude": 103.814834
+  },
+  {
+    "id": "NS18",
+    "name": "Braddell",
+    "codes": [
+      "NS18"
+    ],
+    "latitude": 1.340423,
+    "longitude": 103.846797
+  },
+  {
+    "id": "CC2",
+    "name": "Bras Basah",
+    "codes": [
+      "CC2"
+    ],
+    "latitude": 1.296781,
+    "longitude": 103.850738
+  },
+  {
+    "id": "TE7",
+    "name": "Bright Hill",
+    "codes": [
+      "TE7"
+    ],
+    "latitude": 1.363195,
+    "longitude": 103.832792
+  },
+  {
+    "id": "NE15",
+    "name": "Buangkok",
+    "codes": [
+      "NE15"
+    ],
+    "latitude": 1.382737,
+    "longitude": 103.89311
+  },
+  {
+    "id": "DT14",
+    "name": "Bugis",
+    "codes": [
+      "DT14",
+      "EW12"
+    ],
+    "latitude": 1.299402,
+    "longitude": 103.856883
+  },
+  {
+    "id": "NS2",
+    "name": "Bukit Batok",
+    "codes": [
+      "NS2"
+    ],
+    "latitude": 1.348976,
+    "longitude": 103.749539
+  },
+  {
+    "id": "NS3",
+    "name": "Bukit Gombak",
+    "codes": [
+      "NS3"
+    ],
+    "latitude": 1.358677,
+    "longitude": 103.751918
+  },
+  {
+    "id": "BP6",
+    "name": "Bukit Panjang",
+    "codes": [
+      "BP6",
+      "DT1"
+    ],
+    "latitude": 1.377909,
+    "longitude": 103.763024
+  },
+  {
+    "id": "CC22",
+    "name": "Buona Vista",
+    "codes": [
+      "CC22",
+      "EW21"
+    ],
+    "latitude": 1.306364,
+    "longitude": 103.790664
+  },
+  {
+    "id": "CC17",
+    "name": "Caldecott",
+    "codes": [
+      "CC17",
+      "TE9"
+    ],
+    "latitude": 1.337583,
+    "longitude": 103.839607
+  },
+  {
+    "id": "NS12",
+    "name": "Canberra",
+    "codes": [
+      "NS12"
+    ],
+    "latitude": 1.443086,
+    "longitude": 103.829685
+  },
+  {
+    "id": "CC31",
+    "name": "Cantonment",
+    "codes": [
+      "CC31"
+    ],
+    "latitude": 1.273031,
+    "longitude": 103.836573
+  },
+  {
+    "id": "DT2",
+    "name": "Cashew",
+    "codes": [
+      "DT2"
+    ],
+    "latitude": 1.369308,
+    "longitude": 103.764679
+  },
+  {
+    "id": "CG2",
+    "name": "Changi Airport",
+    "codes": [
+      "CG2"
+    ],
+    "latitude": 1.357254,
+    "longitude": 103.988621
+  },
+  {
+    "id": "SW1",
+    "name": "Cheng Lim",
+    "codes": [
+      "SW1"
+    ],
+    "latitude": 1.396242,
+    "longitude": 103.893929
+  },
+  {
+    "id": "DT19",
+    "name": "Chinatown",
+    "codes": [
+      "DT19",
+      "NE4"
+    ],
+    "latitude": 1.284733,
+    "longitude": 103.844298
+  },
+  {
+    "id": "EW25",
+    "name": "Chinese Garden",
+    "codes": [
+      "EW25"
+    ],
+    "latitude": 1.342178,
+    "longitude": 103.732753
+  },
+  {
+    "id": "BP1",
+    "name": "Choa Chu Kang",
+    "codes": [
+      "BP1",
+      "NS4"
+    ],
+    "latitude": 1.384817,
+    "longitude": 103.744551
+  },
+  {
+    "id": "EW13",
+    "name": "City Hall",
+    "codes": [
+      "EW13",
+      "NS25"
+    ],
+    "latitude": 1.292838,
+    "longitude": 103.852739
+  },
+  {
+    "id": "NE5",
+    "name": "Clarke Quay",
+    "codes": [
+      "NE5"
+    ],
+    "latitude": 1.288181,
+    "longitude": 103.846419
+  },
+  {
+    "id": "EW23",
+    "name": "Clementi",
+    "codes": [
+      "EW23"
+    ],
+    "latitude": 1.31502,
+    "longitude": 103.765258
+  },
+  {
+    "id": "EW20",
+    "name": "Commonwealth",
+    "codes": [
+      "EW20"
+    ],
+    "latitude": 1.302341,
+    "longitude": 103.798411
+  },
+  {
+    "id": "SE1",
+    "name": "Compassvale",
+    "codes": [
+      "SE1"
+    ],
+    "latitude": 1.394479,
+    "longitude": 103.900555
+  },
+  {
+    "id": "PE3",
+    "name": "Coral Edge",
+    "codes": [
+      "PE3"
+    ],
+    "latitude": 1.393926,
+    "longitude": 103.912564
+  },
+  {
+    "id": "PE1",
+    "name": "Cove",
+    "codes": [
+      "PE1"
+    ],
+    "latitude": 1.399311,
+    "longitude": 103.905986
+  },
+  {
+    "id": "CC8",
+    "name": "Dakota",
+    "codes": [
+      "CC8"
+    ],
+    "latitude": 1.308389,
+    "longitude": 103.88886
+  },
+  {
+    "id": "PE7",
+    "name": "Damai",
+    "codes": [
+      "PE7"
+    ],
+    "latitude": 1.405328,
+    "longitude": 103.908487
+  },
+  {
+    "id": "CC1",
+    "name": "Dhoby Ghaut",
+    "codes": [
+      "CC1",
+      "NE6",
+      "NS24"
+    ],
+    "latitude": 1.299039,
+    "longitude": 103.845905
+  },
+  {
+    "id": "EW22",
+    "name": "Dover",
+    "codes": [
+      "EW22"
+    ],
+    "latitude": 1.311391,
+    "longitude": 103.778656
+  },
+  {
+    "id": "DT17",
+    "name": "Downtown",
+    "codes": [
+      "DT17"
+    ],
+    "latitude": 1.279443,
+    "longitude": 103.852869
+  },
+  {
+    "id": "CC3",
+    "name": "Esplanade",
+    "codes": [
+      "CC3"
+    ],
+    "latitude": 1.293219,
+    "longitude": 103.855689
+  },
+  {
+    "id": "EW7",
+    "name": "Eunos",
+    "codes": [
+      "EW7"
+    ],
+    "latitude": 1.319724,
+    "longitude": 103.903284
+  },
+  {
+    "id": "CG1",
+    "name": "Expo",
+    "codes": [
+      "CG1",
+      "DT35"
+    ],
+    "latitude": 1.334556,
+    "longitude": 103.961554
+  },
+  {
+    "id": "BP10",
+    "name": "Fajar",
+    "codes": [
+      "BP10"
+    ],
+    "latitude": 1.384539,
+    "longitude": 103.770857
+  },
+  {
+    "id": "SW2",
+    "name": "Farmway",
+    "codes": [
+      "SW2"
+    ],
+    "latitude": 1.39716,
+    "longitude": 103.889383
+  },
+  {
+    "id": "NE8",
+    "name": "Farrer Park",
+    "codes": [
+      "NE8"
+    ],
+    "latitude": 1.312484,
+    "longitude": 103.854163
+  },
+  {
+    "id": "CC20",
+    "name": "Farrer Road",
+    "codes": [
+      "CC20"
+    ],
+    "latitude": 1.317457,
+    "longitude": 103.807409
+  },
+  {
+    "id": "SW5",
+    "name": "Fernvale",
+    "codes": [
+      "SW5"
+    ],
+    "latitude": 1.392001,
+    "longitude": 103.876244
+  },
+  {
+    "id": "DT20",
+    "name": "Fort Canning",
+    "codes": [
+      "DT20"
+    ],
+    "latitude": 1.292487,
+    "longitude": 103.844303
+  },
+  {
+    "id": "TE22",
+    "name": "Gardens by the Bay",
+    "codes": [
+      "TE22"
+    ],
+    "latitude": 1.279227,
+    "longitude": 103.867998
+  },
+  {
+    "id": "DT24",
+    "name": "Geylang Bahru",
+    "codes": [
+      "DT24"
+    ],
+    "latitude": 1.32154,
+    "longitude": 103.871906
+  },
+  {
+    "id": "TE15",
+    "name": "Great World",
+    "codes": [
+      "TE15"
+    ],
+    "latitude": 1.294535,
+    "longitude": 103.833581
+  },
+  {
+    "id": "EW30",
+    "name": "Gul Circle",
+    "codes": [
+      "EW30"
+    ],
+    "latitude": 1.319694,
+    "longitude": 103.660724
+  },
+  {
+    "id": "CC29",
+    "name": "HarbourFront",
+    "codes": [
+      "CC29",
+      "NE1"
+    ],
+    "latitude": 1.265572,
+    "longitude": 103.822013
+  },
+  {
+    "id": "TE16",
+    "name": "Havelock",
+    "codes": [
+      "TE16"
+    ],
+    "latitude": 1.288564,
+    "longitude": 103.833503
+  },
+  {
+    "id": "CC25",
+    "name": "Haw Par Villa",
+    "codes": [
+      "CC25"
+    ],
+    "latitude": 1.282419,
+    "longitude": 103.781862
+  },
+  {
+    "id": "DT3",
+    "name": "Hillview",
+    "codes": [
+      "DT3"
+    ],
+    "latitude": 1.36234,
+    "longitude": 103.767387
+  },
+  {
+    "id": "CC21",
+    "name": "Holland Village",
+    "codes": [
+      "CC21"
+    ],
+    "latitude": 1.311695,
+    "longitude": 103.796071
+  },
+  {
+    "id": "NE14",
+    "name": "Hougang",
+    "codes": [
+      "NE14"
+    ],
+    "latitude": 1.371171,
+    "longitude": 103.892388
+  },
+  {
+    "id": "DT4",
+    "name": "Hume",
+    "codes": [
+      "DT4"
+    ],
+    "latitude": 1.354427,
+    "longitude": 103.769179
+  },
+  {
+    "id": "DT22",
+    "name": "Jalan Besar",
+    "codes": [
+      "DT22"
+    ],
+    "latitude": 1.305364,
+    "longitude": 103.855373
+  },
+  {
+    "id": "BP12",
+    "name": "Jelapang",
+    "codes": [
+      "BP12"
+    ],
+    "latitude": 1.38674,
+    "longitude": 103.764538
+  },
+  {
+    "id": "EW29",
+    "name": "Joo Koon",
+    "codes": [
+      "EW29"
+    ],
+    "latitude": 1.327722,
+    "longitude": 103.678289
+  },
+  {
+    "id": "EW24",
+    "name": "Jurong East",
+    "codes": [
+      "EW24",
+      "NS1"
+    ],
+    "latitude": 1.333091,
+    "longitude": 103.742342
+  },
+  {
+    "id": "PE5",
+    "name": "Kadaloor",
+    "codes": [
+      "PE5"
+    ],
+    "latitude": 1.399603,
+    "longitude": 103.916444
+  },
+  {
+    "id": "DT28",
+    "name": "Kaki Bukit",
+    "codes": [
+      "DT28"
+    ],
+    "latitude": 1.335003,
+    "longitude": 103.908583
+  },
+  {
+    "id": "EW10",
+    "name": "Kallang",
+    "codes": [
+      "EW10"
+    ],
+    "latitude": 1.311415,
+    "longitude": 103.871308
+  },
+  {
+    "id": "SE4",
+    "name": "Kangkar",
+    "codes": [
+      "SE4"
+    ],
+    "latitude": 1.383939,
+    "longitude": 103.902208
+  },
+  {
+    "id": "TE24",
+    "name": "Katong Park",
+    "codes": [
+      "TE24"
+    ],
+    "latitude": 1.297917,
+    "longitude": 103.886323
+  },
+  {
+    "id": "BP3",
+    "name": "Keat Hong",
+    "codes": [
+      "BP3"
+    ],
+    "latitude": 1.378637,
+    "longitude": 103.749008
+  },
+  {
+    "id": "EW6",
+    "name": "Kembangan",
+    "codes": [
+      "EW6"
+    ],
+    "latitude": 1.321042,
+    "longitude": 103.912972
+  },
+  {
+    "id": "CC24",
+    "name": "Kent Ridge",
+    "codes": [
+      "CC24"
+    ],
+    "latitude": 1.293389,
+    "longitude": 103.784391
+  },
+  {
+    "id": "CC30",
+    "name": "Keppel",
+    "codes": [
+      "CC30"
+    ],
+    "latitude": 1.270436,
+    "longitude": 103.830746
+  },
+  {
+    "id": "NS14",
+    "name": "Khatib",
+    "codes": [
+      "NS14"
+    ],
+    "latitude": 1.417589,
+    "longitude": 103.833036
+  },
+  {
+    "id": "DT6",
+    "name": "King Albert Park",
+    "codes": [
+      "DT6"
+    ],
+    "latitude": 1.335627,
+    "longitude": 103.78398
+  },
+  {
+    "id": "NE13",
+    "name": "Kovan",
+    "codes": [
+      "NE13"
+    ],
+    "latitude": 1.360189,
+    "longitude": 103.885186
+  },
+  {
+    "id": "NS7",
+    "name": "Kranji",
+    "codes": [
+      "NS7"
+    ],
+    "latitude": 1.425288,
+    "longitude": 103.762196
+  },
+  {
+    "id": "SW3",
+    "name": "Kupang",
+    "codes": [
+      "SW3"
+    ],
+    "latitude": 1.398193,
+    "longitude": 103.881374
+  },
+  {
+    "id": "CC27",
+    "name": "Labrador Park",
+    "codes": [
+      "CC27"
+    ],
+    "latitude": 1.272334,
+    "longitude": 103.803014
+  },
+  {
+    "id": "EW26",
+    "name": "Lakeside",
+    "codes": [
+      "EW26"
+    ],
+    "latitude": 1.344246,
+    "longitude": 103.72095
+  },
+  {
+    "id": "EW11",
+    "name": "Lavender",
+    "codes": [
+      "EW11"
+    ],
+    "latitude": 1.307281,
+    "longitude": 103.862887
+  },
+  {
+    "id": "SW6",
+    "name": "Layar",
+    "codes": [
+      "SW6"
+    ],
+    "latitude": 1.392099,
+    "longitude": 103.880158
+  },
+  {
+    "id": "TE5",
+    "name": "Lentor",
+    "codes": [
+      "TE5"
+    ],
+    "latitude": 1.384674,
+    "longitude": 103.836721
+  },
+  {
+    "id": "DT12",
+    "name": "Little India",
+    "codes": [
+      "DT12",
+      "NE7"
+    ],
+    "latitude": 1.30712,
+    "longitude": 103.848518
+  },
+  {
+    "id": "CC14",
+    "name": "Lorong Chuan",
+    "codes": [
+      "CC14"
+    ],
+    "latitude": 1.351582,
+    "longitude": 103.864252
+  },
+  {
+    "id": "CC10",
+    "name": "MacPherson",
+    "codes": [
+      "CC10",
+      "DT26"
+    ],
+    "latitude": 1.325828,
+    "longitude": 103.888699
+  },
+  {
+    "id": "CC33",
+    "name": "Marina Bay",
+    "codes": [
+      "CC33",
+      "CE2",
+      "NS27",
+      "TE20"
+    ],
+    "latitude": 1.275114,
+    "longitude": 103.854824
+  },
+  {
+    "id": "NS28",
+    "name": "Marina South Pier",
+    "codes": [
+      "NS28"
+    ],
+    "latitude": 1.271395,
+    "longitude": 103.862864
+  },
+  {
+    "id": "TE26",
+    "name": "Marine Parade",
+    "codes": [
+      "TE26"
+    ],
+    "latitude": 1.304548,
+    "longitude": 103.907897
+  },
+  {
+    "id": "TE27",
+    "name": "Marine Terrace",
+    "codes": [
+      "TE27"
+    ],
+    "latitude": 1.306717,
+    "longitude": 103.91498
+  },
+  {
+    "id": "NS8",
+    "name": "Marsiling",
+    "codes": [
+      "NS8"
+    ],
+    "latitude": 1.432613,
+    "longitude": 103.774017
+  },
+  {
+    "id": "CC16",
+    "name": "Marymount",
+    "codes": [
+      "CC16"
+    ],
+    "latitude": 1.348663,
+    "longitude": 103.839269
+  },
+  {
+    "id": "DT25",
+    "name": "Mattar",
+    "codes": [
+      "DT25"
+    ],
+    "latitude": 1.326937,
+    "longitude": 103.883112
+  },
+  {
+    "id": "TE18",
+    "name": "Maxwell",
+    "codes": [
+      "TE18"
+    ],
+    "latitude": 1.280597,
+    "longitude": 103.84404
+  },
+  {
+    "id": "TE6",
+    "name": "Mayflower",
+    "codes": [
+      "TE6"
+    ],
+    "latitude": 1.372175,
+    "longitude": 103.836859
+  },
+  {
+    "id": "PE2",
+    "name": "Meridian",
+    "codes": [
+      "PE2"
+    ],
+    "latitude": 1.396852,
+    "longitude": 103.908991
+  },
+  {
+    "id": "CC7",
+    "name": "Mountbatten",
+    "codes": [
+      "CC7"
+    ],
+    "latitude": 1.306239,
+    "longitude": 103.882731
+  },
+  {
+    "id": "TE12",
+    "name": "Napier",
+    "codes": [
+      "TE12"
+    ],
+    "latitude": 1.306779,
+    "longitude": 103.818981
+  },
+  {
+    "id": "DT11",
+    "name": "Newton",
+    "codes": [
+      "DT11",
+      "NS21"
+    ],
+    "latitude": 1.313503,
+    "longitude": 103.838156
+  },
+  {
+    "id": "PW5",
+    "name": "Nibong",
+    "codes": [
+      "PW5"
+    ],
+    "latitude": 1.411785,
+    "longitude": 103.900315
+  },
+  {
+    "id": "CC5",
+    "name": "Nicoll Highway",
+    "codes": [
+      "CC5"
+    ],
+    "latitude": 1.299768,
+    "longitude": 103.863663
+  },
+  {
+    "id": "NS20",
+    "name": "Novena",
+    "codes": [
+      "NS20"
+    ],
+    "latitude": 1.320459,
+    "longitude": 103.843843
+  },
+  {
+    "id": "PE6",
+    "name": "Oasis",
+    "codes": [
+      "PE6"
+    ],
+    "latitude": 1.402351,
+    "longitude": 103.912632
+  },
+  {
+    "id": "NS22",
+    "name": "Orchard",
+    "codes": [
+      "NS22",
+      "TE14"
+    ],
+    "latitude": 1.303957,
+    "longitude": 103.832224
+  },
+  {
+    "id": "TE13",
+    "name": "Orchard Boulevard",
+    "codes": [
+      "TE13"
+    ],
+    "latitude": 1.303049,
+    "longitude": 103.823569
+  },
+  {
+    "id": "EW16",
+    "name": "Outram Park",
+    "codes": [
+      "EW16",
+      "NE3",
+      "TE17"
+    ],
+    "latitude": 1.281178,
+    "longitude": 103.839944
+  },
+  {
+    "id": "CC26",
+    "name": "Pasir Panjang",
+    "codes": [
+      "CC26"
+    ],
+    "latitude": 1.276237,
+    "longitude": 103.791386
+  },
+  {
+    "id": "EW1",
+    "name": "Pasir Ris",
+    "codes": [
+      "EW1"
+    ],
+    "latitude": 1.37298,
+    "longitude": 103.949265
+  },
+  {
+    "id": "CC9",
+    "name": "Paya Lebar",
+    "codes": [
+      "CC9",
+      "EW8"
+    ],
+    "latitude": 1.317357,
+    "longitude": 103.892271
+  },
+  {
+    "id": "BP8",
+    "name": "Pending",
+    "codes": [
+      "BP8"
+    ],
+    "latitude": 1.3761,
+    "longitude": 103.771259
+  },
+  {
+    "id": "BP7",
+    "name": "Petir",
+    "codes": [
+      "BP7"
+    ],
+    "latitude": 1.37776,
+    "longitude": 103.766655
+  },
+  {
+    "id": "BP5",
+    "name": "Phoenix",
+    "codes": [
+      "BP5"
+    ],
+    "latitude": 1.378639,
+    "longitude": 103.75803
+  },
+  {
+    "id": "EW28",
+    "name": "Pioneer",
+    "codes": [
+      "EW28"
+    ],
+    "latitude": 1.337588,
+    "longitude": 103.697417
+  },
+  {
+    "id": "NE10",
+    "name": "Potong Pasir",
+    "codes": [
+      "NE10"
+    ],
+    "latitude": 1.33151,
+    "longitude": 103.869149
+  },
+  {
+    "id": "CC32",
+    "name": "Prince Edward Road",
+    "codes": [
+      "CC32"
+    ],
+    "latitude": 1.273305,
+    "longitude": 103.847454
+  },
+  {
+    "id": "CC4",
+    "name": "Promenade",
+    "codes": [
+      "CC4",
+      "DT15"
+    ],
+    "latitude": 1.293149,
+    "longitude": 103.8611
+  },
+  {
+    "id": "NE17",
+    "name": "Punggol",
+    "codes": [
+      "NE17",
+      "PTC"
+    ],
+    "latitude": 1.405088,
+    "longitude": 103.902349
+  },
+  {
+    "id": "NE18",
+    "name": "Punggol Coast",
+    "codes": [
+      "NE18"
+    ],
+    "latitude": 1.414982,
+    "longitude": 103.910303
+  },
+  {
+    "id": "PW3",
+    "name": "Punggol Point",
+    "codes": [
+      "PW3"
+    ],
+    "latitude": 1.416925,
+    "longitude": 103.906507
+  },
+  {
+    "id": "EW19",
+    "name": "Queenstown",
+    "codes": [
+      "EW19"
+    ],
+    "latitude": 1.294613,
+    "longitude": 103.806044
+  },
+  {
+    "id": "EW14",
+    "name": "Raffles Place",
+    "codes": [
+      "EW14",
+      "NS26"
+    ],
+    "latitude": 1.283897,
+    "longitude": 103.851419
+  },
+  {
+    "id": "SE5",
+    "name": "Ranggung",
+    "codes": [
+      "SE5"
+    ],
+    "latitude": 1.38395,
+    "longitude": 103.897464
+  },
+  {
+    "id": "EW18",
+    "name": "Redhill",
+    "codes": [
+      "EW18"
+    ],
+    "latitude": 1.289598,
+    "longitude": 103.816848
+  },
+  {
+    "id": "SW8",
+    "name": "Renjong",
+    "codes": [
+      "SW8"
+    ],
+    "latitude": 1.386748,
+    "longitude": 103.890429
+  },
+  {
+    "id": "PE4",
+    "name": "Riviera",
+    "codes": [
+      "PE4"
+    ],
+    "latitude": 1.394637,
+    "longitude": 103.916224
+  },
+  {
+    "id": "DT13",
+    "name": "Rochor",
+    "codes": [
+      "DT13"
+    ],
+    "latitude": 1.303928,
+    "longitude": 103.852451
+  },
+  {
+    "id": "SE2",
+    "name": "Rumbia",
+    "codes": [
+      "SE2"
+    ],
+    "latitude": 1.391555,
+    "longitude": 103.9059
+  },
+  {
+    "id": "PW1",
+    "name": "Sam Kee",
+    "codes": [
+      "PW1"
+    ],
+    "latitude": 1.409616,
+    "longitude": 103.904832
+  },
+  {
+    "id": "PW4",
+    "name": "Samudera",
+    "codes": [
+      "PW4"
+    ],
+    "latitude": 1.415819,
+    "longitude": 103.902087
+  },
+  {
+    "id": "BP11",
+    "name": "Segar",
+    "codes": [
+      "BP11"
+    ],
+    "latitude": 1.387768,
+    "longitude": 103.769631
+  },
+  {
+    "id": "NS11",
+    "name": "Sembawang",
+    "codes": [
+      "NS11"
+    ],
+    "latitude": 1.449103,
+    "longitude": 103.820193
+  },
+  {
+    "id": "NE16",
+    "name": "Sengkang",
+    "codes": [
+      "NE16",
+      "STC"
+    ],
+    "latitude": 1.391841,
+    "longitude": 103.895524
+  },
+  {
+    "id": "BP13",
+    "name": "Senja",
+    "codes": [
+      "BP13"
+    ],
+    "latitude": 1.382692,
+    "longitude": 103.76237
+  },
+  {
+    "id": "CC13",
+    "name": "Serangoon",
+    "codes": [
+      "CC13",
+      "NE12"
+    ],
+    "latitude": 1.350023,
+    "longitude": 103.873051
+  },
+  {
+    "id": "TE19",
+    "name": "Shenton Way",
+    "codes": [
+      "TE19"
+    ],
+    "latitude": 1.277594,
+    "longitude": 103.850558
+  },
+  {
+    "id": "TE28",
+    "name": "Siglap",
+    "codes": [
+      "TE28"
+    ],
+    "latitude": 1.309591,
+    "longitude": 103.929046
+  },
+  {
+    "id": "EW3",
+    "name": "Simei",
+    "codes": [
+      "EW3"
+    ],
+    "latitude": 1.343228,
+    "longitude": 103.953352
+  },
+  {
+    "id": "DT7",
+    "name": "Sixth Avenue",
+    "codes": [
+      "DT7"
+    ],
+    "latitude": 1.330796,
+    "longitude": 103.797193
+  },
+  {
+    "id": "NS23",
+    "name": "Somerset",
+    "codes": [
+      "NS23"
+    ],
+    "latitude": 1.300357,
+    "longitude": 103.838762
+  },
+  {
+    "id": "PW7",
+    "name": "Soo Teck",
+    "codes": [
+      "PW7"
+    ],
+    "latitude": 1.40521,
+    "longitude": 103.897234
+  },
+  {
+    "id": "BP2",
+    "name": "South View",
+    "codes": [
+      "BP2"
+    ],
+    "latitude": 1.380298,
+    "longitude": 103.745292
+  },
+  {
+    "id": "TE4",
+    "name": "Springleaf",
+    "codes": [
+      "TE4"
+    ],
+    "latitude": 1.398125,
+    "longitude": 103.818082
+  },
+  {
+    "id": "CC6",
+    "name": "Stadium",
+    "codes": [
+      "CC6"
+    ],
+    "latitude": 1.302848,
+    "longitude": 103.875348
+  },
+  {
+    "id": "DT10",
+    "name": "Stevens",
+    "codes": [
+      "DT10",
+      "TE11"
+    ],
+    "latitude": 1.320068,
+    "longitude": 103.826057
+  },
+  {
+    "id": "PW6",
+    "name": "Sumang",
+    "codes": [
+      "PW6"
+    ],
+    "latitude": 1.408298,
+    "longitude": 103.898481
+  },
+  {
+    "id": "CC11",
+    "name": "Tai Seng",
+    "codes": [
+      "CC11"
+    ],
+    "latitude": 1.335339,
+    "longitude": 103.888338
+  },
+  {
+    "id": "DT32",
+    "name": "Tampines",
+    "codes": [
+      "DT32",
+      "EW2"
+    ],
+    "latitude": 1.35504,
+    "longitude": 103.942935
+  },
+  {
+    "id": "DT33",
+    "name": "Tampines East",
+    "codes": [
+      "DT33"
+    ],
+    "latitude": 1.356259,
+    "longitude": 103.954448
+  },
+  {
+    "id": "DT31",
+    "name": "Tampines West",
+    "codes": [
+      "DT31"
+    ],
+    "latitude": 1.345684,
+    "longitude": 103.938429
+  },
+  {
+    "id": "DT8",
+    "name": "Tan Kah Kee",
+    "codes": [
+      "DT8"
+    ],
+    "latitude": 1.325896,
+    "longitude": 103.80735
+  },
+  {
+    "id": "EW4",
+    "name": "Tanah Merah",
+    "codes": [
+      "EW4"
+    ],
+    "latitude": 1.327242,
+    "longitude": 103.946516
+  },
+  {
+    "id": "TE25",
+    "name": "Tanjong Katong",
+    "codes": [
+      "TE25"
+    ],
+    "latitude": 1.299598,
+    "longitude": 103.89772
+  },
+  {
+    "id": "EW15",
+    "name": "Tanjong Pagar",
+    "codes": [
+      "EW15"
+    ],
+    "latitude": 1.276417,
+    "longitude": 103.845249
+  },
+  {
+    "id": "TE23",
+    "name": "Tanjong Rhu",
+    "codes": [
+      "TE23"
+    ],
+    "latitude": 1.297314,
+    "longitude": 103.873595
+  },
+  {
+    "id": "PW2",
+    "name": "Teck Lee",
+    "codes": [
+      "PW2"
+    ],
+    "latitude": 1.412874,
+    "longitude": 103.906626
+  },
+  {
+    "id": "BP4",
+    "name": "Teck Whye",
+    "codes": [
+      "BP4"
+    ],
+    "latitude": 1.376647,
+    "longitude": 103.753694
+  },
+  {
+    "id": "DT18",
+    "name": "Telok Ayer",
+    "codes": [
+      "DT18"
+    ],
+    "latitude": 1.282294,
+    "longitude": 103.848361
+  },
+  {
+    "id": "CC28",
+    "name": "Telok Blangah",
+    "codes": [
+      "CC28"
+    ],
+    "latitude": 1.270591,
+    "longitude": 103.809752
+  },
+  {
+    "id": "SW4",
+    "name": "Thanggam",
+    "codes": [
+      "SW4"
+    ],
+    "latitude": 1.397437,
+    "longitude": 103.875655
+  },
+  {
+    "id": "EW17",
+    "name": "Tiong Bahru",
+    "codes": [
+      "EW17"
+    ],
+    "latitude": 1.286126,
+    "longitude": 103.827396
+  },
+  {
+    "id": "NS19",
+    "name": "Toa Payoh",
+    "codes": [
+      "NS19"
+    ],
+    "latitude": 1.33262,
+    "longitude": 103.847479
+  },
+  {
+    "id": "SW7",
+    "name": "Tongkang",
+    "codes": [
+      "SW7"
+    ],
+    "latitude": 1.389366,
+    "longitude": 103.885894
+  },
+  {
+    "id": "EW31",
+    "name": "Tuas Crescent",
+    "codes": [
+      "EW31"
+    ],
+    "latitude": 1.321067,
+    "longitude": 103.64904
+  },
+  {
+    "id": "EW33",
+    "name": "Tuas Link",
+    "codes": [
+      "EW33"
+    ],
+    "latitude": 1.34032,
+    "longitude": 103.636742
+  },
+  {
+    "id": "EW32",
+    "name": "Tuas West Road",
+    "codes": [
+      "EW32"
+    ],
+    "latitude": 1.330028,
+    "longitude": 103.639585
+  },
+  {
+    "id": "DT27",
+    "name": "Ubi",
+    "codes": [
+      "DT27"
+    ],
+    "latitude": 1.329949,
+    "longitude": 103.899192
+  },
+  {
+    "id": "DT34",
+    "name": "Upper Changi",
+    "codes": [
+      "DT34"
+    ],
+    "latitude": 1.341852,
+    "longitude": 103.961318
+  },
+  {
+    "id": "TE8",
+    "name": "Upper Thomson",
+    "codes": [
+      "TE8"
+    ],
+    "latitude": 1.354642,
+    "longitude": 103.832417
+  },
+  {
+    "id": "NS9",
+    "name": "Woodlands",
+    "codes": [
+      "NS9",
+      "TE2"
+    ],
+    "latitude": 1.436849,
+    "longitude": 103.786159
+  },
+  {
+    "id": "TE1",
+    "name": "Woodlands North",
+    "codes": [
+      "TE1"
+    ],
+    "latitude": 1.448372,
+    "longitude": 103.785659
+  },
+  {
+    "id": "TE3",
+    "name": "Woodlands South",
+    "codes": [
+      "TE3"
+    ],
+    "latitude": 1.426685,
+    "longitude": 103.794433
+  },
+  {
+    "id": "NE11",
+    "name": "Woodleigh",
+    "codes": [
+      "NE11"
+    ],
+    "latitude": 1.339158,
+    "longitude": 103.870816
+  },
+  {
+    "id": "NS5",
+    "name": "Yew Tee",
+    "codes": [
+      "NS5"
+    ],
+    "latitude": 1.397592,
+    "longitude": 103.747382
+  },
+  {
+    "id": "NS15",
+    "name": "Yio Chu Kang",
+    "codes": [
+      "NS15"
+    ],
+    "latitude": 1.381786,
+    "longitude": 103.844802
+  },
+  {
+    "id": "NS13",
+    "name": "Yishun",
+    "codes": [
+      "NS13"
+    ],
+    "latitude": 1.429516,
+    "longitude": 103.834961
+  },
+  {
+    "id": "CC23",
+    "name": "one-north",
+    "codes": [
+      "CC23"
+    ],
+    "latitude": 1.299711,
+    "longitude": 103.787428
+  }
+]

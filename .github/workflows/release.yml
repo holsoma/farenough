@@ -1,0 +1,54 @@
+name: Draft APK release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  checks:
+    uses: ./.github/workflows/checks.yml
+  package:
+    needs: checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+      - name: Check the tag and prepare signing
+        env:
+          KEYSTORE: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+        run: |
+          set -euo pipefail
+          version=$(sed -n 's/^versionName=//p' version.properties | tr -d '\r')
+          test "$GITHUB_REF_NAME" = "v$version"
+          test -n "$KEYSTORE"
+          mkdir -p .release
+          printf '%s' "$KEYSTORE" | base64 --decode > "$RUNNER_TEMP/fairenough.jks"
+          chmod 600 "$RUNNER_TEMP/fairenough.jks"
+          chmod +x gradlew
+      - name: Build signed APK
+        env:
+          FAIRENOUGH_KEYSTORE: ${{ runner.temp }}/fairenough.jks
+          FAIRENOUGH_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          FAIRENOUGH_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: ./gradlew :app:assembleRelease --no-daemon
+      - name: Verify and prepare release assets
+        run: |
+          set -euo pipefail
+          cp app/build/outputs/apk/release/app-release.apk ".release/fairenough-$GITHUB_REF_NAME.apk"
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs ".release/fairenough-$GITHUB_REF_NAME.apk" > .release/signing-certificate.txt
+          (cd .release && sha256sum *.apk > SHA256SUMS.txt)
+          cp CHANGELOG.md .release/release-notes.md
+          printf '\nAndroid 8.0+. Import and backup formats: version 1. Fare source: saved LTA-checked route fares.\n' >> .release/release-notes.md
+      - name: Create draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --draft --title "fairenough $GITHUB_REF_NAME" --notes-file .release/release-notes.md .release/*.apk .release/SHA256SUMS.txt .release/signing-certificate.txt
+      - name: Remove temporary signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/fairenough.jks"

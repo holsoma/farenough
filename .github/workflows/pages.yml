@@ -1,0 +1,44 @@
+name: GitHub Pages
+on:
+  workflow_dispatch:
+  release:
+    types: [published, edited]
+  push:
+    branches: [main]
+    paths: ['site/**', 'schemas/**', 'scripts/update-release.mjs', '.github/workflows/pages.yml']
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    if: vars.PAGES_ENABLED == 'true'
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - uses: actions/configure-pages@v6.0.0
+      - run: npm ci
+        working-directory: site
+      - run: node scripts/update-release.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - run: npm run build
+        working-directory: site
+        env:
+          ASTRO_TELEMETRY_DISABLED: '1'
+      - uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: site/dist
+      - uses: actions/deploy-pages@v5.0.1
+        id: deployment

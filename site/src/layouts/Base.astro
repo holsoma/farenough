@@ -1,0 +1,33 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import { source, release } from '../data/release';
+import '../styles/site.css';
+interface Props { title: string; description: string; page?: string }
+const { title, description, page = 'inner' } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const nav = [['Download', 'download/'], ['Guide', 'docs/'], ['Changelog', 'changelog/']];
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><meta name="theme-color" content="#F6F8FA" />
+    <title>{title} | fairenough</title><meta name="description" content={description} /><link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={`${base}fairenough.svg`} /><link rel="sitemap" href={`${base}sitemap-index.xml`} />
+    <meta property="og:type" content="website" /><meta property="og:title" content={`${title} | fairenough`} /><meta property="og:description" content={description} /><meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(`${base}og.png`, Astro.site)} /><meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify({ '@context':'https://schema.org', '@type':'SoftwareApplication', name:'fairenough', operatingSystem:'Android 8.0+', applicationCategory:'TravelApplication', description, url:new URL(base, Astro.site), isAccessibleForFree:true })} />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <ClientRouter fallback="swap" />
+  </head>
+  <body data-page={page} transition:animate="none">
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="header wrap">
+      <a href={base} class="wordmark" aria-label="fairenough home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 25V7h17M9 16h12"/><circle cx="26" cy="7" r="3"/></svg>fairenough<span class="brand-stop">.</span></a>
+      <nav aria-label="Main navigation">{nav.map(([label, path]) => <a href={`${base}${path}`} aria-current={Astro.url.pathname.startsWith(`${base}${path}`) ? 'page' : undefined}><span>{label}</span></a>)}<a class="source-link" href={source}><span>GitHub</span><span aria-hidden="true">↗</span></a></nav>
+    </header>
+    <main id="main" tabindex="-1"><slot /></main>
+    <footer class="footer wrap"><div class="footer-main"><a href={base} class="footer-name">fairenough.</a><p>Know what your journeys add up to.</p></div><div class="footer-meta"><span>Made for Android. Open source.</span><div><a href={`${base}privacy/`}>Privacy</a><a href={`${base}docs/fare-calculations/`}>Data sources</a><a href={source}>Source code</a></div><span>v{release.version}{!release.published && ' preview'}</span></div></footer>
+    <script>import '../scripts/motion';</script>
+  </body>
+</html>

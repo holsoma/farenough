@@ -1,0 +1,9 @@
+---
+import Base from './Base.astro';
+import { guides } from '../data/release';
+const { frontmatter } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+<Base title={frontmatter.title} description={frontmatter.description}>
+  <div class="wrap docs-shell"><aside class="docs-sidebar"><a class="docs-home" href={`${base}docs/`}>The fairenough guide</a><button class="docs-topics-toggle" aria-expanded="false" aria-controls="guide-topics">Guide topics <span aria-hidden="true">+</span></button><nav id="guide-topics" aria-label="Documentation">{guides.map(([slug, title]) => <a href={`${base}docs/${slug}/`} aria-current={Astro.url.pathname.endsWith(`/${slug}/`) ? 'page' : undefined}>{title}</a>)}</nav></aside><article class="prose"><h1>{frontmatter.title}</h1><p class="lead">{frontmatter.description}</p><slot /></article></div>
+</Base>
