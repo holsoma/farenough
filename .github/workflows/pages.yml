@@ -1,8 +1,6 @@
 name: GitHub Pages
 on:
   workflow_dispatch:
-  release:
-    types: [published, edited]
   push:
     branches: [main]
     paths: ['site/**', 'schemas/**', 'scripts/update-release.mjs', '.github/workflows/pages.yml']

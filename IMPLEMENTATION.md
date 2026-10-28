@@ -46,6 +46,6 @@ Implementation progress and verification are recorded here. A checked build alon
 
 ## Publication in progress
 
-The user approved public publication and renamed the app and repository to farenough. The repository is now `holsoma/farenough`, and the site uses `/farenough/`. GitHub Actions signing secrets are configured. The signed version code 4 APK, nineteen core tests, three Android UI tests and thirteen-page site build pass locally. Release guard tests cover nine staging cases and rejected signing identities. The public release, workflow signing stage and Pages deployment remain to be verified.
+The repository is public at `holsoma/farenough`, and release `v0.1.0` is published with one signed APK, its checksum and certificate. [The tagged release workflow](https://github.com/holsoma/farenough/actions/runs/40656876286) passed every check and built the signed APK. An anonymous download matched SHA-256 `fc890f94c67e682fc91fb27f908591b747ca4fe52548d8f723c154349409f4b8`; that exact APK installed successfully over the existing installation. Release guard tests cover nine staging cases and rejected signing identities. Pages uses the existing `main` deployment permission; its live deployment remains to be verified.
 
 Physical handset testing and testing on Android 8 are not yet complete. The minimum supported version is a build configuration, not a claim that every supported Android version has been tested.

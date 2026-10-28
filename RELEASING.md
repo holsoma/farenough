@@ -39,7 +39,13 @@ Before any upload, `scripts/stage-release.sh` verifies the APK checksum and reco
 
 Release guard tests run with `node --test scripts/stage-release.test.mjs` and `pwsh -NoProfile -File scripts/test-signing-identity.ps1`. They use synthetic packages and a replacement GitHub command; they do not upload files. On Windows, set `FARENOUGH_TEST_BASH` to Git Bash's `bash.exe` if it is not the default Bash.
 
-The Pages workflow builds static metadata from a published release. Until one exists, the download page says the first public release is being prepared. Do not claim a working public APK link before publication.
+The Pages workflow builds static metadata from a published release. It deploys from `main`, using the repository's existing environment permission. After publishing a release, dispatch the site build:
+
+```sh
+gh workflow run pages.yml --repo holsoma/farenough --ref main
+```
+
+Changes to website files on `main` also deploy automatically. Release tags do not deploy Pages directly. Until a public release exists, the download page says the first release is being prepared.
 
 ## Verify a download
 

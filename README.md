@@ -6,7 +6,7 @@ farenough is an open source Android app for tracking Singapore MRT and LRT journ
 
 [Download an APK](https://github.com/holsoma/farenough/releases) · [User guide](https://holsoma.github.io/farenough/docs/) · [Report an issue](https://github.com/holsoma/farenough/issues)
 
-Requires **Android 8.0 or later**. The first release is being prepared. Development status and verified checks are recorded in [IMPLEMENTATION.md](IMPLEMENTATION.md).
+Requires **Android 8.0 or later**. [Version 0.1.0 is available](https://github.com/holsoma/farenough/releases/tag/v0.1.0). Development status and verified checks are recorded in [IMPLEMENTATION.md](IMPLEMENTATION.md).
 
 ## What it does
 
