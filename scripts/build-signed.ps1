@@ -40,7 +40,7 @@ try {
     $verification | Set-Content -LiteralPath (Join-Path $artifacts 'signing-certificate.txt')
     $hash = (Get-FileHash -LiteralPath $apk -Algorithm SHA256).Hash.ToLowerInvariant()
     $checksumName = if ($OutputName -eq "fairenough-v$version.apk") { 'SHA256SUMS.txt' } else { "$OutputName.sha256" }
-    "$hash  $OutputName" | Set-Content -LiteralPath (Join-Path $artifacts $checksumName)
+    [IO.File]::WriteAllText((Join-Path $artifacts $checksumName), "$hash  $OutputName`n", [Text.UTF8Encoding]::new($false))
     # Separate local encrypted-key copy. The DPAPI password remains tied to this Windows user.
     $backup = Join-Path $secretDirectory 'offline-backup'
     New-Item -ItemType Directory -Force -Path $backup | Out-Null

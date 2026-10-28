@@ -56,3 +56,7 @@ The genericness check removed equal feature cards, decorative labels and automat
 ## Verification
 
 Capture real app screens with synthetic records. Check phone and desktop, light/dark app themes, large text, keyboard access, reduced motion and screen readers. Run two production website review passes and an independent screenshot critique. No final score until evidence exists.
+
+The implemented website uses one interactive journey line and a movable fare threshold. A gold ring and a checked result identify a covered pass. The import explanation follows the same stop sequence from an invented note through clarification to review. Actual screenshots show the journey list and map; full screenshots remain linked.
+
+The final independent estimate is 7.6/10. Technical checks pass, but Design and Creativity remain below the skill's target of 8. See `IMPLEMENTATION.md` for the tested scope and outstanding publication step. These are review estimates, not awards or claims about an Awwwards submission.

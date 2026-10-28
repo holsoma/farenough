@@ -22,8 +22,8 @@ The agreed scope is a native Android app, signed APK, GitHub release assets, an 
 - [x] Offline map, official source attribution, accessible alternatives.
 - [x] Versioned backup, pre-restore export and CSV.
 - [x] Signed APK install/upgrade check and Android UI verification.
-- [ ] Website, full documentation, screenshots and two visual QA passes.
-- [ ] Repository and draft release workflow, checksums and signing identity.
+- [x] Website, full documentation, screenshots and two visual QA passes.
+- [x] Repository and draft release workflow, checksums and signing identity.
 - [ ] Public release and Pages deployment after reviewing the concrete result.
 
 Implementation progress and verification are recorded here. A checked build alone does not prove these requirements.
@@ -39,5 +39,13 @@ Implementation progress and verification are recorded here. A checked build alon
 - Station IDs are recorded in `data/station-ids.json` so adding a line code cannot silently change an existing journey's station identity.
 - Signed API 36 update check: installed version code 1, created a pass and corrected journey through the UI, restored a synthetic fixture containing saved fares, imports and preferences, then installed version code 2 without uninstalling. Exported data matches every field of the fixture. The pre-restore export matches the original records exactly.
 - The final candidate uses version code 3 to retain update compatibility with both local test candidates. A dark status-bar contrast correction is included. A 150% text-size check retained readable content and navigation.
+- The final Android, device and website jobs pass in [GitHub run 40647246801](https://github.com/holsoma/fairenough/actions/runs/40647246801). The device job frees unused toolchains on its temporary runner before creating the API 36 emulator. Tests wait for visible UI completion after asynchronous saves.
+- The final APK was downloaded from the private draft and matched its local SHA-256 digest. The checksum file uses LF line endings and passes `sha256sum -c`.
+- Website review covered three full screenshot passes and a targeted follow-up. Final evidence has no audit failures, console errors, serious accessibility findings, horizontal overflow or undersized touch targets. Phone LCP was below 0.8 seconds and CLS at most 0.001 in the measured captures. The audit's origin-root discovery warnings are explained by the GitHub Pages project path; the project sitemap, robots file, social image and real 404 response were verified separately.
+- The final independent design estimate is 7.6/10: Design 7.5, Usability 8, Creativity 7, Content 8; six developer categories score 8. The awwwards target of 8 in every category has not been met. Further visual work would extend the line-and-stop structure through the feature section and reduce repetition in the import guide.
+
+## Publication still pending
+
+The repository is private, the APK release is a draft and Pages deployment is disabled. Public release and deployment require review of this concrete result. GitHub Actions signing secrets have not been uploaded; the documented release workflow is prepared but its signing stage has not yet been exercised. The current APK was signed and verified locally.
 
 Physical handset testing and testing on Android 8 are not yet complete. The minimum supported version is a build configuration, not a claim that every supported Android version has been tested.
