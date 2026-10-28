@@ -46,6 +46,8 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_6
+          disk-size: 2048M
+          emulator-boot-timeout: 300
           disable-animations: true
           script: ./gradlew :app:connectedDebugAndroidTest --no-daemon
       - uses: actions/upload-artifact@v7.0.2

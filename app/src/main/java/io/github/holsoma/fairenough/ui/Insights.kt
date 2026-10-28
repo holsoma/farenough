@@ -36,9 +36,9 @@ import java.time.YearMonth
                 FilterChip(calendar || pass == null, { calendar = true; selectedDate = null; selectedRoute = null }, label = { Text("Calendar month") })
             }
             if (calendar || pass == null) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                TextButton(onClick = { monthText = month.minusMonths(1).toString() }) { Text("Previous") }
+                TextButton(onClick = { monthText = month.minusMonths(1).toString(); selectedDate = null; selectedRoute = null }) { Text("Previous") }
                 Text(monthText, fontWeight = FontWeight.Medium)
-                TextButton(onClick = { monthText = month.plusMonths(1).toString() }) { Text("Next") }
+                TextButton(onClick = { monthText = month.plusMonths(1).toString(); selectedDate = null; selectedRoute = null }) { Text("Next") }
             }
         }
         item { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("Charts", "Map", "Routes").forEach { label -> FilterChip(view == label, { view = label }, label = { Text(label) }) } } }
