@@ -24,7 +24,7 @@ The agreed scope is a native Android app, signed APK, GitHub release assets, an 
 - [x] Signed APK install/upgrade check and Android UI verification.
 - [x] Website, full documentation, screenshots and two visual QA passes.
 - [x] Repository and draft release workflow, checksums and signing identity.
-- [ ] Public release and Pages deployment after reviewing the concrete result.
+- [x] Public release and GitHub Pages deployment.
 
 Implementation progress and verification are recorded here. A checked build alone does not prove these requirements.
 
@@ -39,13 +39,15 @@ Implementation progress and verification are recorded here. A checked build alon
 - Station IDs are recorded in `data/station-ids.json` so adding a line code cannot silently change an existing journey's station identity.
 - Signed API 36 update check: installed version code 1, created a pass and corrected journey through the UI, restored a synthetic fixture containing saved fares, imports and preferences, then installed version code 2 without uninstalling. Exported data matches every field of the fixture. The pre-restore export matches the original records exactly.
 - The renamed candidate uses version code 4. Installing it over version code 3 preserved every field in the exported synthetic backup. The display name and new export filenames use farenough; the Android installation identity remains unchanged. A dark status-bar contrast correction is included. A 150% text-size check retained readable content and navigation.
-- The final Android, device and website jobs pass in [GitHub run 40647246801](https://github.com/holsoma/farenough/actions/runs/40647246801). The device job frees unused toolchains on its temporary runner before creating the API 36 emulator. Tests wait for visible UI completion after asynchronous saves.
+- The release's Android, device, website and release guard jobs pass in [GitHub run 40656876286](https://github.com/holsoma/farenough/actions/runs/40656876286). The device job frees unused toolchains on its temporary runner before creating the API 36 emulator. Tests wait for visible UI completion after asynchronous saves.
 - The final APK was downloaded from the private draft and matched its local SHA-256 digest. The checksum file uses LF line endings and passes `sha256sum -c`.
 - Website review covered three full screenshot passes and a targeted follow-up. Final evidence has no audit failures, console errors, serious accessibility findings, horizontal overflow or undersized touch targets. Phone LCP was below 0.8 seconds and CLS at most 0.001 in the measured captures. The audit's origin-root discovery warnings are explained by the GitHub Pages project path; the project sitemap, robots file, social image and real 404 response were verified separately.
 - The final independent design estimate is 7.6/10: Design 7.5, Usability 8, Creativity 7, Content 8; six developer categories score 8. The awwwards target of 8 in every category has not been met. Further visual work would extend the line-and-stop structure through the feature section and reduce repetition in the import guide.
 
-## Publication in progress
+## Published release
 
-The repository is public at `holsoma/farenough`, and release `v0.1.0` is published with one signed APK, its checksum and certificate. [The tagged release workflow](https://github.com/holsoma/farenough/actions/runs/40656876286) passed every check and built the signed APK. An anonymous download matched SHA-256 `fc890f94c67e682fc91fb27f908591b747ca4fe52548d8f723c154349409f4b8`; that exact APK installed successfully over the existing installation. Release guard tests cover nine staging cases and rejected signing identities. Pages uses the existing `main` deployment permission; its live deployment remains to be verified.
+The [repository](https://github.com/holsoma/farenough) is public. [Release v0.1.0](https://github.com/holsoma/farenough/releases/tag/v0.1.0) contains one signed APK, its checksum and certificate. [The tagged release workflow](https://github.com/holsoma/farenough/actions/runs/40656876286) passed every check and built the signed APK. An anonymous download matched SHA-256 `fc890f94c67e682fc91fb27f908591b747ca4fe52548d8f723c154349409f4b8`; that exact APK installed successfully over the existing installation. Release guard tests cover nine staging cases and rejected signing identities.
+
+The [website and guide](https://holsoma.github.io/farenough/) are live. [Pages deployment 40658501798](https://github.com/holsoma/farenough/actions/runs/40658501798) succeeded from `main`, using the existing environment permission. All twelve regular pages, fourteen public assets, the APK download link and the custom 404 passed live verification. Future releases deploy the site from `main` as documented in `RELEASING.md`.
 
 Physical handset testing and testing on Android 8 are not yet complete. The minimum supported version is a build configuration, not a claim that every supported Android version has been tested.
