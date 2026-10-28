@@ -16,34 +16,7 @@ function onPage() {
   if (!reduce && document.body.dataset.page === 'home' && matchMedia('(hover: hover)').matches) {
     lenis = new Lenis({ anchors: true }); tick = time => lenis?.raf(time * 1000); gsap.ticker.add(tick);
   }
-  const slider = document.querySelector<HTMLInputElement>('#trip-count');
-  const fare = document.querySelector<HTMLSelectElement>('#example-fare');
-  const value = document.querySelector('#trip-value'); const total = document.querySelector('#example-total');
-  const result = document.querySelector('#example-result'); const progress = document.querySelector('.track-progress');
-  const threshold = document.querySelector<HTMLElement>('.threshold');
-  const update = () => {
-    if (!slider) return;
-    const count = Number(slider.value);
-    const cents = Number(fare?.value || 200);
-    const totalCents = count * cents;
-    const target = Math.ceil(4800 / cents);
-    document.querySelector('[data-example]')?.setAttribute('data-covered', String(totalCents >= 4800));
-    threshold?.setAttribute('data-reached', String(totalCents >= 4800));
-    if (value) value.textContent = String(count);
-    if (total) total.textContent = `S$${(totalCents / 100).toFixed(2)}`;
-    if (result) result.textContent = totalCents < 4800 ? `${Math.ceil((4800-totalCents)/cents)} more trips would cover the pass.` : totalCents === 4800 ? 'The pass cost is covered.' : `S$${((totalCents-4800)/100).toFixed(2)} above the pass price.`;
-    gsap.to(progress, { clipPath: `inset(0 ${100 - count / 36 * 100}% 0 0)`, duration: reduce ? 0 : .12, ease: 'power3.out', overwrite: true });
-    const track = document.querySelector<HTMLElement>('.journey-track');
-    if (track && threshold) {
-      const label = threshold.querySelector('b'); if (label) label.textContent = `Enough: ${target} trips`;
-      gsap.to(threshold, { x: 12 + target / 36 * (track.clientWidth - 24) - track.clientWidth * 2 / 3, duration: reduce ? 0 : .25, ease: 'power3.out', overwrite: true });
-    }
-  };
-  slider?.addEventListener('input', update);
-  fare?.addEventListener('change', update);
-  const resize = new ResizeObserver(update); const track = document.querySelector('.journey-track');
-  if (track) resize.observe(track); update();
-  dispose = () => { topics?.removeEventListener('click', toggleTopics); slider?.removeEventListener('input', update); fare?.removeEventListener('change', update); resize.disconnect(); if (tick) gsap.ticker.remove(tick); lenis?.destroy(); gsap.killTweensOf([progress, threshold].filter(Boolean)); };
+  dispose = () => { topics?.removeEventListener('click', toggleTopics); if (tick) gsap.ticker.remove(tick); lenis?.destroy(); };
 }
 document.addEventListener('astro:before-preparation', event => {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;

@@ -8,12 +8,23 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
     <div class="hero-copy"><p class="product-note"><span class="status-dot"></span>Singapore undergraduate MRT and LRT passes.</p><h1>Enough<br />trips<span class="question">?</span></h1><p class="hero-description">You bought the pass.<br />See when your journeys cover its cost.</p><div class="actions"><a class="button" href={`${base}download/`}>{release.published ? 'Get farenough' : 'See the release preview'} <span aria-hidden="true">↗</span></a><a class="text-link" href={`${base}docs/`}>Read the guide <span aria-hidden="true">→</span></a></div><p class="small muted">Android {release.minimumAndroid}+ · No account · No tracking{!release.published && <><br />Public download not yet available.</>}</p></div>
     <figure class="hero-screen"><div class="screen-underlay" aria-hidden="true"><span class="stop start"></span><span class="stop end"></span></div><img src={`${base}screenshots/overview.png`} width="720" height="1600" alt="farenough Overview showing a pass comparison and recorded journey totals" fetchpriority="high" /><figcaption>Actual app screen. Demonstration records.</figcaption></figure>
   </section>
-  <section class="mechanism" aria-labelledby="example-title"><div class="wrap"><div class="section-heading"><h2 id="example-title">Enough is<br />a moving target.</h2><p>A short ride and a long ride do not cost the same. farenough adds up the fares for your recorded journeys, then compares them with your pass price.</p></div><div class="example" data-example>
-    <div class="example-head"><label for="trip-count">Example journeys <strong id="trip-value">18</strong></label><span>Move along the line to cover a S$48 pass.</span></div>
-    <div class="journey-track"><div class="track" aria-hidden="true"></div><div class="track-progress" aria-hidden="true"></div><div class="threshold" aria-hidden="true"><span></span><b>Enough: 24 trips</b></div><input id="trip-count" type="range" min="0" max="36" value="18" aria-describedby="example-assumption" /></div>
-    <div class="example-readout"><div><output id="example-total" for="trip-count">S$36.00</output><span>in example fares</span></div><p id="example-result" aria-live="polite">6 more trips would cover the pass.</p><div class="example-cost"><strong>S$48.00</strong><span>pass price</span></div></div>
-    <div class="fare-choice"><label for="example-fare">Illustrative fare per journey</label><select id="example-fare"><option value="150">S$1.50</option><option value="200" selected>S$2.00</option><option value="250">S$2.50</option></select></div><p id="example-assumption" class="small muted">Illustration only, not a quote for any route. Change the fare to see the target move. Your app uses recorded route fares and your corrections.</p>
-  </div></div></section>
+  <section class="comparison" aria-labelledby="comparison-title">
+    <div class="wrap comparison-grid">
+      <div class="comparison-copy">
+        <h2 id="comparison-title">Compare fares<br />with your pass.</h2>
+        <p>farenough adds up the fares for your recorded journeys within the pass dates. Subtract the pass price to see your estimated savings.</p>
+        <a class="text-link" href={`${base}docs/fare-calculations/`}>How fares are calculated <span aria-hidden="true">→</span></a>
+      </div>
+      <figure class="fare-comparison">
+        <dl class="fare-summary">
+          <div><dt>Recorded journey fares</dt><dd>S$57.20</dd></div>
+          <div><dt>Pass price</dt><dd>S$48.00</dd></div>
+          <div class="fare-saving"><dt>Estimated savings</dt><dd>S$9.20</dd></div>
+        </dl>
+        <figcaption>Illustration using the demonstration records shown above.</figcaption>
+      </figure>
+    </div>
+  </section>
   <section class="features wrap" aria-labelledby="features-title"><h2 id="features-title">A little less guessing.<br />A clearer month.</h2>
     <div class="feature-row"><div class="feature-copy"><h3>A journey in a few taps.</h3><p>Choose your entry and exit stations. Save your usual routes. Add a correction when a ride would have been discounted.</p><a class="text-link" href={`${base}docs/recording-trips/`}>Recording journeys <span aria-hidden="true">→</span></a></div><figure class="detail-figure"><a class="detail-view journey-detail" href={`${base}screenshots/trips.png`} aria-label="View the full journey list screenshot"><img src={`${base}screenshots/trips.png`} alt="Journey rows grouped by date, with an example fare on each row" width="720" height="1600" loading="lazy"/></a><figcaption>Detail from the app. Select to view the full screen.</figcaption></figure></div>
     <div class="feature-row reverse"><div class="feature-copy"><h3>Your old notes<br />are welcome.</h3><p>Give the formatting prompt and your notes to an AI chat tool. Clarify your abbreviations there, then paste its formatted text back. Review every journey before saving it.</p><a class="text-link" href={`${base}docs/importing/`}>How importing works <span aria-hidden="true">→</span></a></div><figure class="import-example"><ol><li><span class="import-stage">Your note</span><code>12 OCT TP → RP</code></li><li><span class="import-stage">Clarify in your chat tool</span><p>2026. Toa Payoh to Raffles Place.</p><small>Short names and missing years need your answer.</small></li><li><span class="import-stage">Review in farenough</span><strong>12 Oct 2026</strong><p>Toa Payoh → Raffles Place</p><small>Fare needed. Confirm the journey before saving.</small></li></ol><figcaption>Invented example of the import process.<br /><a class="text-link" href={`${base}screenshots/import.png`}>View the actual import screen <span aria-hidden="true">→</span></a></figcaption></figure></div>
