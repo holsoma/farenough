@@ -27,6 +27,8 @@ function onPage() {
     const cents = Number(fare?.value || 200);
     const totalCents = count * cents;
     const target = Math.ceil(4800 / cents);
+    document.querySelector('[data-example]')?.setAttribute('data-covered', String(totalCents >= 4800));
+    threshold?.setAttribute('data-reached', String(totalCents >= 4800));
     if (value) value.textContent = String(count);
     if (total) total.textContent = `S$${(totalCents / 100).toFixed(2)}`;
     if (result) result.textContent = totalCents < 4800 ? `${Math.ceil((4800-totalCents)/cents)} more trips would cover the pass.` : totalCents === 4800 ? 'The pass cost is covered.' : `S$${((totalCents-4800)/100).toFixed(2)} above the pass price.`;

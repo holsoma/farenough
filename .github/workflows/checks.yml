@@ -29,6 +29,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
+      - name: Free space for the Android system image
+        # These toolchains are unused by this Kotlin-only job on an ephemeral runner.
+        run: |
+          sudo rm -rf -- /usr/share/dotnet /usr/local/lib/android/sdk/ndk
+          df -h /
       - uses: actions/setup-java@v6.1.0
         with:
           distribution: temurin
@@ -46,7 +51,6 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: pixel_6
-          disk-size: 2048M
           emulator-boot-timeout: 300
           disable-animations: true
           script: ./gradlew :app:connectedDebugAndroidTest --no-daemon

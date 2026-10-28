@@ -16,6 +16,29 @@ Use an AI chat tool, also called an LLM, to put your notes into JSON: a text for
 
 The prompt includes the app's station catalogue. Personal abbreviations are resolved in that external conversation. fairenough validates official names and codes; it does not guess your shorthand.
 
+## One note, from start to confirmation
+
+Suppose your note says `12 OCT TP -> RP`. This is an invented example.
+
+The chat tool must ask which year you mean and whether `TP` is Toa Payoh, Tanjong Pagar or another station. You answer **2026, Toa Payoh to Raffles Place**. It can then produce the record below. It must not invent a fare.
+
+```json
+{
+  "format": "fairenough-trips",
+  "version": 1,
+  "trips": [
+    {
+      "date": "2026-10-12",
+      "origin": "Toa Payoh",
+      "destination": "Raffles Place",
+      "sourceText": "12 OCT TP -> RP"
+    }
+  ]
+}
+```
+
+The app's review shows **12 Oct 2026, Toa Payoh → Raffles Place**. If you have not saved a fare for that route and date, it shows **Fare needed**. You check the row and confirm the import before it enters your records.
+
 ## Version 1 format
 
 ```json
