@@ -28,7 +28,7 @@ npm run dev
 npm run build
 ```
 
-The site is built for the `/fairenough/` GitHub Pages path. Test that path locally as well as direct documentation URLs.
+The site is built for the `/farenough/` GitHub Pages path. Test that path locally as well as direct documentation URLs.
 
 ## Report an issue
 

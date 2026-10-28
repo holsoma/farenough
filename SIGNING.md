@@ -2,6 +2,8 @@
 
 Release application ID: `io.github.holsoma.fairenough`
 
+The app and repository are named **farenough**. The Android application ID and signing key retain their original identities so earlier APKs can update without uninstalling or losing records.
+
 SHA-256 certificate fingerprint:
 
 ```text
@@ -11,7 +13,7 @@ SHA-256 certificate fingerprint:
 Verify an APK using Android SDK Build Tools:
 
 ```sh
-apksigner verify --verbose --print-certs fairenough-v0.1.0.apk
+apksigner verify --verbose --print-certs farenough-v0.1.0.apk
 ```
 
 Compare the certificate digest with the value above. The file checksum in each release checks file integrity separately.

@@ -1,7 +1,7 @@
 ---
 layout: ../../layouts/Docs.astro
 title: Importing your records
-description: Turn existing notes into a checked list of journeys without giving fairenough access to an AI service.
+description: Turn existing notes into a checked list of journeys without giving farenough access to an AI service.
 ---
 
 ## The copy-and-paste workflow
@@ -11,10 +11,12 @@ Use an AI chat tool, also called an LLM, to put your notes into JSON: a text for
 1. Open **Import journeys** and choose **Copy formatting prompt**.
 2. Paste the prompt into any LLM, followed by your records.
 3. Answer its questions about personal abbreviations, missing years and unclear dates.
-4. Copy the final JSON into fairenough, or open a JSON file.
+4. Copy the final JSON into farenough, or open a JSON file.
 5. Review the rows, dates and stations, then confirm the selected journeys.
 
-The prompt includes the app's station catalogue. Personal abbreviations are resolved in that external conversation. fairenough validates official names and codes; it does not guess your shorthand.
+The prompt includes the app's station catalogue. Personal abbreviations are resolved in that external conversation. farenough validates official names and codes; it does not guess your shorthand.
+
+New files use `farenough-trips`, version 1. Earlier files labelled `fairenough-trips` are also accepted, with the same duplicate checks.
 
 ## One note, from start to confirmation
 
@@ -24,7 +26,7 @@ The chat tool must ask which year you mean and whether `TP` is Toa Payoh, Tanjon
 
 ```json
 {
-  "format": "fairenough-trips",
+  "format": "farenough-trips",
   "version": 1,
   "trips": [
     {
@@ -43,7 +45,7 @@ The app's review shows **12 Oct 2026, Toa Payoh → Raffles Place**. If you have
 
 ```json
 {
-  "format": "fairenough-trips",
+  "format": "farenough-trips",
   "version": 1,
   "trips": [
     {

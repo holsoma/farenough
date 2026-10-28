@@ -1,10 +1,10 @@
-# fairenough
+# farenough
 
 **Have your journeys covered the cost of your concession pass?**
 
-fairenough is an open source Android app for tracking Singapore MRT and LRT journeys against an undergraduate train pass. It works locally, without an account, analytics or location permission.
+farenough is an open source Android app for tracking Singapore MRT and LRT journeys against an undergraduate train pass. It works locally, without an account, analytics or location permission.
 
-[Download an APK](https://github.com/holsoma/fairenough/releases) · [User guide](https://holsoma.github.io/fairenough/docs/) · [Report an issue](https://github.com/holsoma/fairenough/issues)
+[Download an APK](https://github.com/holsoma/farenough/releases) · [User guide](https://holsoma.github.io/farenough/docs/) · [Report an issue](https://github.com/holsoma/farenough/issues)
 
 Requires **Android 8.0 or later**. The first release is being prepared. Development status and verified checks are recorded in [IMPLEMENTATION.md](IMPLEMENTATION.md).
 
@@ -53,7 +53,7 @@ npm run build
 npm run dev
 ```
 
-The website requires Node.js 24, or at least 22.23.4, and serves at `/fairenough/`.
+The website requires Node.js 24, or at least 22.23.4, and serves at `/farenough/`.
 
 ## Data and privacy
 

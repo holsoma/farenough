@@ -7,7 +7,7 @@ class CoreTest {
     private val stations = listOf(Station("A", "Alpha", listOf("AA1")), Station("B", "Beta", listOf("BB2")), Station("C", "Gamma", listOf("CC3")))
     private val pass = PassPeriod(id = "p", start = "2026-09-28", end = "2026-10-27")
     private fun trip(cents: Int? = 200, date: String = "2026-10-01", origin: String = "A", destination: String = "B") = Trip(date = date, origin = origin, destination = destination, fareCents = cents)
-    private fun json(rows: List<ExchangeTrip>) = ExchangeJson.encodeToString(TripExchange("fairenough-trips", 1, rows))
+    private fun json(rows: List<ExchangeTrip>) = ExchangeJson.encodeToString(TripExchange("farenough-trips", 1, rows))
 
     @Test fun `inclusive dates and exact break even`() {
         val trips = List(22) { trip() } + trip(date = pass.start) + trip(date = pass.end) + trip(date = "2026-09-27") + trip(date = "2026-10-28")
@@ -42,7 +42,7 @@ class CoreTest {
     }
     @Test fun `same station and unsupported version rejected`() {
         assertEquals(0, reviewImport(json(listOf(ExchangeTrip("2026-10-01", "Alpha", "AA1"))), stations, Snapshot()).validCount)
-        assertFailsWith<ImportProblem> { reviewImport("{\"format\":\"fairenough-trips\",\"version\":2,\"trips\":[]}", stations, Snapshot()) }
+        assertFailsWith<ImportProblem> { reviewImport("{\"format\":\"farenough-trips\",\"version\":2,\"trips\":[]}", stations, Snapshot()) }
     }
     @Test fun `repeated journeys within a batch are preserved and exact reimport detected`() {
         val text = json(List(2) { ExchangeTrip("2026-10-01", "Alpha", "Beta") })
@@ -81,6 +81,15 @@ class CoreTest {
         val snapshot = Snapshot(passes = listOf(pass), trips = listOf(trip()), preferences = Preferences("dark", listOf("A|B")))
         assertEquals(snapshot, decodeBackup(encodeBackup(snapshot, "now"), stations))
         assertFails { decodeBackup(encodeBackup(snapshot.copy(trips = snapshot.trips + snapshot.trips), "now"), stations) }
+    }
+    @Test fun `renamed formats accept legacy data without duplicate imports`() {
+        val text = json(listOf(ExchangeTrip("2026-10-01", "A", "B")))
+        val legacyText = text.replace("farenough-trips", "fairenough-trips")
+        val saved = commitImport(reviewImport(legacyText, stations, Snapshot()), setOf(0), Snapshot(), "now")
+        assertTrue(reviewImport(text, stations, saved).alreadyImported)
+        val backup = encodeBackup(saved, "now")
+        assertTrue(backup.contains("farenough-backup"))
+        assertEquals(saved, decodeBackup(backup.replace("farenough-backup", "fairenough-backup"), stations))
     }
     @Test fun `csv quotes data and protects formulas`() {
         val csv = exportCsv(listOf(trip().copy(note = "=HYPERLINK(\"bad\")")), stations)

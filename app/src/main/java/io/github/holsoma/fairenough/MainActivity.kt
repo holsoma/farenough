@@ -29,11 +29,11 @@ import java.time.Instant
 import java.io.ByteArrayOutputStream
 
 class MainActivity: ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState); enableEdgeToEdge(); setContent { FairenoughApp() } }
+    override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState); enableEdgeToEdge(); setContent { FarenoughApp() } }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable fun FairenoughApp(model: AppModel = viewModel()) {
+@Composable fun FarenoughApp(model: AppModel = viewModel()) {
     val snapshot by model.state.collectAsStateWithLifecycle()
     val selectedPass by model.selectedPass.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -93,11 +93,11 @@ class MainActivity: ComponentActivity() {
         }
     }
     BackHandler(page != tab) { finish() }
-    FairenoughTheme(s.preferences.appearance) {
-        if (snapshot == null) { Surface(Modifier.fillMaxSize()) { Box(contentAlignment = Alignment.Center) { CircularProgressIndicator() } }; return@FairenoughTheme }
+    FarenoughTheme(s.preferences.appearance) {
+        if (snapshot == null) { Surface(Modifier.fillMaxSize()) { Box(contentAlignment = Alignment.Center) { CircularProgressIndicator() } }; return@FarenoughTheme }
         Scaffold(
             topBar = {
-                TopAppBar(title = { Text("fairenough") }, navigationIcon = { if (page != tab) IconButton(onClick = ::finish) { Icon(Icons.Outlined.ArrowBack, "Back") } }, actions = {
+                TopAppBar(title = { Text("farenough") }, navigationIcon = { if (page != tab) IconButton(onClick = ::finish) { Icon(Icons.Outlined.ArrowBack, "Back") } }, actions = {
                     if (page == tab) {
                         if (tab != "more") IconButton(onClick = { goTrip() }) { Icon(Icons.Outlined.Add, "Record a journey") }
                         Box {
@@ -121,7 +121,7 @@ class MainActivity: ComponentActivity() {
                     "overview" -> Overview(model, s, pass, { goPass(null) }, { page = "target" }, { page = "import" }, { page = "fares" }, { from, to -> goTrip(from = from, to = to) })
                     "trips" -> TripList(model, s, pass, { goTrip(it) }, { page = "import" })
                     "insights" -> Insights(model, s, pass) { goTrip(it) }
-                    "more" -> More(model, s, ::goPass, { page = "import" }, ::goFare, { page = "fares" }, { exportAction = "backup"; createJson.launch("fairenough-backup-${singaporeToday()}.json") }, { createCsv.launch("fairenough-journeys-${singaporeToday()}.csv") }, { restore.launch(arrayOf("application/json", "text/plain", "application/octet-stream")) })
+                    "more" -> More(model, s, ::goPass, { page = "import" }, ::goFare, { page = "fares" }, { exportAction = "backup"; createJson.launch("farenough-backup-${singaporeToday()}.json") }, { createCsv.launch("farenough-journeys-${singaporeToday()}.csv") }, { restore.launch(arrayOf("application/json", "text/plain", "application/octet-stream")) })
                     "pass" -> PassForm(model, s.passes.find { it.id == editingId }, ::finish)
                     "trip" -> TripForm(model, s, s.trips.find { it.id == editingId }, presetOrigin, presetDestination, ::finish)
                     "fare" -> FareForm(model, s, draftFare) { page = "fares" }
@@ -132,10 +132,10 @@ class MainActivity: ComponentActivity() {
                 if (model.working) LinearProgressIndicator(Modifier.fillMaxWidth().align(Alignment.TopCenter))
             }
         }
-        model.message?.let { message -> AlertDialog(onDismissRequest = { model.message = null }, title = { Text("fairenough") }, text = { Text(message) }, confirmButton = { TextButton(onClick = { model.message = null }) { Text("OK") } }) }
+        model.message?.let { message -> AlertDialog(onDismissRequest = { model.message = null }, title = { Text("farenough") }, text = { Text(message) }, confirmButton = { TextButton(onClick = { model.message = null }) { Text("OK") } }) }
         model.restoreData?.let { data ->
             AlertDialog(onDismissRequest = { model.restoreData = null }, title = { Text("Restore this backup?") }, text = { Text("Replace your records with ${data.trips.size} journeys, ${data.passes.size} passes and ${data.routeFares.size} saved fares. First choose where to export your current records. Replacement only starts after that export succeeds.") }, confirmButton = {
-                TextButton(onClick = { exportAction = "before-restore"; createJson.launch("fairenough-before-restore-${singaporeToday()}.json") }, enabled = !model.working) { Text("Export current data and restore") }
+                TextButton(onClick = { exportAction = "before-restore"; createJson.launch("farenough-before-restore-${singaporeToday()}.json") }, enabled = !model.working) { Text("Export current data and restore") }
             }, dismissButton = { TextButton(onClick = { model.restoreData = null }) { Text("Cancel") } })
         }
     }

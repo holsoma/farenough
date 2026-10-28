@@ -93,7 +93,7 @@ class AppJourneyTest {
         val repo = LocalRepository(app)
         val original = demo(repo)
         repo.update { original }
-        val text = """{"format":"fairenough-trips","version":1,"trips":[{"date":"2026-10-20","origin":"Toa Payoh","destination":"Bugis"},{"date":"2026-10-20","origin":"Toa Payoh","destination":"Bugis"}]}"""
+        val text = """{"format":"farenough-trips","version":1,"trips":[{"date":"2026-10-20","origin":"Toa Payoh","destination":"Bugis"},{"date":"2026-10-20","origin":"Toa Payoh","destination":"Bugis"}]}"""
         repo.update { commitImport(reviewImport(text, repo.stations, it), setOf(0, 1), it, "2026-10-28T00:00:00Z") }
         val imported = repo.current()
         assertEquals(28, imported.trips.size)
@@ -128,7 +128,7 @@ class AppJourneyTest {
             compose.onNodeWithText("Trips", useUnmergedTree = true).performClick()
             compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
             val date = LocalDate.now(java.time.ZoneId.of("Asia/Singapore"))
-            val text = """{"format":"fairenough-trips","version":1,"trips":[{"date":"$date","origin":"Woodlands","destination":"Marina Bay"},{"date":"$date","origin":"Woodlands","destination":"Marina Bay"}]}"""
+            val text = """{"format":"farenough-trips","version":1,"trips":[{"date":"$date","origin":"Woodlands","destination":"Marina Bay"},{"date":"$date","origin":"Woodlands","destination":"Marina Bay"}]}"""
             compose.onNodeWithText("Normalised JSON").performScrollTo().performTextInput(text)
             compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Review journeys"))
             compose.onNodeWithText("Review journeys").performClick()

@@ -47,13 +47,13 @@ import io.github.holsoma.fairenough.core.*
         }
         item { HorizontalDivider(); Text("Appearance", Modifier.padding(top = 18.dp), style = MaterialTheme.typography.titleLarge) }
         item { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("system", "light", "dark").forEach { value -> FilterChip(snapshot.preferences.appearance == value, { model.appearance(value) }, label = { Text(value.replaceFirstChar { it.uppercase() }) }) } } }
-        item { HorizontalDivider(); Text("About fairenough", Modifier.padding(top = 18.dp), style = MaterialTheme.typography.titleLarge); Text("Version ${BuildConfig.VERSION_NAME}", Modifier.padding(top = 8.dp)) }
+        item { HorizontalDivider(); Text("About farenough", Modifier.padding(top = 18.dp), style = MaterialTheme.typography.titleLarge); Text("Version ${BuildConfig.VERSION_NAME}", Modifier.padding(top = 8.dp)) }
         item { Notice("The comparison uses regular adult card fares and any corrections you make. Separate records are separate journeys. Automatic transfer and time-based discounts are not applied. Saved route fares are the current pricing source; no complete official fare matrix is bundled.") }
         item { Text("Station positions: LTA DataMall, September 2026. Coastline: SLA National Map Polygon. Adapted under the Singapore Open Data Licence. CCL6 names and code updates are documented in the source manifest.", style = MaterialTheme.typography.bodySmall) }
         item {
             Column {
-                ExternalLink("Read the guide", "https://holsoma.github.io/fairenough/docs/")
-                ExternalLink("Source and releases", "https://github.com/holsoma/fairenough")
+                ExternalLink("Read the guide", "https://holsoma.github.io/farenough/docs/")
+                ExternalLink("Source and releases", "https://github.com/holsoma/farenough")
                 ExternalLink("Singapore Open Data Licence", "https://datamall.lta.gov.sg/content/datamall/en/SingaporeOpenDataLicence.html")
                 ExternalLink("Check fares with LTA", "https://www.lta.gov.sg/content/ltagov/en/map/fare-calculator.html")
             }

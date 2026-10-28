@@ -12,4 +12,4 @@
 
 Fare coverage: user-entered LTA-checked route fares. No bundled automatic matrix, transfer grouping or automatic time discounts.
 
-Compatibility: Android 8.0+, `fairenough-trips` version 1, `fairenough-backup` version 1.
+Compatibility: Android 8.0+, `farenough-trips` version 1, `farenough-backup` version 1.

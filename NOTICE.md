@@ -1,6 +1,6 @@
 # Notices
 
-fairenough application and website code: Copyright 2026 fairenough contributors. Licensed under Apache License 2.0.
+farenough application and website code: Copyright 2026 farenough contributors. Licensed under Apache License 2.0.
 
 Offline station and map assets contain information from the Land Transport Authority and Singapore Land Authority, accessed through LTA DataMall and data.gov.sg on 28 October 2026. Adapted under the [Singapore Open Data Licence](https://datamall.lta.gov.sg/content/datamall/en/SingaporeOpenDataLicence.html). Source URLs, hashes and transformations are recorded in `data/sources.json` and `DATA_SOURCES.md`.
 

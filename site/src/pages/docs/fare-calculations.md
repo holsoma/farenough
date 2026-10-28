@@ -6,7 +6,7 @@ description: What goes into the comparison, what is estimated, and where the dat
 
 ## The comparison
 
-fairenough adds the regular adult fares for recorded journeys within the selected pass's inclusive dates, using individual corrections where supplied. It subtracts the actual pass price.
+farenough adds the regular adult fares for recorded journeys within the selected pass's inclusive dates, using individual corrections where supplied. It subtracts the actual pass price.
 
 The result is an estimate of the cost difference for the records you entered. Automatic transfer discounts, time-based discounts, rewards and bus travel are not calculated in this version.
 
@@ -53,4 +53,4 @@ The default saved-fare period runs from 27 December 2025 through 25 December 202
 - [SLA National Map Polygon](https://data.gov.sg/datasets/d_29f066d67df3eae91df8a42f443863c8/view), coastal outlines, simplified for display.
 - [LTA Circle Line 6 announcement](https://www.lta.gov.sg/content/ltagov/en/newsroom/2026/5/news-releases/circle-line-stage-6-to-open-for-public-preview-on-4-july-2026.html), supplementing the older station-name file.
 
-The map datasets are adapted under the [Singapore Open Data Licence](https://datamall.lta.gov.sg/content/datamall/en/SingaporeOpenDataLicence.html). The repository records source URLs, checksums and transformations. fairenough is independent of LTA and SimplyGo.
+The map datasets are adapted under the [Singapore Open Data Licence](https://datamall.lta.gov.sg/content/datamall/en/SingaporeOpenDataLicence.html). The repository records source URLs, checksums and transformations. farenough is independent of LTA and SimplyGo.

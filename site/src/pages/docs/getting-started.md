@@ -6,7 +6,7 @@ description: Set up your undergraduate train pass and record your first journey.
 
 ## Add your pass
 
-Open fairenough and choose **Set up a pass**. Enter the first and last valid days shown on your pass, including the year. Both dates count. The suggested end date is editable.
+Open farenough and choose **Set up a pass**. Enter the first and last valid days shown on your pass, including the year. Both dates count. The suggested end date is editable.
 
 The default price is S$48 for an undergraduate train pass. Change it if the amount you paid differs. The comparison uses adult card fares, which are the applicable pay-per-trip fares for undergraduates.
 

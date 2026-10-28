@@ -28,9 +28,9 @@ fun reviewImport(text: String, stations: List<Station>, snapshot: Snapshot, engi
     if (text.length > 2_000_000) throw ImportProblem("The import is too large. Split it into files below 2 MB.")
     val content = text.trim().let { if (it.startsWith("```json") && it.endsWith("```")) it.removePrefix("```json").removeSuffix("```").trim() else it }
     val exchange = try { ExchangeJson.decodeFromString<TripExchange>(content) } catch (e: Exception) {
-        throw ImportProblem("This is not valid fairenough JSON. ${e.message?.take(240)}")
+        throw ImportProblem("This is not valid farenough JSON. ${e.message?.take(240)}")
     }
-    if (exchange.format != "fairenough-trips") throw ImportProblem("The format must be fairenough-trips.")
+    if (exchange.format !in setOf("farenough-trips", "fairenough-trips")) throw ImportProblem("The format must be farenough-trips.")
     if (exchange.version != 1) throw ImportProblem("Import version ${exchange.version} is not supported. Use version 1.")
     if (exchange.trips.isEmpty()) throw ImportProblem("No journeys were found.")
     if (exchange.trips.size > 10_000) throw ImportProblem("Import at most 10,000 journeys at a time.")
@@ -70,12 +70,12 @@ fun undoImport(snapshot: Snapshot, batchId: String): Snapshot = snapshot.copy(
 )
 
 fun formattingPrompt(stations: List<Station>): String = """
-Convert my travel records to fairenough import JSON. Ask clarifying questions before producing the final JSON if any year, date, station abbreviation or journey boundary is unclear. I will paste my records after this prompt.
+Convert my travel records to farenough import JSON. Ask clarifying questions before producing the final JSON if any year, date, station abbreviation or journey boundary is unclear. I will paste my records after this prompt.
 
 Each arrow represents a separate rail journey, including line changes inside the paid area. Preserve journey order and every repeated journey. Never invent missing trips, dates, stations, times or fares. Clarify month/year rollover. Do not calculate fares. Resolve personal abbreviations with me; do not pass them to the app. Use an official station code from the catalogue below whenever a station name is ambiguous.
 
 Return only this version 1 structure, with one object per journey:
-{"format":"fairenough-trips","version":1,"trips":[{"date":"YYYY-MM-DD","origin":"official name or code","destination":"official name or code","note":"optional note","sourceText":"original journey text"}]}
+{"format":"farenough-trips","version":1,"trips":[{"date":"YYYY-MM-DD","origin":"official name or code","destination":"official name or code","note":"optional note","sourceText":"original journey text"}]}
 
 Only date, origin and destination are required. Optional note and sourceText must be strings. Do not add other properties. Do not include a journey until its required information is resolved. Before the final JSON, tell me the total journey count so I can check it.
 

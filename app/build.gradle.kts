@@ -23,12 +23,12 @@ android {
     }
     signingConfigs {
         create("release") {
-            val keyFile = System.getenv("FAIRENOUGH_KEYSTORE")
+            val keyFile = System.getenv("FARENOUGH_KEYSTORE")
             if (keyFile != null) {
                 storeFile = file(keyFile)
-                storePassword = System.getenv("FAIRENOUGH_STORE_PASSWORD")
-                keyAlias = System.getenv("FAIRENOUGH_KEY_ALIAS") ?: "fairenough"
-                keyPassword = System.getenv("FAIRENOUGH_KEY_PASSWORD")
+                storePassword = System.getenv("FARENOUGH_STORE_PASSWORD")
+                keyAlias = System.getenv("FARENOUGH_KEY_ALIAS") ?: "fairenough"
+                keyPassword = System.getenv("FARENOUGH_KEY_PASSWORD")
             }
         }
     }

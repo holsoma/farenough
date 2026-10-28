@@ -17,8 +17,8 @@ This version uses user-entered, LTA-checked route fares. No complete automatic f
 ### Compatibility
 
 - Android 8.0 or later.
-- Import format: `fairenough-trips`, version 1.
-- Full backup format: `fairenough-backup`, version 1.
+- Import format: `farenough-trips`, version 1.
+- Full backup format: `farenough-backup`, version 1.
 - Application records remain local, with no automatic cloud backup.
 
-Published APKs and final release notes appear on [GitHub Releases](https://github.com/holsoma/fairenough/releases).
+Published APKs and final release notes appear on [GitHub Releases](https://github.com/holsoma/farenough/releases).

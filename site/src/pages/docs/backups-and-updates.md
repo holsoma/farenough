@@ -10,6 +10,8 @@ Choose **More → Create full backup**. Select a destination through Android's f
 
 The file is unencrypted. You control where it goes. Automatic cloud backup is disabled for the app's private records.
 
+Backups use `farenough-backup`, version 1. Earlier files labelled `fairenough-backup` are also accepted. The Android installation identity is unchanged, so the renamed app can update earlier APKs without losing records.
+
 ## Restore
 
 Choose **Restore a backup**, select a file and read its summary. Restoration replaces existing records. Before replacement, the app asks you to export the current records. If that export fails or is cancelled, replacement does not begin.
@@ -22,6 +24,6 @@ CSV export is useful for spreadsheets and independent analysis. It is not a full
 
 ## Update the APK
 
-Download the new release from the same [GitHub repository](https://github.com/holsoma/fairenough/releases) and install it over the existing app. Keep the application installed: uninstalling deletes local data. Android checks the signing identity during an update.
+Download the new release from the same [GitHub repository](https://github.com/holsoma/farenough/releases) and install it over the existing app. Keep the application installed: uninstalling deletes local data. Android checks the signing identity during an update.
 
 Directly installed APKs do not update themselves. Release notes state Android requirements, data-format changes and fare coverage. Keep a backup before installing an update.

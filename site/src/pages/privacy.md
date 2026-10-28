@@ -1,12 +1,12 @@
 ---
 layout: ../layouts/Docs.astro
 title: Your records stay yours
-description: What fairenough stores, what it does not collect, and what happens when you export or use an external LLM.
+description: What farenough stores, what it does not collect, and what happens when you export or use an external LLM.
 ---
 
 ## In the app
 
-fairenough stores passes, journeys, fare assessments, saved route fares, import history and preferences in the app's private storage on your Android device. It does not require an account. It has no analytics, advertising, location permission or internet permission.
+farenough stores passes, journeys, fare assessments, saved route fares, import history and preferences in the app's private storage on your Android device. It does not require an account. It has no analytics, advertising, location permission or internet permission.
 
 Automatic Android cloud backup and device-transfer extraction are excluded for these records. Use the explicit backup and restore controls to move them. Uninstalling the app removes its local records.
 
@@ -24,4 +24,4 @@ The site has no analytics or advertising scripts. Fonts are served with the site
 
 ## Questions
 
-Use the [GitHub repository](https://github.com/holsoma/fairenough) to report an issue. Avoid posting your private travel history in a public issue.
+Use the [GitHub repository](https://github.com/holsoma/farenough) to report an issue. Avoid posting your private travel history in a public issue.

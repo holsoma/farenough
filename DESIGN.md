@@ -1,4 +1,4 @@
-# fairenough design
+# farenough design
 
 An Android concession-pass tracker for a Singapore undergraduate. Its first job is to make the recorded fare comparison legible, then make recording the next journey quick.
 
