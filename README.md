@@ -1,39 +1,71 @@
+<div align="center">
+
+<a href="https://holsoma.github.io/farenough/">
+  <img src="site/public/farenough.svg" width="88" height="88" alt="farenough logo" />
+</a>
+
 # farenough
 
-**Have your journeys covered the cost of your concession pass?**
+### Has your train pass paid for itself?
 
-farenough is an open source Android app for tracking Singapore MRT and LRT journeys against an undergraduate train pass. It works locally, without an account, analytics or location permission.
+Record your Singapore MRT and LRT journeys. Compare their fares with your concession pass.
 
-[Download an APK](https://github.com/holsoma/farenough/releases) · [User guide](https://holsoma.github.io/farenough/docs/) · [Report an issue](https://github.com/holsoma/farenough/issues)
+[![Release downloads](https://img.shields.io/github/downloads/holsoma/farenough/total?style=flat&label=Release%20downloads&labelColor=18242b&color=006c67)](https://github.com/holsoma/farenough/releases)
+[![Build checks](https://img.shields.io/github/actions/workflow/status/holsoma/farenough/checks.yml?branch=main&style=flat&label=Checks&labelColor=18242b)](https://github.com/holsoma/farenough/actions/workflows/checks.yml)
+[![Android 8.0 or later](https://img.shields.io/badge/Android-8.0%2B-006c67?style=flat&labelColor=18242b&logo=android&logoColor=white)](https://holsoma.github.io/farenough/docs/getting-started/)
+[![Apache 2.0 licence](https://img.shields.io/github/license/holsoma/farenough?style=flat&label=Licence&labelColor=18242b&color=52616b)](LICENSE)
 
-Requires **Android 8.0 or later**. [Version 0.1.0 is available](https://github.com/holsoma/farenough/releases/tag/v0.1.0). Development status and verified checks are recorded in [IMPLEMENTATION.md](IMPLEMENTATION.md).
+## Download
 
-## What it does
+[![Download APK](https://img.shields.io/badge/Download-APK-006c67?style=for-the-badge&labelColor=004d49&logo=android&logoColor=white)](https://holsoma.github.io/farenough/download/)
+[![Latest stable build](https://img.shields.io/github/v/release/holsoma/farenough?style=for-the-badge&label=Stable%20build&labelColor=18242b&color=006c67)](https://github.com/holsoma/farenough/releases/latest)
 
-- Records journeys, pass periods, favourite routes and individual fare corrections.
-- Compares regular adult fares with the actual pass price.
-- Imports normalised JSON using a formatting prompt you can give to any LLM.
-- Shows average-fare and selected-route trip targets.
-- Provides interactive charts, directional route rankings and an offline Singapore connection map.
-- Exports complete backups and CSV files. Restore validates the file and requires a backup of existing records before replacement.
+**Android 8.0+ · Free and open source · No account or tracking**
 
-**Fare coverage:** this version uses saved, LTA-checked route fares, with explicit valid dates. It does not bundle a complete automatic fare matrix. Missing fares are never counted as zero. Automatic transfers, time discounts and bus fares are outside the first release.
+[Website](https://holsoma.github.io/farenough/) · [Documentation](https://holsoma.github.io/farenough/docs/) · [Changelog](https://holsoma.github.io/farenough/changelog/) · [Report an issue](https://github.com/holsoma/farenough/issues)
 
-## Screenshots
+</div>
 
-Screenshots are captured from the Android app using invented demonstration records and example fares. The capture procedure is in [the Android UI test](app/src/androidTest/java/io/github/holsoma/fairenough/AppJourneyTest.kt).
+## A look inside
 
-<p>
-  <img src="site/public/screenshots/overview.png" width="220" alt="Pass comparison and recorded fare total" />
-  <img src="site/public/screenshots/trips.png" width="220" alt="Journeys grouped by date" />
-  <img src="site/public/screenshots/map.png" width="220" alt="Recorded connections across Singapore" />
+<p align="center">
+  <a href="site/public/screenshots/overview.png"><img src="site/public/screenshots/overview.png" width="220" alt="Overview: pass cost, recorded fares and estimated savings" /></a>
+  <a href="site/public/screenshots/trips.png"><img src="site/public/screenshots/trips.png" width="220" alt="Journeys: station pairs and fares grouped by date" /></a>
+  <a href="site/public/screenshots/map.png"><img src="site/public/screenshots/map.png" width="220" alt="Insights: monthly journey connections on a Singapore map" /></a>
 </p>
+
+<p align="center"><sub>Actual app screens with invented records and example fares.</sub></p>
+
+## Features
+
+| | What you can do |
+| --- | --- |
+| **Pass comparison** | Compare recorded adult fares with the price and dates of your undergraduate train pass. |
+| **Quick journey entry** | Choose stations, save favourite routes and correct individual fares. |
+| **Trip targets** | See how many more journeys would cover your pass, using an average fare or a selected route. |
+| **Charts and maps** | Explore daily totals, your most travelled routes and monthly connections across Singapore. |
+| **Import your old notes** | Copy a formatting prompt into an AI chat tool, then review and import its normalised JSON. |
+| **Your data, on your device** | Use the app offline. Export full backups or CSV files, and restore your records when needed. |
+
+> [!NOTE]
+> **Fare coverage:** fares come from saved, LTA-checked routes with explicit valid dates. There is no bundled automatic fare matrix. Missing fares are never counted as zero. Automatic transfers, time discounts and bus fares are outside this release.
+
+## Documentation
+
+| Guide | Start here to… |
+| --- | --- |
+| [Getting started](https://holsoma.github.io/farenough/docs/getting-started/) | Install the app and set up your pass. |
+| [Recording journeys](https://holsoma.github.io/farenough/docs/recording-trips/) | Add trips, favourite routes and fare corrections. |
+| [Importing your records](https://holsoma.github.io/farenough/docs/importing/) | Bring in notes you have kept elsewhere. |
+| [Understanding the fares](https://holsoma.github.io/farenough/docs/fare-calculations/) | See what counts towards the comparison. |
+| [Targets, charts and maps](https://holsoma.github.io/farenough/docs/targets-and-insights/) | Read the trip targets and explore your travel history. |
+| [Backups and updates](https://holsoma.github.io/farenough/docs/backups-and-updates/) | Keep your records when updating or changing devices. |
 
 ## Install and update
 
 Download the signed APK attached to a GitHub release and open it on your phone. Android may ask you to allow installation from that browser or file manager. To update, install the new APK over the old app. **Do not uninstall first:** uninstalling removes local records. Direct APK installs do not update automatically.
 
-Each release includes a SHA-256 checksum. See [RELEASING.md](RELEASING.md) for signing and verification. Debug builds use a separate application ID.
+Each release includes a SHA-256 checksum and signing-certificate details. See [SIGNING.md](SIGNING.md) to verify the app's identity, or [RELEASING.md](RELEASING.md) for the release process. Debug builds use a separate application ID.
 
 ## Build
 
@@ -63,6 +95,6 @@ Map sources, transformations and checksums are listed in [data/sources.json](dat
 
 ## Contribute
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md). Use synthetic examples in public issues, rather than private travel records.
+Read [CONTRIBUTING.md](CONTRIBUTING.md). Use synthetic examples in public issues, rather than private travel records. Implementation details and verified checks are recorded in [IMPLEMENTATION.md](IMPLEMENTATION.md). Screenshots are captured by [the Android UI test](app/src/androidTest/java/io/github/holsoma/fairenough/AppJourneyTest.kt).
 
 Code: [Apache 2.0](LICENSE). Data and font licences are documented separately in [NOTICE.md](NOTICE.md). This project is not affiliated with LTA, SimplyGo or any transport operator.
