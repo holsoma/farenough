@@ -26,6 +26,14 @@ Record your Singapore MRT and LRT journeys. Compare their fares with your conces
 
 </div>
 
+## Watch the app
+
+[![Watch the farenough promo: monthly journey graphs and the busiest month](site/public/videos/farenough-promo-poster.png)](https://holsoma.github.io/farenough/videos/farenough-promo-20s.mp4)
+
+[Watch the 20-second promo](https://holsoma.github.io/farenough/videos/farenough-promo-20s.mp4) · [Editable Remotion project](promo/)
+
+Trip tracking, pass comparison and monthly travel graphs. The video uses demonstration records and example fares.
+
 ## A look inside
 
 <p align="center">
