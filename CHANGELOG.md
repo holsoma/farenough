@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.2
+
+- Show **Not priced** when recorded journeys have no fares, instead of presenting S$0.00 as their fare total.
+- Keep missing fares distinct from confirmed zero-fare journeys in Overview, Insights, daily totals, routes and pass comparisons.
+- Warn about valid but unpriced journeys before import, with the automatic fare coverage dates.
+- Hide fare charts and remaining-trip estimates until there is a priced journey. Counts and map connections remain available.
+
+Historical fare coverage is unchanged: automatic adult fares cover 12 July through 25 December 2026. A valid earlier travel date is not an import error. Keep the correct date and add a checked fare for its period.
+
 ## 0.2.1
 
 - Fix imports containing combined interchange codes such as `BP6 / DT1`.

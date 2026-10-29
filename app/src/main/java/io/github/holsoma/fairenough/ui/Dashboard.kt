@@ -26,10 +26,10 @@ import io.github.holsoma.fairenough.core.*
             item {
                 Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = MaterialTheme.shapes.large) {
                     Column(Modifier.fillMaxWidth().padding(24.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                        Text(if (c.difference > 0) "Estimated savings" else if (c.difference == 0L) "Pass cost covered" else "Still to cover", style = MaterialTheme.typography.titleMedium)
-                        Text(money(if (c.difference > 0) c.difference else c.remaining), fontSize = 46.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
-                        LinearProgressIndicator(progress = { c.coverage.coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth().height(9.dp), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.surface.copy(alpha = .6f))
-                        Text("${money(c.totalCents)} in recorded fares / ${money(pass.priceCents)} pass", style = MaterialTheme.typography.bodyMedium)
+                        Text(if (c.needsFares) "Fares needed" else if (c.difference > 0) "Estimated savings" else if (c.difference == 0L) "Pass cost covered" else "Still to cover", style = MaterialTheme.typography.titleMedium)
+                        Text(if (c.needsFares) "Not priced" else money(if (c.difference > 0) c.difference else c.remaining), fontSize = 46.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        if (!c.needsFares) LinearProgressIndicator(progress = { c.coverage.coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth().height(9.dp), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.surface.copy(alpha = .6f))
+                        Text(if (c.needsFares) "${c.tripCount} trips need fares. Pass price: ${money(pass.priceCents)}." else "${money(c.totalCents)} in recorded fares / ${money(pass.priceCents)} pass", style = MaterialTheme.typography.bodyMedium)
                         Text(if (c.complete) "Regular-fare estimate. Correct discounted journeys for a closer comparison." else "Based on ${c.pricedCount} of ${c.tripCount} trips. Add missing fares before drawing a conclusion.", style = MaterialTheme.typography.bodySmall)
                     }
                 }
@@ -90,7 +90,7 @@ import io.github.holsoma.fairenough.core.*
         item { PageTitle("Your next stop: enough", "A trip target depends on what each journey would cost.") }
         if (pass == null) item { Notice("Set up a pass to calculate a trip target.") } else {
             val c = compare(pass, snapshot.trips)
-            item { Notice("${money(c.remaining)} remains against a ${money(pass.priceCents)} pass. Based on ${c.pricedCount} of ${c.tripCount} recorded trips${if (c.complete) "." else "; missing fares make this incomplete."}") }
+            item { Notice(if (c.needsFares) "Add fares for the ${c.tripCount} recorded trips before calculating a remaining-trip target. Pass price: ${money(pass.priceCents)}." else "${money(c.remaining)} remains against a ${money(pass.priceCents)} pass. Based on ${c.pricedCount} of ${c.tripCount} recorded trips${if (c.complete) "." else "; missing fares make this incomplete."}") }
             item { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { FilterChip(method == "average", { method = "average" }, label = { Text("My average fare") }); FilterChip(method == "route", { method = "route" }, label = { Text("A specific route") }) } }
             if (method == "route") {
                 item { StationField("From", origin, model.stations) { origin = it } }
@@ -99,7 +99,7 @@ import io.github.holsoma.fairenough.core.*
             item {
                 val date = singaporeToday().toString().coerceIn(pass.start, pass.end)
                 val quote = if (method == "route") model.engine.quote(Trip(date = date, origin = origin, destination = destination), snapshot.routeFares) else null
-                val needed = if (c.remaining == 0L) 0L else if (method == "average") c.averageTripsNeeded else quote?.let { c.tripsAt(it.cents) }
+                val needed = if (c.needsFares) null else if (c.remaining == 0L) 0L else if (method == "average") c.averageTripsNeeded else quote?.let { c.tripsAt(it.cents) }
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(needed?.toString() ?: "?", fontSize = 80.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
                     Text(if (needed == 0L) "No more trips needed to cover the pass at the recorded fares." else "More one-way trips in this scenario", style = MaterialTheme.typography.titleLarge)

@@ -46,7 +46,8 @@ import java.time.YearMonth
         if (trips.isEmpty()) item { Notice("No recorded journeys in this period. Try another month or add a journey.") }
         else when (view) {
             "Charts" -> {
-                item { FareChart(days, if (!calendar) pass?.priceCents else null, days.indexOfFirst { it.date == selectedDate }.takeIf { it >= 0 }) { selectedDate = days[it].date } }
+                if (trips.any { it.effectiveFare != null }) item { FareChart(days, if (!calendar) pass?.priceCents else null, days.indexOfFirst { it.date == selectedDate }.takeIf { it >= 0 }) { selectedDate = days[it].date } }
+                else item { Notice("Add missing fares to see a fare chart. Journey counts and map connections still include these trips.") }
                 item { CountChart(days) { selectedDate = days[it].date } }
                 if (selectedDate != null) {
                     item { Text("Journeys on ${readableDate(selectedDate!!)}", style = MaterialTheme.typography.titleMedium) }
@@ -56,11 +57,11 @@ import java.time.YearMonth
                 }
                 item { Text("Daily values", style = MaterialTheme.typography.titleLarge) }
                 items(days, key = { it.date }) { day ->
-                    ListItem(headlineContent = { Text(readableDate(day.date)) }, supportingContent = { Text("${day.trips} trips · ${money(day.cents)} recorded fares") }, trailingContent = { Text(money(day.cumulativeCents)) }, modifier = Modifier.clickable { selectedDate = day.date })
+                    ListItem(headlineContent = { Text(readableDate(day.date)) }, supportingContent = { Text("${day.trips} trips · ${fareTotalText(day.cents, day.pricedCount, day.trips)} · ${day.pricedCount} priced") }, trailingContent = { Text(fareTotalText(day.cumulativeCents, day.cumulativePricedCount, day.cumulativeTrips)) }, modifier = Modifier.clickable { selectedDate = day.date })
                 }
                 if (snapshot.passes.size > 1) {
                     item { Text("Pass comparisons", style = MaterialTheme.typography.titleLarge) }
-                    items(snapshot.passes.sortedByDescending { it.start }) { p -> val c = compare(p, snapshot.trips); ListItem(headlineContent = { Text(periodLabel(p)) }, supportingContent = { Text("${c.tripCount} trips; ${c.pricedCount} priced. Pass ${money(p.priceCents)}") }, trailingContent = { Text(money(c.totalCents)) }) }
+                    items(snapshot.passes.sortedByDescending { it.start }) { p -> val c = compare(p, snapshot.trips); ListItem(headlineContent = { Text(periodLabel(p)) }, supportingContent = { Text("${c.tripCount} trips; ${c.pricedCount} priced. Pass ${money(p.priceCents)}") }, trailingContent = { Text(fareTotalText(c.totalCents, c.pricedCount, c.tripCount)) }) }
                 }
             }
             else -> {
@@ -75,7 +76,7 @@ import java.time.YearMonth
                         Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = MaterialTheme.shapes.medium) {
                             Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Text("${model.name(r.origin)} → ${model.name(r.destination)}", style = MaterialTheme.typography.titleLarge)
-                                Text("${r.count} trips · ${money(r.totalCents)} from ${r.pricedCount} priced trips")
+                                Text("${r.count} trips · ${fareTotalText(r.totalCents, r.pricedCount, r.count)} · ${r.pricedCount} priced")
                                 Text("${r.trips.map { it.date }.distinct().size} recorded travel days")
                             }
                         }
@@ -85,7 +86,7 @@ import java.time.YearMonth
                 item { Text("Most travelled routes", style = MaterialTheme.typography.titleLarge); Text("Each direction is counted separately. Equal counts share a rank.", style = MaterialTheme.typography.bodySmall) }
                 items(routes, key = { "${it.origin}|${it.destination}" }) { r ->
                     val rank = 1 + routes.count { it.count > r.count }
-                    ListItem(leadingContent = { Text(rank.toString(), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary) }, headlineContent = { Text("${model.name(r.origin)} → ${model.name(r.destination)}") }, supportingContent = { Text("${money(r.totalCents)} · ${r.pricedCount}/${r.count} priced") }, trailingContent = { Text("${r.count} trips") }, modifier = Modifier.clickable { selectedRoute = "${r.origin}|${r.destination}" })
+                    ListItem(leadingContent = { Text(rank.toString(), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.primary) }, headlineContent = { Text("${model.name(r.origin)} → ${model.name(r.destination)}") }, supportingContent = { Text("${fareTotalText(r.totalCents, r.pricedCount, r.count)} · ${r.pricedCount}/${r.count} priced") }, trailingContent = { Text("${r.count} trips") }, modifier = Modifier.clickable { selectedRoute = "${r.origin}|${r.destination}" })
                 }
             }
         }
@@ -99,7 +100,8 @@ import java.time.YearMonth
             Metric(trips.map { it.date }.distinct().size.toString(), "Travel days", Modifier.weight(1f))
             Metric(distinctEndpoints(trips).toString(), "Start/end stations", Modifier.weight(1f))
         }
-        Text("${money(trips.sumOf { it.effectiveFare?.toLong() ?: 0 })} in recorded fares. Based on ${trips.count { it.effectiveFare != null }} of ${trips.size} trips.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        val pricedCount = trips.count { it.effectiveFare != null }
+        Text(if (trips.isNotEmpty() && pricedCount == 0) "No fares recorded yet. ${trips.size} trips need fares." else "${money(trips.sumOf { it.effectiveFare?.toLong() ?: 0 })} in recorded fares. Based on $pricedCount of ${trips.size} trips.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         if (distance.coveredTrips > 0) {
             Metric(railDistance(distance.metres), "Rail fare distance")
             Text("Covers ${distance.coveredTrips} of ${distance.totalTrips} trips. LTA's charging distance can differ from the route you took.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

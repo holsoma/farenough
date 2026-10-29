@@ -67,6 +67,14 @@ In v0.2.0, an endpoint such as `"origin": "BP6 / DT1"` causes the “unambiguous
 
 If you see personal shorthand such as `SV` or `PC`, return to your AI conversation and confirm which station you mean. Do not choose a code until the station is clear. Keep the original shorthand in `sourceText` if you want to preserve it.
 
+## If a travel date has no automatic fare
+
+Automatic fares currently cover **12 July through 25 December 2026**. A journey on 2 June 2026 can be valid and still have no automatic quote. CCL6 opened in July and changed some shortest rail distances, so the app does not apply that later network to all June journeys.
+
+Keep the actual travel date. In **More → Saved route fares**, you can add a checked adult fare with the dates during which it applied. An individual correction can also supply the amount for one journey. Those records remain in your trip count and map even before their fares are added.
+
+From v0.2.2, an entirely unpriced period displays **Not priced**, rather than S$0.00 recorded fares. Import review also identifies unpriced journeys before you save them. A confirmed zero-fare journey still counts as priced.
+
 Keep individual imports below 2 MB and 10,000 journeys. A surrounding JSON Markdown code fence is accepted.
 
 ## Errors and duplicates

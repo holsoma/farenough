@@ -220,6 +220,32 @@ class AppJourneyTest {
         }
     }
 
+    @Test fun unpricedJuneJourneysNeverAppearAsFreeJourneys() {
+        val repo = LocalRepository(app)
+        val trips = listOf(Trip(date = "2026-06-02", origin = "NS19", destination = "DT14"), Trip(date = "2026-06-02", origin = "DT14", destination = "NS19"))
+        runBlocking { repo.update { Snapshot(passes = listOf(PassPeriod(start = "2026-06-01", end = "2026-06-30")), trips = trips) } }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            compose.waitUntil(15_000) { compose.onAllNodesWithText("Fares needed").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("Not priced").assertIsDisplayed()
+            compose.onNodeWithText("S$0.00 in recorded fares", substring = true).assertDoesNotExist()
+            compose.onNodeWithText("Insights", useUnmergedTree = true).performClick()
+            compose.onNodeWithText("No fares recorded yet. 2 trips need fares.").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Cumulative fares").assertDoesNotExist()
+            compose.onNodeWithText("Routes").performScrollTo().performClick()
+            compose.onAllNodesWithText("Not priced · 0/1 priced").onFirst().performScrollTo().assertIsDisplayed()
+            compose.onNode(hasText("Trips") and hasClickAction()).performClick()
+            compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
+            val input = """{"format":"farenough-trips","version":1,"trips":[{"date":"2026-06-02","origin":"BP6","destination":"CC4"}]}"""
+            compose.onNodeWithText("Normalised JSON").performScrollTo().performTextInput(input)
+            compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Review journeys"))
+            compose.onNodeWithText("Review journeys").performClick()
+            compose.onNode(hasScrollToIndexAction()).performScrollToIndex(0)
+            compose.waitUntil(10_000) { compose.onAllNodesWithText("1 valid journey has no fare.", substring = true).fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("1 valid journey has no fare.", substring = true).performScrollTo().assertIsDisplayed()
+            assertEquals(trips.map { trip -> trip.id }.toSet(), runBlocking { repo.current().trips.map { trip -> trip.id }.toSet() })
+        }
+    }
+
     @Test fun editingRecordedFareRetainsItsPriceAndCorrection() {
         val repo = LocalRepository(app)
         val original = Trip(date = "2026-10-29", origin = "CC4", destination = "DT10", fareCents = 177, fareSource = "Earlier recorded fare", fareVersion = "earlier", correctionCents = 99, correctionReason = "Earlier discount")
