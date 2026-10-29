@@ -69,11 +69,11 @@ If you see personal shorthand such as `SV` or `PC`, return to your AI conversati
 
 ## If a travel date has no automatic fare
 
-Automatic fares currently cover **12 July through 25 December 2026**. A journey on 2 June 2026 can be valid and still have no automatic quote. CCL6 opened in July and changed some shortest rail distances, so the app does not apply that later network to all June journeys.
+Version 0.3.0 automatically prices eligible records from **1 March 2025 through 11 July 2026**, covering 16,106 station pairs whose shortest fare distance cannot have changed with CCL6. Full coverage runs from **12 July through 25 December 2026**. Existing unpriced records update when the app opens, so you do not need to reimport them. See [Understanding the fares](../fare-calculations/) for the method and exclusions.
 
 Keep the actual travel date. In **More → Saved route fares**, you can add a checked adult fare with the dates during which it applied. An individual correction can also supply the amount for one journey. Those records remain in your trip count and map even before their fares are added.
 
-From v0.2.2, an entirely unpriced period displays **Not priced**, rather than S$0.00 recorded fares. Import review also identifies unpriced journeys before you save them. A confirmed zero-fare journey still counts as priced.
+From v0.3.0, an entirely unpriced period displays **Not priced**, rather than S$0.00 recorded fares. Import review also identifies unpriced journeys before you save them. A confirmed zero-fare journey still counts as priced.
 
 Keep individual imports below 2 MB and 10,000 journeys. A surrounding JSON Markdown code fence is accepted.
 

@@ -31,3 +31,6 @@ Opposite directions rank separately. Toa Payoh → Bugis and Bugis → Toa Payoh
 The map uses bundled coastline and station locations. It works offline and needs no location permission. Thicker connections represent more journeys. Arrows show direction. Pinch to zoom, drag to pan, and choose **Reset map** to return to the island view.
 
 Selecting a connection or route-list row shows that route's recorded journeys. The lines connect entry and exit stations; they do not claim to show your precise train path. The station count includes distinct start/end stations only.
+
+
+To browse older imports, select **Calendar month**, then **Choose month**. The list shows each recorded month and its journey count. Pick a month to update Charts, Map and Routes together. You can still use Previous and Next to inspect months without records. Calendar views do not require a saved pass.

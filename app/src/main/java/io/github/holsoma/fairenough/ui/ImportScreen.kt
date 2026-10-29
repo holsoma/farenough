@@ -33,7 +33,7 @@ import io.github.holsoma.fairenough.core.*
         } else {
             item { Notice("${review.rows.size} rows · ${review.validCount} valid · ${selection.size} selected. Nothing is saved until you confirm.") }
             val unpriced = review.rows.count { row -> row.trip?.let { it.effectiveFare == null } == true }
-            if (unpriced > 0) item { Notice("$unpriced valid ${if (unpriced == 1) "journey has" else "journeys have"} no fare. Automatic coverage: ${readableDate(model.fareData.validFrom)} to ${readableDate(model.fareData.validUntil)}. Keep the correct travel dates; you can import these journeys and add checked fares for their period.") }
+            if (unpriced > 0) item { Notice("$unpriced valid ${if (unpriced == 1) "journey has" else "journeys have"} no fare. ${fareCoverage(model.repository.railFares)} Keep the correct travel dates; you can import these journeys and add checked fares for their period.") }
             if (review.alreadyImported) item { Notice("This complete batch has already been imported. It will not be added again.") }
             if (review.rows.any { it.errors.isNotEmpty() }) item { Notice("Rows with errors cannot be imported. Edit the JSON or return to the LLM to correct them. You can still explicitly import the valid selection.") }
             if (review.rows.any { it.matchesExisting > 0 }) item { Notice("Potential duplicates start unselected. Select one only if it is another journey you actually took. Repeated journeys within this file are preserved.") }

@@ -70,7 +70,7 @@ fun singaporeToday(): LocalDate = LocalDate.now(ZoneId.of("Asia/Singapore"))
             origin.isEmpty() || destination.isEmpty() -> "Choose two stations to see the rail distance and regular fare."
             origin == destination -> "Choose different start and end stations."
             !validDate(date) -> "Enter a valid travel date to see the fare."
-            else -> "Automatic fares are unavailable for this travel date. Bundled coverage: ${readableDate(model.fareData.validFrom)} to ${readableDate(model.fareData.validUntil)}. You can save the journey and add a checked fare or an individual correction."
+            else -> "Automatic fares are unavailable for this route and travel date. ${fareCoverage(model.repository.railFares)} Keep the correct date. You can save the journey and add a checked fare or an individual correction."
         })
         OutlinedTextField(correction, { correction = it }, Modifier.fillMaxWidth(), label = { Text("This journey's corrected fare, S$ (optional)") }, supportingText = { Text("For example, a discounted ride. Blank uses the regular fare.") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), singleLine = true)
         if (correction.isNotBlank()) OutlinedTextField(reason, { reason = it.take(500) }, Modifier.fillMaxWidth(), label = { Text("Reason for correction") })

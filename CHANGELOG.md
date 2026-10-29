@@ -1,6 +1,18 @@
 # Changelog
 
-## 0.2.2
+## 0.3.0
+
+- Calculate earlier adult fares for 16,106 station pairs from 1 March 2025 through 11 July 2026, where a conservative distance check rules out any effect from CCL6.
+- Automatically price eligible existing records and new imports. Preserve recorded fares, corrections, dates, notes and import history.
+- Use the earlier fare table for dates before 27 December 2025, with the correct tariff boundary.
+- Jump directly to recorded months in Insights and view their fare charts, journey counts and map.
+- Identify these amounts as derived historical fares, separate from dated calculator observations.
+- Keep uncertain earlier routes, unopened stations and dates outside the supported period unpriced.
+- Include the unpriced-total improvements below and the interchange import fix from 0.2.1.
+
+For 2 June 2026, Punggol Coast to Bugis and Bugis to Bukit Panjang each calculate as S$2.11 at regular adult rates. Transfer grouping and time discounts still require corrections. Install over the existing app; reimporting is unnecessary.
+
+## 0.2.2 (unpublished, included in 0.3.0)
 
 - Show **Not priced** when recorded journeys have no fares, instead of presenting S$0.00 as their fare total.
 - Keep missing fares distinct from confirmed zero-fare journeys in Overview, Insights, daily totals, routes and pass comparisons.

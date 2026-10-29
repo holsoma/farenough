@@ -20,6 +20,8 @@ import java.time.YearMonth
     var view by rememberSaveable { mutableStateOf("Charts") }
     var selectedDate by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedRoute by rememberSaveable { mutableStateOf<String?>(null) }
+    var chooseMonth by rememberSaveable { mutableStateOf(false) }
+    val recordedMonths = remember(snapshot.trips) { snapshot.trips.groupingBy { it.date.take(7) }.eachCount().toSortedMap(reverseOrder()) }
     val month = YearMonth.parse(monthText)
     val start = if (!calendar && pass != null) pass.start else month.atDay(1).toString()
     val end = if (!calendar && pass != null) pass.end else month.atEndOfMonth().toString()
@@ -37,7 +39,7 @@ import java.time.YearMonth
             }
             if (calendar || pass == null) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                 TextButton(onClick = { monthText = month.minusMonths(1).toString(); selectedDate = null; selectedRoute = null }) { Text("Previous") }
-                Text(monthText, fontWeight = FontWeight.Medium)
+                TextButton(onClick = { chooseMonth = true }, modifier = Modifier.weight(1f)) { Text("Choose month: $monthText", fontWeight = FontWeight.Medium) }
                 TextButton(onClick = { monthText = month.plusMonths(1).toString(); selectedDate = null; selectedRoute = null }) { Text("Next") }
             }
         }
@@ -91,6 +93,15 @@ import java.time.YearMonth
             }
         }
     }
+    if (chooseMonth) AlertDialog(onDismissRequest = { chooseMonth = false }, title = { Text("Choose a recorded month") }, text = {
+        LazyColumn(Modifier.heightIn(max = 400.dp)) {
+            items(recordedMonths.keys.toList(), key = { it }) { value ->
+                ListItem(headlineContent = { Text(value) }, supportingContent = { Text("${recordedMonths.getValue(value)} journeys") },
+                    modifier = Modifier.clickable { monthText = value; calendar = true; selectedDate = null; selectedRoute = null; chooseMonth = false })
+            }
+            if (recordedMonths.isEmpty()) item { Text("No recorded months yet. Use Previous and Next to browse.") }
+        }
+    }, confirmButton = { TextButton(onClick = { chooseMonth = false }) { Text("Close") } })
 }
 
 @Composable private fun InsightsSummary(trips: List<Trip>, distance: RailDistanceTotal) {

@@ -28,7 +28,15 @@ If you also record a journey whose fare is unknown, the app reports 23 priced jo
 
 Version 0.2.0 includes offline adult MRT/LRT calculator results for all **16,836 station pairs among 184 stations**. Selecting stations shows their regular fare and rail fare distance. Imported and previously unpriced journeys receive eligible fares automatically. Already recorded prices and individual corrections are preserved.
 
-Coverage runs from **12 July through 25 December 2026**, with results checked on 29 October 2026. Line changes inside one paid journey are included. Each recorded entry starts a separate journey, so transfer and time-based discounts need an individual correction.
+Full coverage runs from **12 July through 25 December 2026**, with results checked on 29 October 2026. Line changes inside one paid journey are included. Each recorded entry starts a separate journey, so transfer and time-based discounts need an individual correction.
+
+## Earlier records, including June 2026
+
+From v0.3.0, **16,106 station pairs** also receive calculated adult fares for **1 March 2025 through 11 July 2026**. It selects the fare schedule for the travel date, including the lower rates before 27 December 2025. The app checks that the Circle Line extension could not have shortened that pair's fare distance, then uses the fare schedule effective for the earlier date. These are labelled **Adult fare derived for the pre-July network**, rather than presented as historical calculator observations.
+
+For 2 June 2026, Punggol Coast to Bugis and Bugis to Bukit Panjang each calculate as **S$2.11**, totalling **S$4.22** as separate regular adult journeys. Existing unpriced records update when you open the app. You do not need to reimport them. Recorded prices and corrections stay unchanged.
+
+This covers most pairs across the earlier network, but it is not complete historical coverage. Journeys that might have changed with CCL6, the three stations that had not opened, and eight calculator results that differ from the general fare bands are excluded. Those records remain **Fare needed**. Dates before 1 March 2025 or after 25 December 2026 also need checked fares.
 
 ## Saving a route fare
 
@@ -48,7 +56,7 @@ The app uses complete journey results from LTA's calculator. Adding rounded adja
 
 ## Effective dates
 
-Automatic coverage begins on 12 July 2026, when CCL6 changed rail distances, and ends on 25 December 2026. The editable default for a manually checked fare runs from 27 December 2025 through 25 December 2026. Check dates and rates against the official source. PTC has announced a new adjustment from 26 December 2026. Do not apply a rate to a date outside its verified period.
+Full automatic coverage begins on 12 July 2026, when CCL6 changed rail distances, and ends on 25 December 2026. Selective earlier coverage starts on 1 March 2025, as explained above. The editable default for a manually checked fare runs from 27 December 2025 through 25 December 2026. Check dates and rates against the official source. PTC has announced a new adjustment from 26 December 2026. Do not apply a rate to a date outside its verified period.
 
 ## Sources and attribution
 
