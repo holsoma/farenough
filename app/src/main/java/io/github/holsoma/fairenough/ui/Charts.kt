@@ -31,7 +31,7 @@ import kotlin.math.*
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Cumulative fares", style = MaterialTheme.typography.titleMedium); Text(money(maximum), style = MaterialTheme.typography.labelMedium) }
         passPrice?.let { Text("Dashed line: ${money(it)} pass price", style = MaterialTheme.typography.labelMedium, color = target) }
-        Canvas(Modifier.fillMaxWidth().height(190.dp).semantics { contentDescription = "Cumulative recorded fare chart. Use the day list below for values." }.pointerInput(days) { detectTapGestures { p -> if (days.isNotEmpty()) onSelect(((p.x / size.width) * (days.size - 1)).roundToInt().coerceIn(days.indices)) } }) {
+        Canvas(Modifier.fillMaxWidth().height(190.dp).semantics { contentDescription = "Cumulative recorded fare chart. Use the day list below for values." }.pointerInput(days) { val margin = 12.dp.toPx(); detectTapGestures { p -> if (days.isNotEmpty()) onSelect((((p.x - margin) / (size.width - margin * 2).coerceAtLeast(1f)) * (days.size - 1)).roundToInt().coerceIn(days.indices)) } }) {
             val margin = 12.dp.toPx()
             val h = size.height - margin * 2
             fun x(i: Int) = margin + i * (size.width - 2 * margin) / (days.size - 1).coerceAtLeast(1)

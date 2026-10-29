@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -13,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import io.github.holsoma.fairenough.AppModel
 import io.github.holsoma.fairenough.core.*
 import java.time.YearMonth
+import kotlinx.coroutines.launch
 
 @Composable fun Insights(model: AppModel, snapshot: Snapshot, pass: PassPeriod?, onEditTrip: (Trip) -> Unit) {
     var calendar by rememberSaveable { mutableStateOf(false) }
@@ -30,10 +32,12 @@ import java.time.YearMonth
     val routes = remember(trips) { routeStatistics(trips) }
     val distance = remember(trips) { railDistanceTotal(trips, model.repository.railFares) }
     val selected = routes.find { "${it.origin}|${it.destination}" == selectedRoute }
-    LazyColumn(contentPadding = PaddingValues(20.dp, 12.dp, 20.dp, 100.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    LazyColumn(state = listState, contentPadding = PaddingValues(20.dp, 12.dp, 20.dp, 100.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
         item { PageTitle(if (view == "Compare") "Compare months" else "Your travel history", if (view == "Compare") "Choose two recorded months." else "${readableDate(start)} to ${readableDate(end)}") }
         item { FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) { listOf("Charts", "Map", "Routes", "Compare").forEach { label -> FilterChip(view == label, { view = label }, label = { Text(label, style = MaterialTheme.typography.labelMedium) }) } } }
-        if (view == "Compare") item { MonthComparison(snapshot.trips) { monthText = it; calendar = true; selectedDate = null; selectedRoute = null; view = "Charts" } }
+        if (view == "Compare") item { MonthComparison(snapshot.trips, onSelectionChanged = { scope.launch { listState.scrollToItem(0) } }) { monthText = it; calendar = true; selectedDate = null; selectedRoute = null; view = "Charts"; scope.launch { listState.scrollToItem(0) } } }
         else {
         item {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

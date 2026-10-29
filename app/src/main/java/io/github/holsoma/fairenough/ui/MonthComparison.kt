@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.holsoma.fairenough.core.*
@@ -30,7 +31,7 @@ fun monthLabel(month: String): String = YearMonth.parse(month).format(DateTimeFo
     }, confirmButton = { TextButton(onClick = onDismiss) { Text("Close") } })
 }
 
-@Composable fun MonthComparison(trips: List<Trip>, onOpenMonth: (String) -> Unit) {
+@Composable fun MonthComparison(trips: List<Trip>, onSelectionChanged: () -> Unit = {}, onOpenMonth: (String) -> Unit) {
     val months = remember(trips) { monthlyStatistics(trips) }
     if (months.isEmpty()) { Notice("Record or import journeys to compare your months."); return }
     var selectedMonth by rememberSaveable { mutableStateOf(months.first().month) }
@@ -84,9 +85,10 @@ fun monthLabel(month: String): String = YearMonth.parse(month).format(DateTimeFo
             val value = if (chartMetric == "Journeys") month.trips.toLong() else month.fareCents
             val chosen = month.month == selected.month
             Surface(color = if (chosen) MaterialTheme.colorScheme.surfaceContainerHigh else MaterialTheme.colorScheme.surface,
-                shape = MaterialTheme.shapes.small, modifier = Modifier.fillMaxWidth().clickable {
+                shape = MaterialTheme.shapes.small, modifier = Modifier.fillMaxWidth().testTag("month-history-${month.month}").clickable {
                     if (month.month == referenceMonth) referenceMonth = selected.month
                     selectedMonth = month.month
+                    onSelectionChanged()
                 }) {
                 Column(Modifier.padding(horizontal = 12.dp, vertical = 10.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
