@@ -15,10 +15,34 @@ data class ImportReview(val rows: List<ImportRow>, val fingerprint: String?, val
 
 class ImportProblem(message: String): IllegalArgumentException(message)
 
+private val stationWhitespace = Regex("[\\s\\p{Z}]+")
+private val stationNameWithCodes = Regex("^(.+?)\\s*\\(([^()]+)\\)$")
+private val stationCatalogueLabel = Regex("^(.+?)\\s*:\\s*(.+)$")
+
 fun resolveStation(token: String, stations: List<Station>): Station? {
-    val normal = token.trim()
-    val candidates = stations.filter { s -> s.id.equals(normal, true) || s.name.equals(normal, true) || s.codes.any { it.equals(normal, true) } }
-    return candidates.singleOrNull()
+    fun normal(value: String) = value.trim().replace(stationWhitespace, " ")
+    fun exact(value: String): List<Station> = stations.filter { s ->
+        s.id.equals(value, true) || s.name.equals(value, true) || s.codes.any { it.equals(value, true) }
+    }
+    fun codes(value: String): Station? {
+        val parts = value.split('/').map(::normal)
+        if (parts.any { it.isBlank() }) return null
+        val resolved = parts.map { part ->
+            stations.filter { s -> s.id.equals(part, true) || s.codes.any { it.equals(part, true) } }.singleOrNull() ?: return null
+        }
+        return resolved.firstOrNull()?.takeIf { station -> resolved.all { it.id == station.id } }
+    }
+    val value = normal(token)
+    val direct = exact(value)
+    if (direct.isNotEmpty()) return direct.singleOrNull()
+    // A copied interchange label is safe only when every code identifies the same station.
+    if ('/' in value) codes(value)?.let { return it }
+    val labelled = stationNameWithCodes.matchEntire(value)
+        ?: stationCatalogueLabel.matchEntire(value)
+        ?: return null
+    val name = normal(labelled.groupValues[1])
+    val named = stations.filter { it.name.equals(name, true) }.singleOrNull() ?: return null
+    return codes(labelled.groupValues[2])?.takeIf { it.id == named.id }
 }
 
 fun tripSignature(trip: Trip): String = "${trip.date}|${trip.origin}|${trip.destination}"
@@ -40,8 +64,8 @@ fun reviewImport(text: String, stations: List<Station>, snapshot: Snapshot, engi
         val to = resolveStation(input.destination, stations)
         val errors = buildList {
             if (!validDate(input.date)) add("Supply a full date in YYYY-MM-DD format.")
-            if (from == null) add("Origin '${input.origin}' needs an unambiguous official name or station code.")
-            if (to == null) add("Destination '${input.destination}' needs an unambiguous official name or station code.")
+            if (from == null) add("Origin '${input.origin}' does not identify one station. Use one output code from the formatting prompt. Combined codes must all belong to the same station.")
+            if (to == null) add("Destination '${input.destination}' does not identify one station. Use one output code from the formatting prompt. Combined codes must all belong to the same station.")
             if (from != null && from.id == to?.id) add("Origin and destination must differ.")
             if (input.note.length > 4000 || input.sourceText.length > 4000) add("Notes and source text must be below 4,000 characters.")
         }
@@ -72,15 +96,20 @@ fun undoImport(snapshot: Snapshot, batchId: String): Snapshot = snapshot.copy(
 fun formattingPrompt(stations: List<Station>): String = """
 Convert my travel records to farenough import JSON. Ask clarifying questions before producing the final JSON if any year, date, station abbreviation or journey boundary is unclear. I will paste my records after this prompt.
 
-Each arrow represents a separate rail journey, including line changes inside the paid area. Preserve journey order and every repeated journey. Never invent missing trips, dates, stations, times or fares. Clarify month/year rollover. Do not calculate fares. Resolve personal abbreviations with me; do not pass them to the app. Use an official station code from the catalogue below whenever a station name is ambiguous.
+Each arrow represents a separate rail journey, including line changes inside the paid area. Preserve journey order and every repeated journey. Never invent missing trips, dates, stations, times or fares. Clarify month/year rollover. Do not calculate fares. Resolve personal abbreviations with me; do not pass them to the app.
+
+For both origin and destination, copy exactly ONE output code from the table below. Use only the first column's value. Never output a slash-separated code list, a station name, or a name with codes in brackets. All line codes shown in the last column are aliases of that same station; they are reference information, not the JSON value. Do not guess a personal abbreviation from the line code prefix.
 
 Return only this version 1 structure, with one object per journey:
-{"format":"farenough-trips","version":1,"trips":[{"date":"YYYY-MM-DD","origin":"official name or code","destination":"official name or code","note":"optional note","sourceText":"original journey text"}]}
+{"format":"farenough-trips","version":1,"trips":[{"date":"YYYY-MM-DD","origin":"ONE_OUTPUT_CODE","destination":"ONE_OUTPUT_CODE","note":"optional note","sourceText":"original journey text"}]}
 
-Only date, origin and destination are required. Optional note and sourceText must be strings. Do not add other properties. Do not include a journey until its required information is resolved. Before the final JSON, tell me the total journey count so I can check it.
+Only date, origin and destination are required. Replace the placeholders with resolved values. Optional note and sourceText must be strings. Do not add other properties. If any required information is unresolved, ask me and wait rather than omitting that journey. During clarification, state the abbreviation mappings, year and total journey count so I can check them. Once the required information is resolved, return only the JSON object, without prose or a code fence.
+
+Before returning the JSON, check that every origin and destination is exactly one value from the Output code column. Check that journey order, dates and repeated journeys are preserved. Keep the original shorthand only in sourceText.
 
 Station catalogue:
-${stations.joinToString("\n") { "${it.name}: ${it.codes.joinToString(" / ")}" }}
+Output code | Official name | Other codes for reference only
+${stations.joinToString("\n") { "${it.id} | ${it.name} | ${it.codes.filterNot { code -> code == it.id }.joinToString(", ").ifEmpty { "none" }}" }}
 
 My records follow:
 """.trimIndent()

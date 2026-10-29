@@ -11,8 +11,8 @@
       "type": "object", "additionalProperties": false, "required": ["date", "origin", "destination"],
       "properties": {
         "date": {"type": "string", "format": "date"},
-        "origin": {"type": "string", "minLength": 1},
-        "destination": {"type": "string", "minLength": 1},
+        "origin": {"type": "string", "minLength": 1, "description": "Prefer one output code from the formatting prompt, e.g. BP6. Exact official names and consistent same-station code labels are also accepted."},
+        "destination": {"type": "string", "minLength": 1, "description": "Prefer one output code from the formatting prompt, e.g. CC4. Exact official names and consistent same-station code labels are also accepted."},
         "note": {"type": "string", "maxLength": 4000},
         "sourceText": {"type": "string", "maxLength": 4000}
       }

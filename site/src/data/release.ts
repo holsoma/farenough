@@ -1,9 +1,9 @@
 export const release = {
-  "version": "0.2.0",
+  "version": "0.2.1",
   "date": "2026-10-29",
   "published": true,
-  "url": "https://github.com/holsoma/farenough/releases/tag/v0.2.0",
-  "apk": "https://github.com/holsoma/farenough/releases/download/v0.2.0/farenough-v0.2.0.apk",
+  "url": "https://github.com/holsoma/farenough/releases/tag/v0.2.1",
+  "apk": "https://github.com/holsoma/farenough/releases/download/v0.2.1/farenough-v0.2.1.apk",
   "minimumAndroid": "8.0"
 };
 export const source = 'https://github.com/holsoma/farenough';

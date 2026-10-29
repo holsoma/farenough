@@ -62,6 +62,14 @@ class AppJourneyTest {
             capture("trips")
             compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
             compose.onNodeWithText("Copy formatting prompt").assertIsDisplayed()
+            compose.onNodeWithText("Copy formatting prompt").performClick()
+            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+                val clipboard = app.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                val prompt = clipboard.primaryClip!!.getItemAt(0).coerceToText(app).toString()
+                assertTrue(prompt.contains("BP6 | Bukit Panjang | DT1"))
+                assertTrue(prompt.contains("copy exactly ONE output code"))
+                assertFalse(prompt.contains("BP6 / DT1"))
+            }
             capture("import")
             compose.onNodeWithContentDescription("Back").performClick()
             compose.onNodeWithText("Insights", useUnmergedTree = true).performClick()
@@ -132,7 +140,7 @@ class AppJourneyTest {
             compose.onNodeWithText("S$46.50").assertExists()
             compose.onNodeWithText("Trips", useUnmergedTree = true).performClick()
             compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
-            val text = """{"format":"farenough-trips","version":1,"trips":[{"date":"2026-10-29","origin":"Stevens","destination":"Promenade"},{"date":"2026-10-29","origin":"Stevens","destination":"Promenade"}]}"""
+            val text = """{"format":"farenough-trips","version":1,"trips":[{"date":"2026-10-29","origin":"BP6 / DT1","destination":"CC4 / DT15"},{"date":"2026-10-29","origin":"Stevens (DT10 / TE11)","destination":"Promenade"}]}"""
             compose.onNodeWithText("Normalised JSON").performScrollTo().performTextInput(text)
             compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Review journeys"))
             compose.onNodeWithText("Review journeys").performClick()
@@ -144,7 +152,8 @@ class AppJourneyTest {
             val saved = runBlocking { repo.current() }
             assertEquals(150, saved.trips.single { it.correctionCents != null }.effectiveFare)
             assertEquals(159, saved.trips.single { it.correctionCents != null }.fareCents)
-            assertEquals(2, saved.trips.count { it.fareCents == 149 && it.correctionCents == null })
+            assertEquals(1, saved.trips.count { it.origin == "BP6" && it.destination == "CC4" && it.fareCents == 211 })
+            assertEquals(1, saved.trips.count { it.origin == "DT10" && it.destination == "CC4" && it.fareCents == 149 })
         }
     }
 

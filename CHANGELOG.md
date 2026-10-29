@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.1
+
+- Fix imports containing combined interchange codes such as `BP6 / DT1`.
+- Accept official station names with matching codes, such as `Bukit Panjang (BP6 / DT1)`, while rejecting conflicting station labels and unknown shorthand.
+- Make the formatting prompt request one output code per endpoint and clearly separate reference aliases.
+- Explain how to correct station errors without suggesting that a valid interchange is ambiguous.
+
+Import and backup formats remain version 1. Fare coverage is unchanged. Install over the existing app to keep your records.
+
 ## 0.2.0
 
 - Show adult MRT/LRT fares and rail fare distances immediately after station selection.

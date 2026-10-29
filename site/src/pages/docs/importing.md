@@ -14,7 +14,7 @@ Use an AI chat tool, also called an LLM, to put your notes into JSON: a text for
 4. Copy the final JSON into farenough, or open a JSON file.
 5. Review the rows, dates and stations, then confirm the selected journeys.
 
-The prompt includes the app's station catalogue. Personal abbreviations are resolved in that external conversation. farenough validates official names and codes; it does not guess your shorthand.
+The prompt includes the app's station catalogue with one **Output code** per station. Ask the AI to copy that single code into each endpoint. The other line codes are reference aliases. Personal abbreviations are resolved in that external conversation; farenough does not guess your shorthand.
 
 New files use `farenough-trips`, version 1. Earlier files labelled `fairenough-trips` are also accepted, with the same duplicate checks.
 
@@ -59,7 +59,13 @@ The app's review shows **12 Oct 2026, Toa Payoh → Raffles Place**. The app cal
 }
 ```
 
-Only `date`, `origin` and `destination` are required for each journey. Dates must include the year. Endpoints may be full official names or official codes, for example `NS19`. Ambiguous names need an unambiguous code. Extra properties and unsupported versions are rejected. The import does not accept AI-generated fares.
+Only `date`, `origin` and `destination` are required for each journey. Dates must include the year. Prefer one code from the prompt's Output code column, for example `BP6` for Bukit Panjang. Exact official names remain accepted. From v0.2.1, combined codes such as `BP6 / DT1` and labels such as `Bukit Panjang (BP6 / DT1)` are accepted when every part identifies the same station. Conflicting or unknown codes are rejected. Extra properties and unsupported versions are rejected. The import does not accept AI-generated fares.
+
+## If a station is rejected
+
+In v0.2.0, an endpoint such as `"origin": "BP6 / DT1"` causes the “unambiguous official name or station code” error even though both codes belong to Bukit Panjang. Change it to `"origin": "BP6"` or update to v0.2.1. Copy the formatting prompt again after updating so your next import requests single codes.
+
+If you see personal shorthand such as `SV` or `PC`, return to your AI conversation and confirm which station you mean. Do not choose a code until the station is clear. Keep the original shorthand in `sourceText` if you want to preserve it.
 
 Keep individual imports below 2 MB and 10,000 journeys. A surrounding JSON Markdown code fence is accepted.
 

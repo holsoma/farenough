@@ -4,6 +4,12 @@ title: Changelog
 description: Changes to the app, data formats and fare coverage.
 ---
 
+## 0.2.1
+
+Imports now accept interchange code lists such as `BP6 / DT1` when every code identifies the same station. The formatting prompt asks for one output code per endpoint, and error messages explain how to correct rejected station values. Official names with matching codes are also accepted; conflicting codes and personal shorthand are not guessed.
+
+Fare coverage and the version 1 import and backup formats are unchanged. Copy the formatting prompt again after updating.
+
 ## 0.2.0
 
 Station selection now shows the regular adult fare and rail fare distance automatically. The APK includes 16,836 station pairs among 184 stations for travel dates from 12 July to 25 December 2026.
