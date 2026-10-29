@@ -20,12 +20,21 @@ def adb(*args, binary=False):
 
 
 def nodes():
-    adb("shell", "uiautomator", "dump", "/sdcard/qa-window.xml")
-    return list(ET.fromstring(adb("shell", "cat", "/sdcard/qa-window.xml")).iter("node"))
+    for _ in range(5):
+        output = adb("shell", "uiautomator", "dump", "/sdcard/qa-window.xml")
+        if "dumped to:" in output:
+            return list(ET.fromstring(adb("shell", "cat", "/sdcard/qa-window.xml")).iter("node"))
+        time.sleep(1)
+    raise RuntimeError("Android did not provide an idle window hierarchy")
 
 
 def tap(text):
-    matches = [n for n in nodes() if text in (n.get("text"), n.get("content-desc"))]
+    matches = []
+    for _ in range(8):
+        matches = [n for n in nodes() if text in (n.get("text"), n.get("content-desc"))]
+        if matches:
+            break
+        time.sleep(1)
     if len(matches) != 1:
         raise RuntimeError(f"Expected one target {text!r}, found {len(matches)}")
     x1, y1, x2, y2 = map(int, re.findall(r"\d+", matches[0].get("bounds")))
@@ -103,7 +112,12 @@ def main():
     adb("shell", "wm", "density", "320")
     seed_fixture()
     adb("shell", "am", "start", "-n", f"{PACKAGE}/{PACKAGE}.MainActivity")
-    time.sleep(3)
+    for _ in range(10):
+        if any(n.get("text") == "View pass result" for n in nodes()):
+            break
+        time.sleep(1)
+    else:
+        raise RuntimeError("The seeded release did not reach Overview")
     shot("overview")
     tap("View pass result"); shot("target"); tap("Back")
     tap("Insights"); shot("charts"); tap("Map"); shot("map")
