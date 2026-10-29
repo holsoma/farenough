@@ -37,7 +37,7 @@ import io.github.holsoma.fairenough.core.*
             }
             item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(20.dp)) { Metric(c.tripCount.toString(), "Recorded trips", Modifier.weight(1f)); Metric(snapshot.trips.filter { pass.contains(it.date) }.map { it.date }.distinct().size.toString(), "Travel days", Modifier.weight(1f)) } }
             item {
-                OutlinedButton(onClick = onTarget, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) { Text("How many more trips?") }
+                OutlinedButton(onClick = onTarget, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) { Text(if (c.remaining == 0L) "View pass result" else "How many more trips?") }
                 if (!c.complete) TextButton(onClick = onFares, modifier = Modifier.fillMaxWidth()) { Text("Add missing route fares") }
             }
             if (snapshot.preferences.favourites.isNotEmpty()) {
@@ -59,7 +59,7 @@ import io.github.holsoma.fairenough.core.*
     LazyColumn(contentPadding = PaddingValues(20.dp, 12.dp, 20.dp, 100.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item { PageTitle("Your journeys", "${trips.size} recorded trips${if (!allDates && pass != null) " in this pass period" else " across all dates"}.") }
         item {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(selected = !allDates, onClick = { allDates = false }, label = { Text("Selected pass") })
                 FilterChip(selected = allDates, onClick = { allDates = true }, label = { Text("All dates") })
                 TextButton(onClick = onImport) { Text("Import") }
@@ -92,7 +92,7 @@ import io.github.holsoma.fairenough.core.*
         if (pass == null) item { Notice("Set up a pass to calculate a trip target.") } else {
             val c = compare(pass, snapshot.trips)
             item { Notice(if (c.needsFares) "Add fares for the ${c.tripCount} recorded trips before calculating a remaining-trip target. Pass price: ${money(pass.priceCents)}." else "${money(c.remaining)} remains against a ${money(pass.priceCents)} pass. Based on ${c.pricedCount} of ${c.tripCount} recorded trips${if (c.complete) "." else "; missing fares make this incomplete."}") }
-            item { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { FilterChip(method == "average", { method = "average" }, label = { Text("My average fare") }); FilterChip(method == "route", { method = "route" }, label = { Text("A specific route") }) } }
+            item { FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) { FilterChip(method == "average", { method = "average" }, label = { Text("My average fare") }); FilterChip(method == "route", { method = "route" }, label = { Text("A specific route") }) } }
             if (method == "route") {
                 item { StationField("From", origin, model.stations) { origin = it } }
                 item { StationField("To", destination, model.stations) { destination = it } }

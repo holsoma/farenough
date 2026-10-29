@@ -1,8 +1,6 @@
 package io.github.holsoma.fairenough.ui
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -34,11 +32,11 @@ import java.time.YearMonth
     val selected = routes.find { "${it.origin}|${it.destination}" == selectedRoute }
     LazyColumn(contentPadding = PaddingValues(20.dp, 12.dp, 20.dp, 100.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
         item { PageTitle(if (view == "Compare") "Compare months" else "Your travel history", if (view == "Compare") "Choose two recorded months." else "${readableDate(start)} to ${readableDate(end)}") }
-        item { Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) { listOf("Charts", "Map", "Routes", "Compare").forEach { label -> FilterChip(view == label, { view = label }, label = { Text(label, style = MaterialTheme.typography.labelMedium) }) } } }
+        item { FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) { listOf("Charts", "Map", "Routes", "Compare").forEach { label -> FilterChip(view == label, { view = label }, label = { Text(label, style = MaterialTheme.typography.labelMedium) }) } } }
         if (view == "Compare") item { MonthComparison(snapshot.trips) { monthText = it; calendar = true; selectedDate = null; selectedRoute = null; view = "Charts" } }
         else {
         item {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(!calendar, { calendar = false; selectedDate = null; selectedRoute = null }, label = { Text("Pass period") }, enabled = pass != null)
                 FilterChip(calendar || pass == null, { calendar = true; selectedDate = null; selectedRoute = null }, label = { Text("Calendar month") })
             }

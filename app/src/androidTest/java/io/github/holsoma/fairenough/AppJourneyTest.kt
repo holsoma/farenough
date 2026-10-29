@@ -53,7 +53,7 @@ class AppJourneyTest {
             it.onActivity { activity ->
                 assertTrue(androidx.core.view.WindowCompat.getInsetsController(activity.window, activity.window.decorView).isAppearanceLightStatusBars)
             }
-            compose.onNodeWithText("How many more trips?").performScrollTo().performClick()
+            compose.onNodeWithText("View pass result").performScrollTo().performClick()
             compose.onNodeWithText("Trips needed").assertIsDisplayed()
             capture("target")
             compose.onNodeWithContentDescription("Back").performClick()
@@ -126,7 +126,7 @@ class AppJourneyTest {
             compose.onNodeWithText("Rail fare distance: 5.3 km", substring = true).assertIsDisplayed()
             compose.onNodeWithText("This journey's corrected fare, S$ (optional)").performScrollTo().performTextInput("1.50")
             compose.onNodeWithText("Reason for correction").performScrollTo().performTextInput("Example discount")
-            compose.onNodeWithText("Save journey").performScrollTo().performClick()
+            compose.onNodeWithText("Save journey").performClick()
             compose.waitUntil(10_000) { runBlocking { repo.current().trips.size == 1 } }
             compose.waitUntil(15_000) { compose.onAllNodesWithText("S$46.50").fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithText("S$46.50").assertExists()
@@ -195,10 +195,10 @@ class AppJourneyTest {
             compose.onNodeWithText("Automatic fares are unavailable for this route and travel date.", substring = true).performScrollTo().assertIsDisplayed()
             compose.onNodeWithText("Regular adult fare:", substring = true).assertDoesNotExist()
             compose.onNodeWithText("Travel date").performScrollTo().performTextReplacement("2026-10-29")
-            compose.onNodeWithText("Swap stations").performScrollTo().performClick()
+            compose.onNodeWithContentDescription("Swap stations").performScrollTo().performClick()
             compose.onNodeWithText("Regular adult fare: S$1.49", substring = true).performScrollTo().assertIsDisplayed()
             assertTrue(runBlocking { repo.current().trips.isEmpty() })
-            compose.onNodeWithText("Save journey").performScrollTo().performClick()
+            compose.onNodeWithText("Save journey").performClick()
             compose.waitUntil(10_000) { runBlocking { repo.current().trips.size == 1 } }
             val saved = runBlocking { repo.current().trips.single() }
             assertEquals(149, saved.fareCents)
@@ -262,7 +262,7 @@ class AppJourneyTest {
             compose.onNodeWithText("Regular adult fare: S$2.11", substring = true).performScrollTo().assertIsDisplayed()
             compose.onNodeWithText("Adult fare derived for the pre-July network", substring = true).assertIsDisplayed()
             capture("june-derived-fare")
-            compose.onNodeWithText("Save journey").performScrollTo().performClick()
+            compose.onNodeWithText("Save journey").performClick()
             compose.waitUntil(10_000) { runBlocking { repo.current().trips.first { it.id == original[0].id }.edited } }
             val saved = runBlocking { repo.current().trips.associateBy { it.id } }
             for (trip in original) {
@@ -358,7 +358,7 @@ class AppJourneyTest {
             compose.onNodeWithText("Promenade → Stevens").performClick()
             compose.onNodeWithText("Regular adult fare: S$1.77", substring = true).performScrollTo().assertIsDisplayed()
             compose.onNodeWithText("Rail fare distance: 5.2 km", substring = true).assertIsDisplayed()
-            compose.onNodeWithText("Save journey").performScrollTo().performClick()
+            compose.onNodeWithText("Save journey").performClick()
             compose.waitUntil(10_000) { runBlocking { repo.current().trips.single().edited } }
             val retained = runBlocking { repo.current().trips.single() }
             assertEquals(177, retained.fareCents)

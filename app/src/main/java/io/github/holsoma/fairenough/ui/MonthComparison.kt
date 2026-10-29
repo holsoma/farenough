@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.holsoma.fairenough.core.*
@@ -21,7 +22,7 @@ fun monthLabel(month: String): String = YearMonth.parse(month).format(DateTimeFo
     AlertDialog(onDismissRequest = onDismiss, title = { Text(title) }, text = {
         LazyColumn(Modifier.heightIn(max = 400.dp)) {
             items(months, key = { it.month }) { month ->
-                ListItem(headlineContent = { Text(monthLabel(month.month)) }, supportingContent = { Text("${month.trips} journeys · ${month.pricedTrips} priced") },
+                ListItem(headlineContent = { Text(monthLabel(month.month)) }, supportingContent = { Text("${month.trips} journeys · ${month.pricedTrips} priced") }, trailingContent = { if (month.month == exclude) Text("In use", style = MaterialTheme.typography.labelSmall) },
                     modifier = Modifier.clickable(enabled = month.month != exclude) { onChoose(month.month) })
             }
             if (months.isEmpty()) item { Text("No recorded months yet. Use Previous and Next to browse.") }
@@ -61,14 +62,15 @@ fun monthLabel(month: String): String = YearMonth.parse(month).format(DateTimeFo
             }
         }
         if (reference == null) Notice("Choose another recorded month to compare. A single month still shows its totals below.")
-        Row(Modifier.fillMaxWidth()) {
+        if (LocalDensity.current.fontScale > 1.2f) Text("Month totals", style = MaterialTheme.typography.titleSmall)
+        else Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Month totals", Modifier.weight(1.2f), style = MaterialTheme.typography.titleSmall)
             Text(monthLabel(selected.month), Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
             Text(reference?.let { monthLabel(it.month) } ?: "", Modifier.weight(1f), style = MaterialTheme.typography.labelMedium)
         }
-        ComparisonRow("Journeys", selected.trips.toString(), reference?.trips?.toString())
-        ComparisonRow("Travel days", selected.travelDays.toString(), reference?.travelDays?.toString())
-        ComparisonRow("Average fare", selected.averageFare?.let(::money) ?: "Not priced", reference?.averageFare?.let(::money))
+        ComparisonRow("Journeys", selected.trips.toString(), reference?.trips?.toString(), selected.month, reference?.month)
+        ComparisonRow("Travel days", selected.travelDays.toString(), reference?.travelDays?.toString(), selected.month, reference?.month)
+        ComparisonRow("Average fare", selected.averageFare?.let(::money) ?: "Not priced", reference?.averageFare?.let(::money), selected.month, reference?.month)
         Text("Average fares use priced journeys. Calendar totals reflect the records you entered; a month still in progress or an incomplete import can look lower. Fare changes can also reflect a new tariff.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         OutlinedButton(onClick = { onOpenMonth(selected.month) }, modifier = Modifier.fillMaxWidth()) { Text("Explore ${monthLabel(selected.month)}") }
         HorizontalDivider()
@@ -104,8 +106,12 @@ fun monthLabel(month: String): String = YearMonth.parse(month).format(DateTimeFo
     }
 }
 
-@Composable private fun ComparisonRow(label: String, selected: String, reference: String?) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+@Composable private fun ComparisonRow(label: String, selected: String, reference: String?, selectedMonth: String, referenceMonth: String?) {
+    if (LocalDensity.current.fontScale > 1.2f) Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(label, style = MaterialTheme.typography.titleSmall)
+        Text("${monthLabel(selectedMonth)}: $selected", fontWeight = FontWeight.SemiBold)
+        referenceMonth?.let { Text("${monthLabel(it)}: ${reference ?: "Not priced"}", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+    } else Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(label, Modifier.weight(1.2f), color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(selected, Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
         Text(reference ?: "Not available", Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurfaceVariant)

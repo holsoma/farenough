@@ -31,7 +31,7 @@ import io.github.holsoma.fairenough.core.*
         item { HorizontalDivider(); Text("Your data", Modifier.padding(top = 18.dp), style = MaterialTheme.typography.titleLarge) }
         item {
             Column(Modifier.fillMaxWidth()) {
-                SettingsRow("Import journeys", "Copy the prompt and review normalised records", onImport)
+                SettingsRow("Import journeys", "Bring in your notes and review the journeys", onImport)
                 SettingsRow("Saved route fares", "${snapshot.routeFares.size} checked overrides; used only for their valid dates", onFares)
                 SettingsRow("Create full backup", "Passes, journeys, fares, imports and preferences", onBackup)
                 SettingsRow("Export journeys as CSV", "A spreadsheet-friendly copy, not a full backup", onCsv)

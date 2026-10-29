@@ -10,11 +10,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import io.github.holsoma.fairenough.core.*
 import kotlin.math.*
 
@@ -25,6 +30,7 @@ import kotlin.math.*
     val maximum = max(days.maxOfOrNull { it.cumulativeCents } ?: 0, passPrice?.toLong() ?: 0).coerceAtLeast(1)
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) { Text("Cumulative fares", style = MaterialTheme.typography.titleMedium); Text(money(maximum), style = MaterialTheme.typography.labelMedium) }
+        passPrice?.let { Text("Dashed line: ${money(it)} pass price", style = MaterialTheme.typography.labelMedium, color = target) }
         Canvas(Modifier.fillMaxWidth().height(190.dp).semantics { contentDescription = "Cumulative recorded fare chart. Use the day list below for values." }.pointerInput(days) { detectTapGestures { p -> if (days.isNotEmpty()) onSelect(((p.x / size.width) * (days.size - 1)).roundToInt().coerceIn(days.indices)) } }) {
             val margin = 12.dp.toPx()
             val h = size.height - margin * 2
@@ -46,7 +52,7 @@ import kotlin.math.*
             val day = days[index]
             Text("${readableDate(day.date)} · ${fareTotalText(day.cumulativeCents, day.cumulativePricedCount, day.cumulativeTrips)} recorded so far", style = MaterialTheme.typography.labelLarge, color = ink)
         }
-        Text(if (passPrice != null) "Solid: recorded fares. Dashed: ${money(passPrice)} pass price." else "Tap a point or choose a day below.", style = MaterialTheme.typography.bodySmall)
+        Text("Tap a point or choose a day below.", style = MaterialTheme.typography.bodySmall)
     }
 }
 
@@ -72,8 +78,17 @@ private fun quadratic(a: Offset, b: Offset, control: Offset, t: Float): Offset =
     val border = MaterialTheme.colorScheme.outline.copy(alpha = .35f)
     val routeColour = MaterialTheme.colorScheme.primary
     val highlight = MaterialTheme.colorScheme.secondary
+    val labelBackground = MaterialTheme.colorScheme.surface
+    val labelColour = MaterialTheme.colorScheme.onSurface
+    val labelPaint = remember { android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG) }
     val stationLookup = remember(stations) { stations.associateBy { it.id } }
     val maxCount = routes.maxOfOrNull { it.count }?.coerceAtLeast(1) ?: 1
+    val selected = routes.firstOrNull { "${it.origin}|${it.destination}" == selectedRoute }
+    val labelIds = remember(routes, selectedRoute) {
+        val counts = mutableMapOf<String, Int>()
+        routes.forEach { route -> listOf(route.origin, route.destination).forEach { counts[it] = (counts[it] ?: 0) + route.count } }
+        (listOfNotNull(selected?.origin, selected?.destination) + counts.entries.sortedByDescending { it.value }.map { it.key }).distinct().take(6)
+    }
     var canvasSize by remember { mutableStateOf(androidx.compose.ui.geometry.Size.Zero) }
     fun project(lon: Double, lat: Double, size: androidx.compose.ui.geometry.Size): Offset {
         val spanX = .48f; val spanY = .34f
@@ -90,7 +105,9 @@ private fun quadratic(a: Offset, b: Offset, control: Offset, t: Float): Offset =
         return Triple(p, q, (p + q) / 2f + normal * min(24f * zoom, delta.getDistance() * .16f))
     }
     Column {
-        Canvas(Modifier.fillMaxWidth().height(320.dp).clipToBounds().semantics { contentDescription = "Singapore map with ${routes.size} directional connections. The route list below provides accessible details." }
+        Text(selected?.let { "${stationLookup[it.origin]?.name} → ${stationLookup[it.destination]?.name} · ${it.count} trips" }
+            ?: "Tap a connection to see its journeys. Labels show the busiest stations.", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(bottom = 8.dp))
+        Canvas(Modifier.fillMaxWidth().height(280.dp).clipToBounds().semantics { contentDescription = "Singapore map with ${routes.size} directional connections. The route list below provides accessible details." }
             .pointerInput(Unit) { detectTransformGestures { _, drag, change, _ -> zoom = (zoom * change).coerceIn(1f, 5f); pan = if (zoom == 1f) Offset.Zero else pan + drag } }
             .pointerInput(routes, zoom, pan) { detectTapGestures { tap ->
                 val nearest = routes.mapNotNull { r -> points(r, canvasSize)?.let { (a, b, c) -> r to (0..24).minOf { t -> (quadratic(a, b, c, t / 24f) - tap).getDistance() } } }.minByOrNull { it.second }
@@ -115,6 +132,35 @@ private fun quadratic(a: Offset, b: Offset, control: Offset, t: Float): Offset =
                     drawLine(colour, mid, mid - direction * 12f + normal * 6f, 2.dp.toPx())
                     drawLine(colour, mid, mid - direction * 12f - normal * 6f, 2.dp.toPx())
                     drawCircle(colour, 3.dp.toPx(), a); drawCircle(colour, 3.dp.toPx(), b)
+                }
+            }
+            val occupied = mutableListOf<Rect>()
+            labelPaint.textSize = 12.sp.toPx()
+            labelPaint.color = labelColour.toArgb()
+            labelPaint.typeface = android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.NORMAL)
+            val padding = 4.dp.toPx()
+            val gap = 7.dp.toPx()
+            labelIds.forEach { id ->
+                val station = stationLookup[id]
+                val longitude = station?.longitude
+                val latitude = station?.latitude
+                if (station != null && longitude != null && latitude != null) {
+                    val point = project(longitude, latitude, size)
+                    if (point.x in 0f..size.width && point.y in 0f..size.height) {
+                        val width = labelPaint.measureText(station.name) + padding * 2
+                        val height = labelPaint.fontMetrics.descent - labelPaint.fontMetrics.ascent + padding * 2
+                        val candidates = listOf(Offset(point.x + gap, point.y - height - gap), Offset(point.x - width - gap, point.y - height - gap),
+                            Offset(point.x + gap, point.y + gap), Offset(point.x - width - gap, point.y + gap),
+                            Offset(point.x - width / 2, point.y - height * 2 - gap), Offset(point.x - width / 2, point.y + height + gap))
+                            .map { Rect(Offset(it.x.coerceIn(0f, (size.width - width).coerceAtLeast(0f)), it.y.coerceIn(0f, (size.height - height).coerceAtLeast(0f))), androidx.compose.ui.geometry.Size(width, height)) }
+                        val box = candidates.minBy { candidate -> occupied.sumOf { other ->
+                            (max(0f, min(candidate.right, other.right) - max(candidate.left, other.left)) * max(0f, min(candidate.bottom, other.bottom) - max(candidate.top, other.top))).toDouble()
+                        } }
+                        occupied += box
+                        drawLine(border, point, box.center, 1.dp.toPx())
+                        drawRoundRect(labelBackground.copy(alpha = .96f), box.topLeft, box.size, CornerRadius(4.dp.toPx()))
+                        drawContext.canvas.nativeCanvas.drawText(station.name, box.left + padding, box.top + padding - labelPaint.fontMetrics.ascent, labelPaint)
+                    }
                 }
             }
         }

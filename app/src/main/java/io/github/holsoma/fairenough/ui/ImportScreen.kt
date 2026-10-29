@@ -26,7 +26,7 @@ import io.github.holsoma.fairenough.core.*
         item { PageTitle("Bring your records", "Copy the instructions into your AI chat with your journey notes. Confirm station names and dates, then paste its formatted records below.") }
         item { OutlinedButton(onClick = { clipboard.setPrimaryClip(ClipData.newPlainText("farenough formatting prompt", formattingPrompt(model.stations))); model.notification = "Formatting prompt copied." }, modifier = Modifier.fillMaxWidth()) { Text("Copy formatting prompt") } }
         if (review == null) {
-            item { Notice("Use one station code per endpoint, such as BP6 for Bukit Panjang. Nothing is saved until you review and confirm. Your notes leave this app only when you share them.") }
+            item { Notice("Use one code for each start and end station, such as BP6 for Bukit Panjang. Nothing is saved until you review and confirm. Your notes leave this app only when you share them.") }
             item { OutlinedTextField(model.importText, { model.importText = it }, Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 320.dp), label = { Text("Formatted journey records") }, supportingText = { Text("Paste the JSON returned by your AI chat.") }, placeholder = { Text("{\"format\":\"farenough-trips\", ...}") }) }
             item { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { TextButton(onClick = { model.importText = clipboard.primaryClip?.getItemAt(0)?.coerceToText(context)?.toString().orEmpty() }) { Text("Paste") }; TextButton(onClick = onOpenFile) { Text("Open JSON file") } } }
             item { Button(onClick = { model.review(model.importText) }, enabled = model.importText.isNotBlank() && !model.working, modifier = Modifier.fillMaxWidth()) { Text("Review journeys") } }

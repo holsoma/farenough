@@ -8,6 +8,7 @@
 - Compare any two recorded months by fares, journeys, travel days and average fare, with a selectable monthly history. Missing fares prevent a misleading monetary comparison.
 - Jump directly to recorded months in Insights and view their fare charts, journey counts and map.
 - Make charts visible sooner, add chart date labels, label the Pass action and show the percentage of pass price covered.
+- Label the busiest map stations and selected connections, keep Save journey visible, and adapt comparison layouts for larger text.
 - Replace blocking success dialogs with brief messages and simplify import instructions.
 - Identify these amounts as derived historical fares, separate from dated calculator observations.
 - Keep uncertain earlier routes, unopened stations and dates outside the supported period unpriced.
