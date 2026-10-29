@@ -40,6 +40,10 @@ To browse older imports, select **Calendar month**, then **Choose month**. The l
 
 Open **Insights → Compare**. Choose the month to inspect and a second recorded month. The app shows the selected month's recorded fares, its difference from the other month, journey counts, travel days and average fares. Tap a month in **Month by month** to select it, or choose **Explore** to open that month's charts and map.
 
+<a href="/farenough/screenshots/month-comparison.png"><img src="/farenough/screenshots/month-comparison.png" width="320" height="711" loading="lazy" alt="October and September comparison showing recorded fares, journey counts, travel days and average fares." /></a>
+
+Actual v0.3.0 screen with invented records and example fares. Select the image to view it at full size.
+
 Switch the monthly bars between **Journeys** and **Fares**. Fare comparisons remain incomplete if either month has missing prices. Average fares use priced journeys only. A month still in progress, incomplete records, or a tariff change can affect the comparison. Calendar fare totals are not pass savings; pass comparisons continue to use each pass's actual validity dates.
 
 The map labels the busiest stations. Select a connection to show both station names and its journey count above the map. Larger text uses wrapping view controls and stacked comparison values.

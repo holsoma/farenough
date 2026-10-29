@@ -30,7 +30,7 @@ Record your Singapore MRT and LRT journeys. Compare their fares with your conces
 
 <p align="center">
   <a href="site/public/screenshots/overview.png"><img src="site/public/screenshots/overview.png" width="220" alt="Overview: pass cost, recorded fares and estimated savings" /></a>
-  <a href="site/public/screenshots/automatic-fare.png"><img src="site/public/screenshots/automatic-fare.png" width="220" alt="Journey entry: automatic adult fare and rail fare distance" /></a>
+  <a href="site/public/screenshots/month-comparison.png"><img src="site/public/screenshots/month-comparison.png" width="220" alt="Month comparison: fares, journeys, travel days and average fare" /></a>
   <a href="site/public/screenshots/map.png"><img src="site/public/screenshots/map.png" width="220" alt="Insights: monthly journey connections on a Singapore map" /></a>
 </p>
 
@@ -100,6 +100,6 @@ Map sources, transformations and checksums are listed in [data/sources.json](dat
 
 ## Contribute
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md). Use synthetic examples in public issues, rather than private travel records. Implementation details and verified checks are recorded in [IMPLEMENTATION.md](IMPLEMENTATION.md). Screenshots are captured by [the Android UI test](app/src/androidTest/java/io/github/holsoma/fairenough/AppJourneyTest.kt).
+Read [CONTRIBUTING.md](CONTRIBUTING.md). Use synthetic examples in public issues, rather than private travel records. Implementation details and verified checks are recorded in [IMPLEMENTATION.md](IMPLEMENTATION.md). The [UI audit](UI_AUDIT.md) records the review findings and remaining limitations. Release screenshots are captured from the signed APK by the [screenshot workflow](.github/workflows/screenshots.yml), using invented records on an isolated Android emulator.
 
 Code: [Apache 2.0](LICENSE). Data and font licences are documented separately in [NOTICE.md](NOTICE.md). This project is not affiliated with LTA, SimplyGo or any transport operator.
