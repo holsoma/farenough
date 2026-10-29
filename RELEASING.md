@@ -25,7 +25,7 @@ Never commit keys or passwords. Keep an encrypted offline backup of the signing 
 
 ## Candidate checks
 
-1. Run core tests, Android lint, device tests and the production site build.
+1. Restore the ignored fare table with `python scripts/restore_rail_fares.py`, then run core tests, Android lint, device tests and the production site build. The helper verifies the APK and asset against `data/rail-fares-source.json`.
 2. Install the preceding signed candidate, create records, then install the new signed APK over it. Verify passes, trips, fares, corrections, preferences and backup export.
 3. Capture the actual app with demonstration records. Review light/dark, large text and all primary screens.
 4. Check APK signatures using `apksigner verify --verbose --print-certs`.
@@ -46,6 +46,12 @@ gh workflow run pages.yml --repo holsoma/farenough --ref main
 ```
 
 Changes to website files on `main` also deploy automatically. Release tags do not deploy Pages directly. Until a public release exists, the download page says the first release is being prepared.
+
+## Initial release of a new fare table
+
+Keep the table and raw observations out of Git and separate downloads. Prepare and test the signed APK locally, then pin its URL and the APK/asset checksums in `data/rail-fares-source.json`. Push the source commit to a release branch, upload the already verified APK, checksum and certificate to a draft targeting that commit, verify the uploaded bytes, then publish the release. Fast-forward `main` to that commit so CI can restore the table from the now-public APK. This avoids a circular dependency on an unpublished data source. Subsequent releases can use the usual tag workflow while the pinned source APK is available.
+
+Never replace a published APK to change its embedded data. Publish a new version and pin the new checksums.
 
 ## Verify a download
 

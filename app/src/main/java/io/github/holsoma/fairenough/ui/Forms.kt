@@ -47,14 +47,31 @@ fun singaporeToday(): LocalDate = LocalDate.now(ZoneId.of("Asia/Singapore"))
     var correction by rememberSaveable { mutableStateOf(initial?.correctionCents?.let { "%.2f".format(java.util.Locale.UK, it / 100.0) }.orEmpty()) }
     var reason by rememberSaveable { mutableStateOf(initial?.correctionReason.orEmpty()) }
     var delete by remember { mutableStateOf(false) }
-    val quote = if (origin.isNotEmpty() && destination.isNotEmpty() && validDate(date)) model.engine.quote(Trip(date = date, origin = origin, destination = destination), snapshot.routeFares) else null
+    val quote = remember(origin, destination, date, snapshot.routeFares, initial) {
+        val current = if (origin.isNotEmpty() && destination.isNotEmpty() && validDate(date)) model.engine.quote(Trip(date = date, origin = origin, destination = destination), snapshot.routeFares) else null
+        val recordedCents = initial?.fareCents
+        if (recordedCents != null && initial.origin == origin && initial.destination == destination && initial.date == date) {
+            FareQuote(recordedCents, initial.fareSource, initial.fareVersion ?: "recorded", current?.distanceMetres)
+        } else current
+    }
     FormColumn {
         PageTitle(if (initial == null) "Record a journey" else "Edit journey", "One entry and exit. Line changes inside the paid area are part of this journey.")
         DateField("Travel date", date) { date = it }
         StationField("From", origin, model.stations) { origin = it }
         TextButton(onClick = { val temp = origin; origin = destination; destination = temp }, modifier = Modifier.align(androidx.compose.ui.Alignment.CenterHorizontally)) { Icon(Icons.Outlined.SwapVert, null); Text("Swap stations") }
         StationField("To", destination, model.stations) { destination = it }
-        Notice(quote?.let { "Regular fare: ${money(it.cents)}. ${it.source}." } ?: "Fare needed. You can save the journey now, then add an LTA-checked fare under Saved route fares.")
+        Notice(quote?.let {
+            buildString {
+                append("Regular adult fare: ${money(it.cents)}")
+                it.distanceMetres?.let { distance -> append("\nRail fare distance: ${railDistance(distance)}") }
+                append("\n${it.source}.")
+            }
+        } ?: when {
+            origin.isEmpty() || destination.isEmpty() -> "Choose two stations to see the rail distance and regular fare."
+            origin == destination -> "Choose different start and end stations."
+            !validDate(date) -> "Enter a valid travel date to see the fare."
+            else -> "Automatic fares are unavailable for this travel date. Bundled coverage: ${readableDate(model.fareData.validFrom)} to ${readableDate(model.fareData.validUntil)}. You can save the journey and add a checked fare or an individual correction."
+        })
         OutlinedTextField(correction, { correction = it }, Modifier.fillMaxWidth(), label = { Text("This journey's corrected fare, S$ (optional)") }, supportingText = { Text("For example, a discounted ride. Blank uses the regular fare.") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), singleLine = true)
         if (correction.isNotBlank()) OutlinedTextField(reason, { reason = it.take(500) }, Modifier.fillMaxWidth(), label = { Text("Reason for correction") })
         OutlinedTextField(note, { note = it.take(4000) }, Modifier.fillMaxWidth(), label = { Text("Note (optional)") }, minLines = 2)
@@ -78,8 +95,9 @@ fun singaporeToday(): LocalDate = LocalDate.now(ZoneId.of("Asia/Singapore"))
     var end by rememberSaveable { mutableStateOf(initial?.end ?: "2026-12-25") }
     var price by rememberSaveable { mutableStateOf(if (isExisting) "%.2f".format(java.util.Locale.UK, initial!!.cents / 100.0) else "") }
     var confirm by remember { mutableStateOf<RouteFare?>(null) }
+    var removing by remember { mutableStateOf(false) }
     FormColumn {
-        PageTitle(if (!isExisting) "Save a route fare" else "Edit route fare", "Check the regular adult card fare with LTA. This fare applies in this direction only.")
+        PageTitle(if (!isExisting) "Save a route fare" else "Edit route fare", "Override the automatic fare or cover a date outside the bundled data. This fare applies in this direction only.")
         ExternalLink("Open LTA fare calculator", "https://www.lta.gov.sg/content/ltagov/en/map/fare-calculator.html")
         StationField("From", origin, model.stations) { origin = it }
         StationField("To", destination, model.stations) { destination = it }
@@ -96,9 +114,18 @@ fun singaporeToday(): LocalDate = LocalDate.now(ZoneId.of("Asia/Singapore"))
                 if (problem != null) model.message = problem else confirm = fare
             }
         }, enabled = !model.working, modifier = Modifier.fillMaxWidth()) { Text("Review affected journeys") }
+        if (isExisting) TextButton(onClick = { removing = true }, modifier = Modifier.fillMaxWidth()) { Text("Remove saved fare") }
     }
     confirm?.let { fare ->
         val affected = snapshot.trips.count { fare.matches(it) || initial?.matches(it) == true }
         Confirm("Save ${money(fare.cents)} for this route?", "$affected recorded journeys will have their regular fare recalculated. Corrections to individual trips will remain.", "Save fare", { confirm = null }) { model.saveFare(fare, onDone) }
+    }
+    if (removing && initial != null) {
+        val affected = snapshot.trips.filter(initial::matches)
+        val remaining = snapshot.routeFares.filterNot { it.id == initial.id }
+        val unpriced = affected.count { model.engine.quote(it, remaining) == null && it.correctionCents == null }
+        Confirm("Remove this saved fare?", "${affected.size} recorded journeys will use automatic fares where available. $unpriced journeys will be unpriced. Individual corrections will remain.", "Remove fare", { removing = false }) {
+            model.removeFare(initial, onDone)
+        }
     }
 }

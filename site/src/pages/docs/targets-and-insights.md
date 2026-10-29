@@ -8,7 +8,7 @@ description: Read the trip target and explore the journeys behind your totals.
 
 Open **How many more trips?** on Overview. The average-fare scenario divides the remaining amount by your average priced fare, then rounds up. Zero-fare journeys count in the average. Unpriced journeys do not, and the result states that coverage is incomplete.
 
-The route scenario uses a chosen directional route's saved fare during the selected pass period. A zero or unknown fare cannot produce a meaningful remaining trip count. The answer is a scenario, not a prediction of your future travel.
+The route scenario uses the automatic fare for the chosen stations and date within the selected pass period, or a saved directional override. A zero or unknown fare cannot produce a meaningful remaining trip count. The answer is a scenario, not a prediction of your future travel.
 
 ## Choose the period
 
@@ -17,6 +17,10 @@ Insights defaults to the selected pass. Switch to **Calendar month** to inspect 
 ## Charts
 
 The cumulative chart compares recorded fare value with the pass-price line when viewing a pass period. The daily chart shows how many trips were recorded on each date. Select a point, bar or row in the daily values list to see the journeys behind it.
+
+## Rail fare distance
+
+Insights adds the rail fare distances of covered journeys and states how many journeys are included. It updates with the chosen pass period or calendar month. This is LTA's charging distance and can differ from the route you took. Dates outside the bundled coverage are excluded from this distance total.
 
 ## Most travelled route
 

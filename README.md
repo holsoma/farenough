@@ -30,7 +30,7 @@ Record your Singapore MRT and LRT journeys. Compare their fares with your conces
 
 <p align="center">
   <a href="site/public/screenshots/overview.png"><img src="site/public/screenshots/overview.png" width="220" alt="Overview: pass cost, recorded fares and estimated savings" /></a>
-  <a href="site/public/screenshots/trips.png"><img src="site/public/screenshots/trips.png" width="220" alt="Journeys: station pairs and fares grouped by date" /></a>
+  <a href="site/public/screenshots/automatic-fare.png"><img src="site/public/screenshots/automatic-fare.png" width="220" alt="Journey entry: automatic adult fare and rail fare distance" /></a>
   <a href="site/public/screenshots/map.png"><img src="site/public/screenshots/map.png" width="220" alt="Insights: monthly journey connections on a Singapore map" /></a>
 </p>
 
@@ -41,14 +41,14 @@ Record your Singapore MRT and LRT journeys. Compare their fares with your conces
 | | What you can do |
 | --- | --- |
 | **Pass comparison** | Compare recorded adult fares with the price and dates of your undergraduate train pass. |
-| **Quick journey entry** | Choose stations, save favourite routes and correct individual fares. |
+| **Automatic fares** | Choose stations to see the adult fare and rail fare distance, offline. Save favourite routes and correct individual fares. |
 | **Trip targets** | See how many more journeys would cover your pass, using an average fare or a selected route. |
-| **Charts and maps** | Explore daily totals, your most travelled routes and monthly connections across Singapore. |
+| **Charts and maps** | Explore daily totals, rail fare distance, your most travelled routes and monthly connections across Singapore. |
 | **Import your old notes** | Copy a formatting prompt into an AI chat tool, then review and import its normalised JSON. |
 | **Your data, on your device** | Use the app offline. Export full backups or CSV files, and restore your records when needed. |
 
 > [!NOTE]
-> **Fare coverage:** fares come from saved, LTA-checked routes with explicit valid dates. There is no bundled automatic fare matrix. Missing fares are never counted as zero. Automatic transfers, time discounts and bus fares are outside this release.
+> **Fare coverage:** v0.2.0 includes automatic adult fares for all 16,836 station pairs among 184 MRT/LRT stations, for 12 July through 25 December 2026. Saved route fares and individual corrections override automatic amounts. Other dates need a checked fare. Automatic transfers, time discounts and bus fares are outside scope. See [data sources and coverage](DATA_SOURCES.md#automatic-fares-in-020).
 
 ## Documentation
 
@@ -71,7 +71,10 @@ Each release includes a SHA-256 checksum and signing-certificate details. See [S
 
 Install JDK 21, Android SDK API 36 and Build Tools 36.0.0. Configure `JAVA_HOME` and `ANDROID_HOME` or the SDK location in Android Studio.
 
+Use Python 3 to restore the ignored fare asset from the published APK. The helper verifies the APK and asset against the checksums in [data/rail-fares-source.json](data/rail-fares-source.json). This is a build step; the installed app remains offline.
+
 ```sh
+python scripts/restore_rail_fares.py
 ./gradlew :core:test :app:assembleDebug :app:lintDebug
 ./gradlew :app:connectedDebugAndroidTest
 ```
@@ -91,7 +94,7 @@ The website requires Node.js 24, or at least 22.23.4, and serves at `/farenough/
 
 The app has no internet permission. Data lives in its private Room database. Android cloud backup and automatic device transfer are excluded; use explicit backup/restore. Exported files are unencrypted and go to the location you choose. The external LLM workflow only shares text when you paste it into that external service.
 
-Map sources, transformations and checksums are listed in [data/sources.json](data/sources.json) and [DATA_SOURCES.md](DATA_SOURCES.md). The map shows endpoints, not actual rail paths. No geographic distances are used to calculate fares.
+Map sources, transformations and checksums are listed in [data/sources.json](data/sources.json) and [DATA_SOURCES.md](DATA_SOURCES.md). The fare table is distributed inside the APK, with no separate JSON download or copy in Git. The map shows endpoints, not actual rail paths. No geographic distances are used to calculate fares.
 
 ## Contribute
 

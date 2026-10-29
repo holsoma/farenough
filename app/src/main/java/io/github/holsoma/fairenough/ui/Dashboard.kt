@@ -75,7 +75,10 @@ import io.github.holsoma.fairenough.core.*
 
 @Composable fun TripRow(model: AppModel, trip: Trip, onClick: () -> Unit) {
     ListItem(modifier = Modifier.clickable(onClick = onClick), headlineContent = { Text("${model.name(trip.origin)} → ${model.name(trip.destination)}") }, supportingContent = {
-        Text(if (trip.correctionCents != null) "Corrected: ${trip.correctionReason}" else if (trip.fareCents == null) "Fare needed" else trip.fareSource)
+        Column {
+            Text(if (trip.correctionCents != null) "Corrected: ${trip.correctionReason}" else if (trip.fareCents == null) "Fare needed" else trip.fareSource)
+            model.repository.railFares.quote(trip)?.distanceMetres?.let { Text("${railDistance(it)} rail fare distance") }
+        }
     }, trailingContent = { Text(trip.effectiveFare?.let(::money) ?: "Not priced", fontWeight = FontWeight.Medium) })
 }
 
@@ -100,7 +103,7 @@ import io.github.holsoma.fairenough.core.*
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(needed?.toString() ?: "?", fontSize = 80.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
                     Text(if (needed == 0L) "No more trips needed to cover the pass at the recorded fares." else "More one-way trips in this scenario", style = MaterialTheme.typography.titleLarge)
-                    Text(if (method == "average") c.averageCents?.let { "Using an average of ${money(kotlin.math.round(it).toLong())}, including recorded zero-fare journeys. Future trips can cost a different amount." } ?: "Record at least one priced journey first." else quote?.let { "Using ${money(it.cents)} per trip, at the fare valid on ${readableDate(date)}." } ?: "Choose a route with a saved fare valid during this pass period.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(if (method == "average") c.averageCents?.let { "Using an average of ${money(kotlin.math.round(it).toLong())}, including recorded zero-fare journeys. Future trips can cost a different amount." } ?: "Record at least one priced journey first." else quote?.let { "Using ${money(it.cents)} per trip, at the fare valid on ${readableDate(date)}." } ?: "Choose two stations. Dates outside the automatic fare coverage need a saved route fare.", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }

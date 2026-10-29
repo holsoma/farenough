@@ -36,7 +36,9 @@ jobs:
           FARENOUGH_KEYSTORE: ${{ runner.temp }}/fairenough.jks
           FARENOUGH_STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
           FARENOUGH_KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
-        run: ./gradlew :app:assembleRelease --no-daemon
+        run: |
+          python3 scripts/restore_rail_fares.py
+          ./gradlew :app:assembleRelease --no-daemon
       - name: Verify and prepare release assets
         run: |
           set -euo pipefail
@@ -44,7 +46,7 @@ jobs:
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs ".release/farenough-$GITHUB_REF_NAME.apk" > .release/signing-certificate.txt
           (cd .release && sha256sum *.apk > SHA256SUMS.txt)
           cp CHANGELOG.md .release/release-notes.md
-          printf '\nAndroid 8.0+. Import and backup formats: version 1. Fare source: saved LTA-checked route fares.\n' >> .release/release-notes.md
+          printf '\nAndroid 8.0+. Import and backup formats: version 1. The APK includes offline LTA calculator results; coverage is documented in DATA_SOURCES.md.\n' >> .release/release-notes.md
       - name: Create or refresh draft
         env:
           GH_TOKEN: ${{ github.token }}

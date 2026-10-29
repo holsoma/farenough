@@ -51,3 +51,15 @@ The [repository](https://github.com/holsoma/farenough) is public. [Release v0.1.
 The [website and guide](https://holsoma.github.io/farenough/) are live. [Pages deployment 40658501798](https://github.com/holsoma/farenough/actions/runs/40658501798) succeeded from `main`, using the existing environment permission. All twelve regular pages, fourteen public assets, the APK download link and the custom 404 passed live verification. Future releases deploy the site from `main` as documented in `RELEASING.md`.
 
 Physical handset testing and testing on Android 8 are not yet complete. The minimum supported version is a build configuration, not a claim that every supported Android version has been tested.
+
+## Automatic-fare candidate, 29 October 2026
+
+Version 0.2.0, code 5, adds offline adult fare and rail fare distance lookup for every pair among the 184 supported stations. All 16,836 pairs were collected from the LTA calculator. A separate set of 193 reverse-direction requests matched every stored distance and fare, including eight prices which differ from the general distance-band table. The dataset is limited to 12 July through 25 December 2026. See [DATA_SOURCES.md](DATA_SOURCES.md) for provenance and the unresolved redistribution terms.
+
+- All 28 core tests pass, including full dataset coverage, official quote fixtures, date boundaries, import pricing, distance totals and preservation of existing prices and corrections.
+- All six Android instrumentation tests pass on API 36. They cover live station/date changes, automatic import prices, distance totals, saved-fare removal, unchanged edits to stored fares, navigation, backup round trips and import undo.
+- Android lint reports no errors. The date field no longer retains focus behind station selection and reopens its keyboard over the fare preview.
+- The signed APK contains the exact validated asset, whose SHA-256 is `b552b7437884bcae048f084be74d702cb435e5566eec3cf65113f7c94c1489c4`.
+- Installed the new signed APK over published v0.1.0, code 4, without uninstalling. Before/after exports match every field except the three expected automatic pricing fields on one previously unpriced journey. Its regular fare became S$1.49. The saved S$2.00 route fare, S$1.50 individual correction, pass, preferences, favourite route and import history remained unchanged.
+
+Local deliverable: `artifacts/farenough-v0.2.0-local.apk`, SHA-256 `451fc31304bcfbca0e365e31eb05c3fc4487205411ee0814545a30506098e81e`. It uses the original certificate recorded in `SIGNING.md`. The adjacent checksum, `rail-fares-report.json`, `automatic-fares-upgrade-check.json` and `automatic-fares-screenshots/` contain the delivery evidence. This candidate was initially kept local. The repository owner subsequently authorised publishing this exact signed APK with the fare table embedded, while keeping the table out of Git and separate release downloads. Public source builds restore the asset from that checksum-pinned APK.

@@ -32,7 +32,7 @@ import io.github.holsoma.fairenough.core.*
         item {
             Column(Modifier.fillMaxWidth()) {
                 SettingsRow("Import journeys", "Copy the prompt and review normalised records", onImport)
-                SettingsRow("Saved route fares", "${snapshot.routeFares.size} checked fares; used only for their valid dates", onFares)
+                SettingsRow("Saved route fares", "${snapshot.routeFares.size} checked overrides; used only for their valid dates", onFares)
                 SettingsRow("Create full backup", "Passes, journeys, fares, imports and preferences", onBackup)
                 SettingsRow("Export journeys as CSV", "A spreadsheet-friendly copy, not a full backup", onCsv)
                 SettingsRow("Restore a backup", "Review first, then export current data before replacement", onRestore)
@@ -48,7 +48,8 @@ import io.github.holsoma.fairenough.core.*
         item { HorizontalDivider(); Text("Appearance", Modifier.padding(top = 18.dp), style = MaterialTheme.typography.titleLarge) }
         item { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("system", "light", "dark").forEach { value -> FilterChip(snapshot.preferences.appearance == value, { model.appearance(value) }, label = { Text(value.replaceFirstChar { it.uppercase() }) }) } } }
         item { HorizontalDivider(); Text("About farenough", Modifier.padding(top = 18.dp), style = MaterialTheme.typography.titleLarge); Text("Version ${BuildConfig.VERSION_NAME}", Modifier.padding(top = 8.dp)) }
-        item { Notice("The comparison uses regular adult card fares and any corrections you make. Separate records are separate journeys. Automatic transfer and time-based discounts are not applied. Saved route fares are the current pricing source; no complete official fare matrix is bundled.") }
+        item { Text("Automatic fares for ${model.fareData.stationIds.size} MRT/LRT stations", style = MaterialTheme.typography.titleMedium); Text("${readableDate(model.fareData.validFrom)} to ${readableDate(model.fareData.validUntil)}. Checked ${readableDate(model.fareData.retrieved)}.", Modifier.padding(top = 8.dp), style = MaterialTheme.typography.bodySmall) }
+        item { Notice("Selecting stations shows their rail fare distance and regular adult fare from the bundled LTA calculator results. Saved route fares override these values; individual corrections take precedence. Separate records are separate journeys. Transfer and time-based discounts are not applied automatically.") }
         item { Text("Station positions: LTA DataMall, September 2026. Coastline: SLA National Map Polygon. Adapted under the Singapore Open Data Licence. CCL6 names and code updates are documented in the source manifest.", style = MaterialTheme.typography.bodySmall) }
         item {
             Column {
@@ -71,14 +72,14 @@ import io.github.holsoma.fairenough.core.*
 @Composable fun FareList(model: AppModel, snapshot: Snapshot, onEdit: (RouteFare?) -> Unit) {
     val missing = routeStatistics(snapshot.trips.filter { it.fareCents == null && it.correctionCents == null })
     LazyColumn(contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { PageTitle("Saved route fares", "Check a regular adult fare once, then reuse it for that route and fare period.") }
+        item { PageTitle("Saved route fares", "Override an automatic fare, or add a checked fare for dates outside the bundled data.") }
         item { Button(onClick = { onEdit(null) }, modifier = Modifier.fillMaxWidth()) { Text("Add a checked fare") } }
         if (missing.isNotEmpty()) item { Text("Routes needing a fare", style = MaterialTheme.typography.titleLarge) }
         items(missing, key = { "missing-${it.origin}-${it.destination}" }) { route ->
             ListItem(headlineContent = { Text("${model.name(route.origin)} → ${model.name(route.destination)}") }, supportingContent = { Text("${route.count} unpriced trips") }, modifier = Modifier.clickable { onEdit(RouteFare(origin = route.origin, destination = route.destination, start = "2025-12-27", end = "2026-12-25", cents = 0)) })
         }
         item { Text("Checked fares", style = MaterialTheme.typography.titleLarge) }
-        if (snapshot.routeFares.isEmpty()) item { Notice("No fares saved yet. Missing fares never count as zero in your pass comparison.") }
+        if (snapshot.routeFares.isEmpty()) item { Notice("No overrides saved. Automatic fares apply where data is available. Missing fares never count as zero in your pass comparison.") }
         items(snapshot.routeFares.sortedWith(compareBy<RouteFare> { model.name(it.origin) }.thenBy { it.start })) { fare ->
             ListItem(headlineContent = { Text("${model.name(fare.origin)} → ${model.name(fare.destination)}") }, supportingContent = { Text("${readableDate(fare.start)} to ${readableDate(fare.end)}") }, trailingContent = { Text(money(fare.cents)) }, modifier = Modifier.clickable { onEdit(fare) })
         }

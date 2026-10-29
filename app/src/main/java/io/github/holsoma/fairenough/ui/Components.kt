@@ -10,6 +10,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,7 +58,9 @@ fun periodLabel(pass: PassPeriod): String = "${readableDate(pass.start)} to ${re
 @Composable fun StationField(label: String, value: String, stations: List<Station>, onChange: (String) -> Unit) {
     var showing by remember { mutableStateOf(false) }
     val station = stations.find { it.id == value }
-    OutlinedButton(onClick = { showing = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp), shape = MaterialTheme.shapes.small, contentPadding = PaddingValues(16.dp)) {
+    val focus = LocalFocusManager.current
+    val keyboard = LocalSoftwareKeyboardController.current
+    OutlinedButton(onClick = { focus.clearFocus(); keyboard?.hide(); showing = true }, modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp), shape = MaterialTheme.shapes.small, contentPadding = PaddingValues(16.dp)) {
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(3.dp)) {
             Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(station?.name ?: "Choose a station", style = MaterialTheme.typography.bodyLarge)
@@ -72,7 +76,7 @@ fun periodLabel(pass: PassPeriod): String = "${readableDate(pass.start)} to ${re
                 LazyColumn(Modifier.heightIn(max = 380.dp)) {
                     if (filtered.isEmpty()) item { Text("No matching stations.", Modifier.padding(16.dp)) }
                     items(filtered, key = { it.id }) { s ->
-                        ListItem(headlineContent = { Text(s.name) }, supportingContent = { Text(s.codes.joinToString(" / ")) }, modifier = Modifier.clickable { onChange(s.id); showing = false })
+                        ListItem(headlineContent = { Text(s.name) }, supportingContent = { Text(s.codes.joinToString(" / ")) }, modifier = Modifier.clickable { keyboard?.hide(); onChange(s.id); showing = false })
                     }
                 }
             }

@@ -17,7 +17,8 @@ class AppModel(app: Application): AndroidViewModel(app) {
     val state = repository.state.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
     val selectedPass = repository.selectedPass.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
     val stations get() = repository.stations
-    val engine = FareEngine()
+    val engine get() = repository.engine
+    val fareData get() = repository.railFares.data
     var message by mutableStateOf<String?>(null)
     var working by mutableStateOf(false)
     var importReview by mutableStateOf<ImportReview?>(null)
@@ -61,6 +62,12 @@ class AppModel(app: Application): AndroidViewModel(app) {
             val previous = old.routeFares.find { it.id == fare.id }
             val fares = old.routeFares.filterNot { it.id == fare.id } + fare
             old.copy(routeFares = fares, trips = old.trips.map { if (fare.matches(it) || previous?.matches(it) == true) engine.assess(it, fares) else it })
+        }
+    }
+    fun removeFare(fare: RouteFare, done: () -> Unit) = run(done) {
+        repository.update { old ->
+            val remaining = old.routeFares.filterNot { it.id == fare.id }
+            old.copy(routeFares = remaining, trips = old.trips.map { if (fare.matches(it)) engine.assess(it, remaining) else it })
         }
     }
     fun review(text: String) = run { val review = reviewImport(text, stations, repository.current(), engine); withContext(Dispatchers.Main) { importReview = review } }

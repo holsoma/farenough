@@ -16,7 +16,7 @@ The app supports one person's pass history. Pass periods cannot overlap. Use the
 
 Press **+**, choose the travel date and your start and end stations, then save. A journey includes line changes inside the paid area. Each saved entry is treated as a separate paid journey.
 
-If its fare is unknown, the journey is still saved. It appears as **Fare needed** until you add a checked route fare or a correction.
+Choosing two stations shows the regular adult fare and rail fare distance automatically for travel dates from **12 July through 25 December 2026**. If its fare is unavailable, the journey is still saved and marked **Fare needed** until you add a checked route fare or a correction.
 
 ## Check the result
 

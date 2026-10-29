@@ -1,0 +1,7 @@
+{
+  "datasetId": "lta-2026-10-29-adult",
+  "apkUrl": "https://github.com/holsoma/farenough/releases/download/v0.2.0/farenough-v0.2.0.apk",
+  "apkSha256": "451fc31304bcfbca0e365e31eb05c3fc4487205411ee0814545a30506098e81e",
+  "assetPath": "assets/rail-fares.json",
+  "assetSha256": "b552b7437884bcae048f084be74d702cb435e5566eec3cf65113f7c94c1489c4"
+}

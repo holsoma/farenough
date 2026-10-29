@@ -34,14 +34,16 @@ class LocalRepository(context: Context) {
     private val mutex = Mutex()
     val stations: List<Station> = ExchangeJson.decodeFromString(app.assets.open("stations.json").bufferedReader().use { it.readText() })
     val coastline: List<List<List<Double>>> = ExchangeJson.decodeFromString(app.assets.open("coastline.json").bufferedReader().use { it.readText() })
-    val state: Flow<Snapshot> = db.records().observe().map(::decode).flowOn(Dispatchers.IO)
+    val railFares = RailFareTable(ExchangeJson.decodeFromString(app.assets.open("rail-fares.json").bufferedReader().use { it.readText() }))
+    val engine = FareEngine(automatic = railFares)
+    val state: Flow<Snapshot> = db.records().observe().map { priceMissingTrips(decode(it), engine) }.flowOn(Dispatchers.IO)
     val selectedPass: Flow<String?> = app.viewPreferences.data.map { it[stringPreferencesKey("pass")] }
     suspend fun selectPass(id: String) { app.viewPreferences.edit { it[stringPreferencesKey("pass")] = id } }
 
-    suspend fun current(): Snapshot = decode(db.records().all())
+    suspend fun current(): Snapshot = priceMissingTrips(decode(db.records().all()), engine)
     suspend fun update(change: (Snapshot) -> Snapshot) = mutex.withLock {
         db.withTransaction {
-            val after = change(decode(db.records().all()))
+            val after = priceMissingTrips(change(priceMissingTrips(decode(db.records().all()), engine)), engine)
             db.records().clear()
             db.records().insert(encode(after))
         }

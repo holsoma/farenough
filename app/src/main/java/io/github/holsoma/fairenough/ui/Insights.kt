@@ -26,7 +26,7 @@ import java.time.YearMonth
     val trips = snapshot.trips.filter { it.date in start..end }
     val days = remember(trips, start, end) { dailyStatistics(trips, start, end) }
     val routes = remember(trips) { routeStatistics(trips) }
-    val priced = trips.count { it.effectiveFare != null }
+    val distance = remember(trips) { railDistanceTotal(trips, model.repository.railFares) }
     val selected = routes.find { "${it.origin}|${it.destination}" == selectedRoute }
     LazyColumn(contentPadding = PaddingValues(20.dp, 12.dp, 20.dp, 100.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
         item { PageTitle("Your travels, in view", "${readableDate(start)} to ${readableDate(end)}") }
@@ -42,7 +42,7 @@ import java.time.YearMonth
             }
         }
         item { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("Charts", "Map", "Routes").forEach { label -> FilterChip(view == label, { view = label }, label = { Text(label) }) } } }
-        if (view != "Map") item { InsightsSummary(trips) }
+        if (view != "Map") item { InsightsSummary(trips, distance) }
         if (trips.isEmpty()) item { Notice("No recorded journeys in this period. Try another month or add a journey.") }
         else when (view) {
             "Charts" -> {
@@ -66,7 +66,7 @@ import java.time.YearMonth
             else -> {
                 if (view == "Map") {
                     item { TravelMap(model.stations, model.repository.coastline, routes, selectedRoute) { selectedRoute = "${it.origin}|${it.destination}" } }
-                    item { InsightsSummary(trips) }
+                    item { InsightsSummary(trips, distance) }
                     val unmapped = trips.count { t -> listOf(t.origin, t.destination).any { model.station(it).latitude == null } }
                     if (unmapped > 0) item { Notice("$unmapped journeys have an unavailable station location. They remain in the totals and route list.") }
                 }
@@ -92,7 +92,7 @@ import java.time.YearMonth
     }
 }
 
-@Composable private fun InsightsSummary(trips: List<Trip>) {
+@Composable private fun InsightsSummary(trips: List<Trip>, distance: RailDistanceTotal) {
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Metric(trips.size.toString(), "Trips", Modifier.weight(1f))
@@ -100,5 +100,9 @@ import java.time.YearMonth
             Metric(distinctEndpoints(trips).toString(), "Start/end stations", Modifier.weight(1f))
         }
         Text("${money(trips.sumOf { it.effectiveFare?.toLong() ?: 0 })} in recorded fares. Based on ${trips.count { it.effectiveFare != null }} of ${trips.size} trips.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (distance.coveredTrips > 0) {
+            Metric(railDistance(distance.metres), "Rail fare distance")
+            Text("Covers ${distance.coveredTrips} of ${distance.totalTrips} trips. LTA's charging distance can differ from the route you took.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
     }
 }

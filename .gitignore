@@ -18,4 +18,7 @@ site/dist/
 site/.astro/
 .shots/
 artifacts/
+# Fare data is bundled in the APK and restored for builds, not tracked separately.
+app/src/main/assets/rail-fares.json
+__pycache__/
 *.log

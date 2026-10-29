@@ -42,20 +42,27 @@ data class Preferences(val appearance: String = "system", val favourites: List<S
 data class Snapshot(val passes: List<PassPeriod> = emptyList(), val trips: List<Trip> = emptyList(), val routeFares: List<RouteFare> = emptyList(), val batches: List<ImportBatch> = emptyList(), val preferences: Preferences = Preferences())
 
 @Serializable
-data class FareQuote(val cents: Int, val source: String, val version: String)
+data class FareQuote(val cents: Int, val source: String, val version: String, val distanceMetres: Int? = null)
 
 /** No distance guessed from coordinates. A missing quote stays null. */
-class FareEngine(private val bundled: List<RouteFare> = emptyList()) {
+class FareEngine(private val bundled: List<RouteFare> = emptyList(), private val automatic: RailFareTable? = null) {
     fun quote(trip: Trip, saved: List<RouteFare>): FareQuote? {
+        if (trip.origin == trip.destination || !validDate(trip.date)) return null
+        val official = automatic?.quote(trip)
         val custom = saved.singleOrNull { it.matches(trip) }
-        val fare = custom ?: bundled.singleOrNull { it.matches(trip) } ?: return null
-        return FareQuote(fare.cents, fare.source, "${fare.start}/${fare.end}")
+        val fare = custom ?: bundled.singleOrNull { it.matches(trip) } ?: return official
+        return FareQuote(fare.cents, fare.source, "${fare.start}/${fare.end}", official?.distanceMetres)
     }
     fun assess(trip: Trip, saved: List<RouteFare>): Trip {
         val q = quote(trip, saved)
         return trip.copy(fareCents = q?.cents, fareSource = q?.source ?: "Fare needed", fareVersion = q?.version)
     }
 }
+
+/** Fill missing regular fares on upgrade or restore without changing saved prices or corrections. */
+fun priceMissingTrips(snapshot: Snapshot, engine: FareEngine): Snapshot = snapshot.copy(
+    trips = snapshot.trips.map { if (it.fareCents == null && engine.quote(it, snapshot.routeFares) != null) engine.assess(it, snapshot.routeFares) else it },
+)
 
 fun validDate(value: String): Boolean = runCatching { LocalDate.parse(value).toString() == value }.getOrDefault(false)
 fun validatePass(pass: PassPeriod, existing: List<PassPeriod>): String? = when {

@@ -39,7 +39,7 @@ The chat tool must ask which year you mean and whether `TP` is Toa Payoh, Tanjon
 }
 ```
 
-The app's review shows **12 Oct 2026, Toa Payoh → Raffles Place**. If you have not saved a fare for that route and date, it shows **Fare needed**. You check the row and confirm the import before it enters your records.
+The app's review shows **12 Oct 2026, Toa Payoh → Raffles Place**. The app calculates the adult fare automatically for this covered date. Dates outside the bundled period show **Fare needed** unless a checked fare applies. You check the row and confirm the import before it enters your records.
 
 ## Version 1 format
 

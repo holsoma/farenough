@@ -108,17 +108,22 @@ class AppJourneyTest {
         ActivityScenario.launch(MainActivity::class.java).use {
             compose.waitUntil(15_000) { compose.onAllNodesWithText("Set up a pass").fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithText("Set up a pass").performClick()
+            compose.onNodeWithText("First valid day").performTextReplacement("2026-10-01")
+            compose.onNodeWithText("Last valid day").performTextReplacement("2026-10-31")
             compose.onNodeWithText("Save pass").performScrollTo().performClick()
             compose.waitUntil(10_000) { runBlocking { repo.current().passes.size == 1 } }
             // The database commit can precede the form's main-thread completion callback.
             compose.waitUntil(15_000) { compose.onAllNodesWithContentDescription("Record a journey").fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithContentDescription("Record a journey").performClick()
+            compose.onNodeWithText("Travel date").performTextReplacement("2026-10-29")
             compose.onNodeWithText("From", useUnmergedTree = true).performScrollTo().performClick()
             compose.onNodeWithText("Station name or code").performTextInput("Toa Payoh")
             compose.onNode(hasText("Toa Payoh") and hasText("NS19")).performClick()
             compose.onNodeWithText("To", useUnmergedTree = true).performScrollTo().performClick()
             compose.onNodeWithText("Station name or code").performTextInput("Bugis")
             compose.onNode(hasText("Bugis") and hasText("DT14 / EW12")).performClick()
+            compose.onNodeWithText("Regular adult fare: S$1.59", substring = true).performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Rail fare distance: 5.3 km", substring = true).assertIsDisplayed()
             compose.onNodeWithText("This journey's corrected fare, S$ (optional)").performScrollTo().performTextInput("1.50")
             compose.onNodeWithText("Reason for correction").performScrollTo().performTextInput("Example discount")
             compose.onNodeWithText("Save journey").performScrollTo().performClick()
@@ -127,8 +132,7 @@ class AppJourneyTest {
             compose.onNodeWithText("S$46.50").assertExists()
             compose.onNodeWithText("Trips", useUnmergedTree = true).performClick()
             compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
-            val date = LocalDate.now(java.time.ZoneId.of("Asia/Singapore"))
-            val text = """{"format":"farenough-trips","version":1,"trips":[{"date":"$date","origin":"Woodlands","destination":"Marina Bay"},{"date":"$date","origin":"Woodlands","destination":"Marina Bay"}]}"""
+            val text = """{"format":"farenough-trips","version":1,"trips":[{"date":"2026-10-29","origin":"Stevens","destination":"Promenade"},{"date":"2026-10-29","origin":"Stevens","destination":"Promenade"}]}"""
             compose.onNodeWithText("Normalised JSON").performScrollTo().performTextInput(text)
             compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Review journeys"))
             compose.onNodeWithText("Review journeys").performClick()
@@ -139,7 +143,91 @@ class AppJourneyTest {
             compose.waitUntil(10_000) { runBlocking { repo.current().trips.size == 3 } }
             val saved = runBlocking { repo.current() }
             assertEquals(150, saved.trips.single { it.correctionCents != null }.effectiveFare)
-            assertEquals(2, saved.trips.count { it.fareCents == null && it.correctionCents == null })
+            assertEquals(159, saved.trips.single { it.correctionCents != null }.fareCents)
+            assertEquals(2, saved.trips.count { it.fareCents == 149 && it.correctionCents == null })
+        }
+    }
+
+    @Test fun removingSavedFareRestoresAutomaticAmountsAndPreservesCorrections() {
+        val repo = LocalRepository(app)
+        val fare = RouteFare(origin = "NS19", destination = "DT14", start = "2026-10-01", end = "2026-10-31", cents = 200)
+        val regular = repo.engine.assess(Trip(date = "2026-10-29", origin = "NS19", destination = "DT14"), listOf(fare))
+        val corrected = regular.copy(id = newId(), correctionCents = 150, correctionReason = "Existing correction")
+        runBlocking { repo.update { Snapshot(passes = listOf(PassPeriod(start = "2026-10-01", end = "2026-10-31")), routeFares = listOf(fare), trips = listOf(regular, corrected)) } }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            compose.waitUntil(15_000) { compose.onAllNodesWithText("More", useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("More", useUnmergedTree = true).performClick()
+            compose.onNodeWithText("Saved route fares").performScrollTo().performClick()
+            compose.onNodeWithText("Toa Payoh → Bugis").performClick()
+            compose.onNodeWithText("Remove saved fare").performScrollTo().performClick()
+            compose.onNodeWithText("Remove fare").performClick()
+            compose.waitUntil(10_000) { runBlocking { repo.current().routeFares.isEmpty() } }
+            val saved = runBlocking { repo.current() }
+            assertEquals(setOf(regular.id, corrected.id), saved.trips.map { trip -> trip.id }.toSet())
+            assertTrue(saved.trips.all { trip -> trip.fareCents == 159 })
+            assertEquals(150, saved.trips.single { trip -> trip.id == corrected.id }.effectiveFare)
+            assertEquals("Existing correction", saved.trips.single { trip -> trip.id == corrected.id }.correctionReason)
+        }
+    }
+
+    @Test fun automaticFarePreviewChangesWithStationsAndDate() {
+        val repo = LocalRepository(app)
+        runBlocking { repo.update { Snapshot(passes = listOf(PassPeriod(start = "2026-10-01", end = "2026-10-31"))) } }
+        fun choose(label: String, name: String, codes: String) {
+            compose.onNodeWithText(label, useUnmergedTree = true).performScrollTo().performClick()
+            compose.onNodeWithText("Station name or code").performTextReplacement(name)
+            compose.onNode(hasText(name) and hasText(codes)).performClick()
+        }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            compose.waitUntil(15_000) { compose.onAllNodesWithContentDescription("Record a journey").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithContentDescription("Record a journey").performClick()
+            compose.onNodeWithText("Travel date").performTextReplacement("2026-10-29")
+            choose("From", "Bukit Panjang", "BP6 / DT1")
+            choose("To", "Promenade", "CC4 / DT15")
+            compose.onNodeWithText("Regular adult fare: S$2.11", substring = true).performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Rail fare distance: 16.2 km", substring = true).assertIsDisplayed()
+            choose("From", "Stevens", "DT10 / TE11")
+            compose.onNodeWithText("Regular adult fare: S$1.49", substring = true).performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Rail fare distance: 5.2 km", substring = true).assertIsDisplayed()
+            capture("automatic-fare")
+            compose.onNodeWithText("Travel date").performScrollTo().performTextReplacement("2025-10-29")
+            compose.onNodeWithText("Automatic fares are unavailable for this travel date.", substring = true).performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Regular adult fare:", substring = true).assertDoesNotExist()
+            compose.onNodeWithText("Travel date").performScrollTo().performTextReplacement("2026-10-29")
+            compose.onNodeWithText("Swap stations").performScrollTo().performClick()
+            compose.onNodeWithText("Regular adult fare: S$1.49", substring = true).performScrollTo().assertIsDisplayed()
+            assertTrue(runBlocking { repo.current().trips.isEmpty() })
+            compose.onNodeWithText("Save journey").performScrollTo().performClick()
+            compose.waitUntil(10_000) { runBlocking { repo.current().trips.size == 1 } }
+            val saved = runBlocking { repo.current().trips.single() }
+            assertEquals(149, saved.fareCents)
+            assertEquals(repo.railFares.data.id, saved.fareVersion)
+            assertNull(saved.correctionCents)
+            compose.waitUntil(15_000) { compose.onAllNodesWithContentDescription("Record a journey").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("Insights", useUnmergedTree = true).performClick()
+            compose.onNodeWithText("Rail fare distance", useUnmergedTree = true).performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("5.2 km", useUnmergedTree = true).assertIsDisplayed()
+            capture("automatic-distance")
+        }
+    }
+
+    @Test fun editingRecordedFareRetainsItsPriceAndCorrection() {
+        val repo = LocalRepository(app)
+        val original = Trip(date = "2026-10-29", origin = "CC4", destination = "DT10", fareCents = 177, fareSource = "Earlier recorded fare", fareVersion = "earlier", correctionCents = 99, correctionReason = "Earlier discount")
+        // Seed before launch: separate Room instances do not share invalidation notifications.
+        runBlocking { repo.update { Snapshot(passes = listOf(PassPeriod(start = "2026-10-01", end = "2026-10-31")), trips = listOf(original)) } }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            compose.waitUntil(15_000) { compose.onAllNodesWithContentDescription("Record a journey").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNode(hasText("Trips") and hasClickAction()).performClick()
+            compose.onNodeWithText("Corrected: Earlier discount").assertExists()
+            compose.onNodeWithText("Promenade → Stevens").performClick()
+            compose.onNodeWithText("Regular adult fare: S$1.77", substring = true).performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Rail fare distance: 5.2 km", substring = true).assertIsDisplayed()
+            compose.onNodeWithText("Save journey").performScrollTo().performClick()
+            compose.waitUntil(10_000) { runBlocking { repo.current().trips.single().edited } }
+            val retained = runBlocking { repo.current().trips.single() }
+            assertEquals(177, retained.fareCents)
+            assertEquals(99, retained.effectiveFare)
         }
     }
 

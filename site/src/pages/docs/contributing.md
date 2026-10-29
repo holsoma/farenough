@@ -6,9 +6,10 @@ description: Run the Android tests, build the app and preview this website.
 
 ## Android
 
-Install JDK 21 and the Android SDK with API 36 and Build Tools 36.0.0. Set `JAVA_HOME` and `ANDROID_HOME`, or configure the SDK in Android Studio. The repository includes the Gradle wrapper.
+Install JDK 21, Python 3 and the Android SDK with API 36 and Build Tools 36.0.0. Set `JAVA_HOME` and `ANDROID_HOME`, or configure the SDK in Android Studio. The repository includes the Gradle wrapper. Restore the ignored fare asset from the published APK before building; the helper verifies both checksums recorded in `data/rail-fares-source.json`.
 
 ```sh
+python scripts/restore_rail_fares.py
 ./gradlew :core:test :app:assembleDebug :app:lintDebug
 ./gradlew :app:connectedDebugAndroidTest
 ```

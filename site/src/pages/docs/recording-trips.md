@@ -8,7 +8,9 @@ description: Record a journey, keep frequent routes close, and correct a discoun
 
 Choose your entry and exit stations by official name or station code. Internal train changes belong to that entry. If you exit and make another independently charged journey, record a new trip.
 
-The first version supports MRT and LRT. Bus journeys and automatic transfer grouping are outside its scope.
+The app supports MRT and LRT. Selecting stations updates the adult fare and rail fare distance immediately for covered dates. Bus journeys and automatic transfer grouping are outside its scope.
+
+<img src="/farenough/screenshots/automatic-fare.png" width="360" height="800" alt="Selecting Stevens and Promenade shows S$1.49 and 5.2 km for 29 October 2026." />
 
 ## Usual journeys
 
@@ -16,7 +18,7 @@ Choose **Save as a favourite route** in the journey form. Your saved routes appe
 
 ## Correct one fare
 
-The optional corrected-fare field applies to that journey alone. Add a reason, such as a known morning discount. Leave the field blank to use the saved regular route fare. Zero is a valid correction for a qualifying free journey.
+The optional corrected-fare field applies to that journey alone. Add a reason, such as a known morning discount. Leave the field blank to use the regular fare, including any saved route override. Zero is a valid correction for a qualifying free journey.
 
 ## Edit or delete
 
