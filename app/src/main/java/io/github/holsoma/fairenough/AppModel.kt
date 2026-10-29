@@ -20,6 +20,7 @@ class AppModel(app: Application): AndroidViewModel(app) {
     val engine get() = repository.engine
     val fareData get() = repository.railFares.data
     var message by mutableStateOf<String?>(null)
+    var notification by mutableStateOf<String?>(null)
     var working by mutableStateOf(false)
     var importReview by mutableStateOf<ImportReview?>(null)
     var importText by mutableStateOf("")

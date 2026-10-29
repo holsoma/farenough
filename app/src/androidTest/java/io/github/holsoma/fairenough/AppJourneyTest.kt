@@ -54,7 +54,7 @@ class AppJourneyTest {
                 assertTrue(androidx.core.view.WindowCompat.getInsetsController(activity.window, activity.window.decorView).isAppearanceLightStatusBars)
             }
             compose.onNodeWithText("How many more trips?").performScrollTo().performClick()
-            compose.onNodeWithText("Your next stop: enough").assertIsDisplayed()
+            compose.onNodeWithText("Trips needed").assertIsDisplayed()
             capture("target")
             compose.onNodeWithContentDescription("Back").performClick()
             compose.onNodeWithText("Trips", useUnmergedTree = true).performClick()
@@ -62,18 +62,10 @@ class AppJourneyTest {
             capture("trips")
             compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
             compose.onNodeWithText("Copy formatting prompt").assertIsDisplayed()
-            compose.onNodeWithText("Copy formatting prompt").performClick()
-            InstrumentationRegistry.getInstrumentation().runOnMainSync {
-                val clipboard = app.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                val prompt = clipboard.primaryClip!!.getItemAt(0).coerceToText(app).toString()
-                assertTrue(prompt.contains("BP6 | Bukit Panjang | DT1"))
-                assertTrue(prompt.contains("copy exactly ONE output code"))
-                assertFalse(prompt.contains("BP6 / DT1"))
-            }
             capture("import")
             compose.onNodeWithContentDescription("Back").performClick()
             compose.onNodeWithText("Insights", useUnmergedTree = true).performClick()
-            compose.onNodeWithText("Your travels, in view").assertIsDisplayed()
+            compose.onNodeWithText("Your travel history").assertIsDisplayed()
             capture("charts")
             compose.onNodeWithText("Map", useUnmergedTree = true).performClick()
             capture("map")
@@ -141,7 +133,7 @@ class AppJourneyTest {
             compose.onNodeWithText("Trips", useUnmergedTree = true).performClick()
             compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
             val text = """{"format":"farenough-trips","version":1,"trips":[{"date":"2026-10-29","origin":"BP6 / DT1","destination":"CC4 / DT15"},{"date":"2026-10-29","origin":"Stevens (DT10 / TE11)","destination":"Promenade"}]}"""
-            compose.onNodeWithText("Normalised JSON").performScrollTo().performTextInput(text)
+            compose.onNodeWithText("Formatted journey records").performScrollTo().performTextInput(text)
             compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Review journeys"))
             compose.onNodeWithText("Review journeys").performClick()
             compose.waitUntil(10_000) { compose.onAllNodesWithText("2 rows", substring = true).fetchSemanticsNodes().isNotEmpty() }
@@ -236,7 +228,7 @@ class AppJourneyTest {
             compose.onNode(hasText("Trips") and hasClickAction()).performClick()
             compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
             val input = """{"format":"farenough-trips","version":1,"trips":[{"date":"2026-06-02","origin":"CC26","destination":"CC33"}]}"""
-            compose.onNodeWithText("Normalised JSON").performScrollTo().performTextInput(input)
+            compose.onNodeWithText("Formatted journey records").performScrollTo().performTextInput(input)
             compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Review journeys"))
             compose.onNodeWithText("Review journeys").performClick()
             compose.onNode(hasScrollToIndexAction()).performScrollToIndex(0)
@@ -296,15 +288,61 @@ class AppJourneyTest {
             compose.onNodeWithText("Insights", useUnmergedTree = true).performClick()
             compose.onNodeWithText("Calendar month").performClick()
             compose.onNodeWithText("Choose month:", substring = true).performClick()
-            compose.onNodeWithText("2025-09").performClick()
+            compose.onNodeWithText(io.github.holsoma.fairenough.ui.monthLabel("2025-09")).performClick()
             compose.onNodeWithText("S$2.80 in recorded fares. Based on 2 of 2 trips.").performScrollTo().assertIsDisplayed()
-            compose.onNodeWithContentDescription("Cumulative recorded fare chart. Use the day list below for values.").performScrollTo().performTouchInput { click(center) }
-            compose.onNodeWithText("Journeys on ${io.github.holsoma.fairenough.ui.readableDate("2025-09-16")}").performScrollTo().assertIsDisplayed()
+            compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasContentDescription("Cumulative recorded fare chart. Use the day list below for values."))
+            compose.onNodeWithContentDescription("Cumulative recorded fare chart. Use the day list below for values.").performTouchInput { click(center.copy(x = center.x * 1.04f)) }
+            compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Journeys on ${io.github.holsoma.fairenough.ui.readableDate("2025-09-16")}"))
+            compose.onNodeWithText("Journeys on ${io.github.holsoma.fairenough.ui.readableDate("2025-09-16")}").assertIsDisplayed()
             compose.onNode(hasText("Stevens → Promenade") and hasClickAction()).performScrollTo().assertIsDisplayed()
             compose.onNode(hasScrollToIndexAction()).performScrollToIndex(0)
             compose.onNodeWithText("Map").performClick()
             compose.onNodeWithContentDescription("Singapore map with 2 directional connections. The route list below provides accessible details.").performScrollTo().assertIsDisplayed()
             capture("older-month-map")
+        }
+    }
+
+    @Test fun copyingImportInstructionsDoesNotBlockNavigation() {
+        val repo = LocalRepository(app)
+        runBlocking { repo.update { demo(repo) } }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            compose.waitUntil(15_000) { compose.onAllNodesWithContentDescription("Record a journey").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNode(hasText("Trips") and hasClickAction()).performClick()
+            compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
+            compose.onNodeWithText("Copy formatting prompt").performClick()
+            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+                val clipboard = app.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                val prompt = clipboard.primaryClip!!.getItemAt(0).coerceToText(app).toString()
+                assertTrue(prompt.contains("BP6 | Bukit Panjang | DT1"))
+                assertTrue(prompt.contains("copy exactly ONE output code"))
+                assertFalse(prompt.contains("BP6 / DT1"))
+                clipboard.clearPrimaryClip()
+            }
+            compose.onAllNodes(isDialog()).assertCountEquals(0)
+            compose.onNodeWithContentDescription("Back").performClick()
+            compose.onNodeWithText("Insights", useUnmergedTree = true).performClick()
+            compose.onNodeWithText("Your travel history").assertIsDisplayed()
+        }
+    }
+
+    @Test fun monthlyComparisonShowsChangesAndOpensTheSelectedMonth() {
+        val repo = LocalRepository(app)
+        val pass = PassPeriod(id = "october", start = "2026-10-01", end = "2026-10-31")
+        val trips = listOf("2025-09-10", "2025-09-11", "2026-10-01", "2026-10-02", "2026-10-03").map { Trip(date = it, origin = "DT10", destination = "CC4") }
+        runBlocking { repo.update { Snapshot(passes = listOf(pass), trips = trips) }; repo.selectPass(pass.id) }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            compose.waitUntil(15_000) { compose.onAllNodesWithContentDescription("Record a journey").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("Insights", useUnmergedTree = true).performClick()
+            compose.onNodeWithText("Compare").performScrollTo().performClick()
+            compose.onNodeWithText("Compare months").assertIsDisplayed()
+            compose.onNodeWithText("S$4.47").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("S$1.67 more than ${io.github.holsoma.fairenough.ui.monthLabel("2025-09")}.").performScrollTo().assertIsDisplayed()
+            compose.onNode(hasScrollToIndexAction()).performScrollToIndex(0)
+            capture("month-comparison")
+            compose.onNodeWithText("Explore ${io.github.holsoma.fairenough.ui.monthLabel("2026-10")}").performScrollTo().performClick()
+            compose.onNode(hasScrollToIndexAction()).performScrollToIndex(0)
+            compose.onNodeWithText("Choose month: ${io.github.holsoma.fairenough.ui.monthLabel("2026-10")}").assertIsDisplayed()
+            compose.onNodeWithText("S$4.47 in recorded fares. Based on 3 of 3 trips.").performScrollTo().assertIsDisplayed()
         }
     }
 

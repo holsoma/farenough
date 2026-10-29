@@ -55,3 +55,17 @@ fun dailyStatistics(trips: List<Trip>, start: String, end: String): List<DayStat
 }
 
 fun distinctEndpoints(trips: List<Trip>): Int = trips.flatMap { listOf(it.origin, it.destination) }.toSet().size
+
+data class MonthStats(val month: String, val trips: Int, val pricedTrips: Int, val travelDays: Int, val fareCents: Long) {
+    val complete: Boolean get() = trips == pricedTrips
+    val averageFare: Long? get() = if (pricedTrips == 0) null else kotlin.math.round(fareCents.toDouble() / pricedTrips).toLong()
+}
+
+fun monthlyStatistics(trips: List<Trip>): List<MonthStats> = trips.groupBy { it.date.take(7) }.map { (month, rows) ->
+    MonthStats(month, rows.size, rows.count { it.effectiveFare != null }, rows.map { it.date }.distinct().size,
+        rows.sumOf { it.effectiveFare?.toLong() ?: 0 })
+}.sortedByDescending { it.month }
+
+/** A fare change is comparable only when both months have every journey priced. */
+fun monthlyFareChange(current: MonthStats, previous: MonthStats): Long? =
+    if (current.complete && previous.complete) current.fareCents - previous.fareCents else null

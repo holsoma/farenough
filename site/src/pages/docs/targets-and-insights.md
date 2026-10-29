@@ -34,3 +34,10 @@ Selecting a connection or route-list row shows that route's recorded journeys. T
 
 
 To browse older imports, select **Calendar month**, then **Choose month**. The list shows each recorded month and its journey count. Pick a month to update Charts, Map and Routes together. You can still use Previous and Next to inspect months without records. Calendar views do not require a saved pass.
+
+
+## Compare calendar months
+
+Open **Insights → Compare**. Choose the month to inspect and a second recorded month. The app shows the selected month's recorded fares, its difference from the other month, journey counts, travel days and average fares. Tap a month in **Month by month** to select it, or choose **Explore** to open that month's charts and map.
+
+Switch the monthly bars between **Journeys** and **Fares**. Fare comparisons remain incomplete if either month has missing prices. Average fares use priced journeys only. A month still in progress, incomplete records, or a tariff change can affect the comparison. Calendar fare totals are not pass savings; pass comparisons continue to use each pass's actual validity dates.

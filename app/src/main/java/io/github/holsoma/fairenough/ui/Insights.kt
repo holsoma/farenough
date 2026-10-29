@@ -1,6 +1,8 @@
 package io.github.holsoma.fairenough.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,7 +23,7 @@ import java.time.YearMonth
     var selectedDate by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedRoute by rememberSaveable { mutableStateOf<String?>(null) }
     var chooseMonth by rememberSaveable { mutableStateOf(false) }
-    val recordedMonths = remember(snapshot.trips) { snapshot.trips.groupingBy { it.date.take(7) }.eachCount().toSortedMap(reverseOrder()) }
+    val recordedMonths = remember(snapshot.trips) { monthlyStatistics(snapshot.trips) }
     val month = YearMonth.parse(monthText)
     val start = if (!calendar && pass != null) pass.start else month.atDay(1).toString()
     val end = if (!calendar && pass != null) pass.end else month.atEndOfMonth().toString()
@@ -31,7 +33,10 @@ import java.time.YearMonth
     val distance = remember(trips) { railDistanceTotal(trips, model.repository.railFares) }
     val selected = routes.find { "${it.origin}|${it.destination}" == selectedRoute }
     LazyColumn(contentPadding = PaddingValues(20.dp, 12.dp, 20.dp, 100.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
-        item { PageTitle("Your travels, in view", "${readableDate(start)} to ${readableDate(end)}") }
+        item { PageTitle(if (view == "Compare") "Compare months" else "Your travel history", if (view == "Compare") "Choose two recorded months." else "${readableDate(start)} to ${readableDate(end)}") }
+        item { Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) { listOf("Charts", "Map", "Routes", "Compare").forEach { label -> FilterChip(view == label, { view = label }, label = { Text(label, style = MaterialTheme.typography.labelMedium) }) } } }
+        if (view == "Compare") item { MonthComparison(snapshot.trips) { monthText = it; calendar = true; selectedDate = null; selectedRoute = null; view = "Charts" } }
+        else {
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(!calendar, { calendar = false; selectedDate = null; selectedRoute = null }, label = { Text("Pass period") }, enabled = pass != null)
@@ -39,17 +44,17 @@ import java.time.YearMonth
             }
             if (calendar || pass == null) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                 TextButton(onClick = { monthText = month.minusMonths(1).toString(); selectedDate = null; selectedRoute = null }) { Text("Previous") }
-                TextButton(onClick = { chooseMonth = true }, modifier = Modifier.weight(1f)) { Text("Choose month: $monthText", fontWeight = FontWeight.Medium) }
+                TextButton(onClick = { chooseMonth = true }, modifier = Modifier.weight(1f)) { Text("Choose month: ${monthLabel(monthText)}", fontWeight = FontWeight.Medium) }
                 TextButton(onClick = { monthText = month.plusMonths(1).toString(); selectedDate = null; selectedRoute = null }) { Text("Next") }
             }
         }
-        item { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { listOf("Charts", "Map", "Routes").forEach { label -> FilterChip(view == label, { view = label }, label = { Text(label) }) } } }
-        if (view != "Map") item { InsightsSummary(trips, distance) }
+        if (view == "Routes") item { InsightsSummary(trips, distance) }
         if (trips.isEmpty()) item { Notice("No recorded journeys in this period. Try another month or add a journey.") }
         else when (view) {
             "Charts" -> {
                 if (trips.any { it.effectiveFare != null }) item { FareChart(days, if (!calendar) pass?.priceCents else null, days.indexOfFirst { it.date == selectedDate }.takeIf { it >= 0 }) { selectedDate = days[it].date } }
                 else item { Notice("Add missing fares to see a fare chart. Journey counts and map connections still include these trips.") }
+                item { InsightsSummary(trips, distance) }
                 item { CountChart(days) { selectedDate = days[it].date } }
                 if (selectedDate != null) {
                     item { Text("Journeys on ${readableDate(selectedDate!!)}", style = MaterialTheme.typography.titleMedium) }
@@ -92,30 +97,26 @@ import java.time.YearMonth
                 }
             }
         }
-    }
-    if (chooseMonth) AlertDialog(onDismissRequest = { chooseMonth = false }, title = { Text("Choose a recorded month") }, text = {
-        LazyColumn(Modifier.heightIn(max = 400.dp)) {
-            items(recordedMonths.keys.toList(), key = { it }) { value ->
-                ListItem(headlineContent = { Text(value) }, supportingContent = { Text("${recordedMonths.getValue(value)} journeys") },
-                    modifier = Modifier.clickable { monthText = value; calendar = true; selectedDate = null; selectedRoute = null; chooseMonth = false })
-            }
-            if (recordedMonths.isEmpty()) item { Text("No recorded months yet. Use Previous and Next to browse.") }
         }
-    }, confirmButton = { TextButton(onClick = { chooseMonth = false }) { Text("Close") } })
+    }
+    if (chooseMonth) MonthPicker(recordedMonths, onChoose = { monthText = it; calendar = true; selectedDate = null; selectedRoute = null; chooseMonth = false }, onDismiss = { chooseMonth = false })
 }
 
 @Composable private fun InsightsSummary(trips: List<Trip>, distance: RailDistanceTotal) {
-    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Metric(trips.size.toString(), "Trips", Modifier.weight(1f))
             Metric(trips.map { it.date }.distinct().size.toString(), "Travel days", Modifier.weight(1f))
-            Metric(distinctEndpoints(trips).toString(), "Start/end stations", Modifier.weight(1f))
+            Metric(distinctEndpoints(trips).toString(), "Stations", Modifier.weight(1f))
         }
         val pricedCount = trips.count { it.effectiveFare != null }
         Text(if (trips.isNotEmpty() && pricedCount == 0) "No fares recorded yet. ${trips.size} trips need fares." else "${money(trips.sumOf { it.effectiveFare?.toLong() ?: 0 })} in recorded fares. Based on $pricedCount of ${trips.size} trips.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         if (distance.coveredTrips > 0) {
-            Metric(railDistance(distance.metres), "Rail fare distance")
-            Text("Covers ${distance.coveredTrips} of ${distance.totalTrips} trips. LTA's charging distance can differ from the route you took.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Rail fare distance", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(railDistance(distance.metres), style = MaterialTheme.typography.labelLarge)
+            }
+            if (distance.coveredTrips != distance.totalTrips) Text("Distance covers ${distance.coveredTrips} of ${distance.totalTrips} trips.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

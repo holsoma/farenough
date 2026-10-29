@@ -5,7 +5,10 @@
 - Calculate earlier adult fares for 16,106 station pairs from 1 March 2025 through 11 July 2026, where a conservative distance check rules out any effect from CCL6.
 - Automatically price eligible existing records and new imports. Preserve recorded fares, corrections, dates, notes and import history.
 - Use the earlier fare table for dates before 27 December 2025, with the correct tariff boundary.
+- Compare any two recorded months by fares, journeys, travel days and average fare, with a selectable monthly history. Missing fares prevent a misleading monetary comparison.
 - Jump directly to recorded months in Insights and view their fare charts, journey counts and map.
+- Make charts visible sooner, add chart date labels, label the Pass action and show the percentage of pass price covered.
+- Replace blocking success dialogs with brief messages and simplify import instructions.
 - Identify these amounts as derived historical fares, separate from dated calculator observations.
 - Keep uncertain earlier routes, unopened stations and dates outside the supported period unpriced.
 - Include the unpriced-total improvements below and the interchange import fix from 0.2.1.

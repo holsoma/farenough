@@ -27,8 +27,9 @@ import io.github.holsoma.fairenough.core.*
                 Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = MaterialTheme.shapes.large) {
                     Column(Modifier.fillMaxWidth().padding(24.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                         Text(if (c.needsFares) "Fares needed" else if (c.difference > 0) "Estimated savings" else if (c.difference == 0L) "Pass cost covered" else "Still to cover", style = MaterialTheme.typography.titleMedium)
-                        Text(if (c.needsFares) "Not priced" else money(if (c.difference > 0) c.difference else c.remaining), fontSize = 46.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        Text(if (c.needsFares) "Not priced" else money(if (c.difference > 0) c.difference else c.remaining), fontSize = 40.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
                         if (!c.needsFares) LinearProgressIndicator(progress = { c.coverage.coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth().height(9.dp), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.surface.copy(alpha = .6f))
+                        if (!c.needsFares) Text("${kotlin.math.round(c.coverage * 100).toInt()}% of pass price covered", style = MaterialTheme.typography.labelLarge)
                         Text(if (c.needsFares) "${c.tripCount} trips need fares. Pass price: ${money(pass.priceCents)}." else "${money(c.totalCents)} in recorded fares / ${money(pass.priceCents)} pass", style = MaterialTheme.typography.bodyMedium)
                         Text(if (c.complete) "Regular-fare estimate. Correct discounted journeys for a closer comparison." else "Based on ${c.pricedCount} of ${c.tripCount} trips. Add missing fares before drawing a conclusion.", style = MaterialTheme.typography.bodySmall)
                     }
@@ -87,7 +88,7 @@ import io.github.holsoma.fairenough.core.*
     var origin by rememberSaveable { mutableStateOf("") }
     var destination by rememberSaveable { mutableStateOf("") }
     LazyColumn(contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
-        item { PageTitle("Your next stop: enough", "A trip target depends on what each journey would cost.") }
+        item { PageTitle("Trips needed", "See how many more journeys would cover your pass.") }
         if (pass == null) item { Notice("Set up a pass to calculate a trip target.") } else {
             val c = compare(pass, snapshot.trips)
             item { Notice(if (c.needsFares) "Add fares for the ${c.tripCount} recorded trips before calculating a remaining-trip target. Pass price: ${money(pass.priceCents)}." else "${money(c.remaining)} remains against a ${money(pass.priceCents)} pass. Based on ${c.pricedCount} of ${c.tripCount} recorded trips${if (c.complete) "." else "; missing fares make this incomplete."}") }

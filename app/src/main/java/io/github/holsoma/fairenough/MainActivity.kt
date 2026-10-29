@@ -46,6 +46,13 @@ class MainActivity: ComponentActivity() {
     var exportAction by rememberSaveable { mutableStateOf("backup") }
     var passMenu by remember { mutableStateOf(false) }
     val pageStates = rememberSaveableStateHolder()
+    val snackbar = remember { SnackbarHostState() }
+    LaunchedEffect(model.notification) {
+        model.notification?.let { text ->
+            snackbar.showSnackbar(text, duration = SnackbarDuration.Short)
+            model.notification = null
+        }
+    }
     val s = snapshot ?: Snapshot()
     val pass = s.passes.find { it.id == selectedPass } ?: s.passes.find { it.contains(singaporeToday().toString()) } ?: s.passes.maxByOrNull { it.start }
     fun goTrip(trip: Trip? = null, from: String = "", to: String = "") { pageStates.removeState("trip"); editingId = trip?.id; presetOrigin = from; presetDestination = to; page = "trip" }
@@ -61,7 +68,7 @@ class MainActivity: ComponentActivity() {
         } ?: error("Cannot open this file.")
     }
     val createJson = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
-        if (uri == null) { if (exportAction == "before-restore") model.message = "Restore cancelled. Your data has not changed." }
+        if (uri == null) { if (exportAction == "before-restore") model.notification = "Restore cancelled. Your data has not changed." }
         else model.run {
             val before = model.repository.current()
             val data = encodeBackup(before, Instant.now().toString())
@@ -69,15 +76,15 @@ class MainActivity: ComponentActivity() {
             if (exportAction == "before-restore") {
                 val restored = model.restoreData ?: error("Choose the backup again.")
                 model.repository.update { restored }
-                withContext(Dispatchers.Main) { model.restoreData = null; model.message = "Backup restored. A copy of the previous records was exported." }
-            } else withContext(Dispatchers.Main) { model.message = "Full backup saved." }
+                withContext(Dispatchers.Main) { model.restoreData = null; model.notification = "Backup restored. A copy of the previous records was exported." }
+            } else withContext(Dispatchers.Main) { model.notification = "Full backup saved." }
         }
     }
     val createCsv = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
         if (uri != null) model.run {
             val data = exportCsv(model.repository.current().trips, model.stations)
             context.contentResolver.openOutputStream(uri, "wt")?.bufferedWriter()?.use { it.write(data) } ?: error("Cannot write this file.")
-            withContext(Dispatchers.Main) { model.message = "CSV exported." }
+            withContext(Dispatchers.Main) { model.notification = "CSV exported." }
         }
     }
     val restore = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
@@ -96,12 +103,13 @@ class MainActivity: ComponentActivity() {
     FarenoughTheme(s.preferences.appearance) {
         if (snapshot == null) { Surface(Modifier.fillMaxSize()) { Box(contentAlignment = Alignment.Center) { CircularProgressIndicator() } }; return@FarenoughTheme }
         Scaffold(
+            snackbarHost = { SnackbarHost(snackbar) },
             topBar = {
                 TopAppBar(title = { Text("farenough") }, navigationIcon = { if (page != tab) IconButton(onClick = ::finish) { Icon(Icons.Outlined.ArrowBack, "Back") } }, actions = {
                     if (page == tab) {
                         if (tab != "more") IconButton(onClick = { goTrip() }) { Icon(Icons.Outlined.Add, "Record a journey") }
                         Box {
-                            IconButton(onClick = { passMenu = true }) { Icon(Icons.Outlined.ConfirmationNumber, "Choose pass period") }
+                            TextButton(onClick = { passMenu = true }) { Icon(Icons.Outlined.ConfirmationNumber, "Choose pass period", Modifier.size(20.dp)); Spacer(Modifier.width(6.dp)); Text("Pass") }
                             DropdownMenu(expanded = passMenu, onDismissRequest = { passMenu = false }) {
                                 s.passes.sortedByDescending { it.start }.forEach { p -> DropdownMenuItem(text = { Text(periodLabel(p)) }, onClick = { model.selectPass(p.id); passMenu = false }) }
                                 DropdownMenuItem(text = { Text("Add a pass") }, onClick = { passMenu = false; goPass(null) })

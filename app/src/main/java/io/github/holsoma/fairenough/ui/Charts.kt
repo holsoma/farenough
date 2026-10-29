@@ -38,6 +38,14 @@ import kotlin.math.*
                 selected?.takeIf { it in days.indices }?.let { drawCircle(ink, 6.dp.toPx(), Offset(x(it), y(days[it].cumulativeCents))) }
             }
         }
+        if (days.isNotEmpty()) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(readableDate(days.first().date), style = MaterialTheme.typography.labelSmall)
+            Text(readableDate(days.last().date), style = MaterialTheme.typography.labelSmall)
+        }
+        selected?.takeIf { it in days.indices }?.let { index ->
+            val day = days[index]
+            Text("${readableDate(day.date)} · ${fareTotalText(day.cumulativeCents, day.cumulativePricedCount, day.cumulativeTrips)} recorded so far", style = MaterialTheme.typography.labelLarge, color = ink)
+        }
         Text(if (passPrice != null) "Solid: recorded fares. Dashed: ${money(passPrice)} pass price." else "Tap a point or choose a day below.", style = MaterialTheme.typography.bodySmall)
     }
 }
