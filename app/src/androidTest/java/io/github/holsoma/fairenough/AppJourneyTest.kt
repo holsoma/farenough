@@ -289,7 +289,8 @@ class AppJourneyTest {
             compose.onNodeWithText("Calendar month").performClick()
             compose.onNodeWithText("Choose month:", substring = true).performClick()
             compose.onNodeWithText(io.github.holsoma.fairenough.ui.monthLabel("2025-09")).performClick()
-            compose.onNodeWithText("S$2.80 in recorded fares. Based on 2 of 2 trips.").performScrollTo().assertIsDisplayed()
+            compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("S$2.80 in recorded fares. Based on 2 of 2 trips."))
+            compose.onNodeWithText("S$2.80 in recorded fares. Based on 2 of 2 trips.").assertIsDisplayed()
             compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasContentDescription("Cumulative recorded fare chart. Use the day list below for values."))
             compose.onNodeWithContentDescription("Cumulative recorded fare chart. Use the day list below for values.").performTouchInput { click(center.copy(x = center.x * 1.04f)) }
             compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Journeys on ${io.github.holsoma.fairenough.ui.readableDate("2025-09-16")}"))
@@ -342,7 +343,8 @@ class AppJourneyTest {
             compose.onNodeWithText("Explore ${io.github.holsoma.fairenough.ui.monthLabel("2026-10")}").performScrollTo().performClick()
             compose.onNode(hasScrollToIndexAction()).performScrollToIndex(0)
             compose.onNodeWithText("Choose month: ${io.github.holsoma.fairenough.ui.monthLabel("2026-10")}").assertIsDisplayed()
-            compose.onNodeWithText("S$4.47 in recorded fares. Based on 3 of 3 trips.").performScrollTo().assertIsDisplayed()
+            compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("S$4.47 in recorded fares. Based on 3 of 3 trips."))
+            compose.onNodeWithText("S$4.47 in recorded fares. Based on 3 of 3 trips.").assertIsDisplayed()
         }
     }
 
