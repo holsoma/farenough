@@ -27,7 +27,7 @@ Automatic data must record its provenance, effective fare/network dates, full st
 
 Version 0.2.0 uses complete journey responses from the LTA calculator's adult MRT/LRT form. Its catalogue maps to all 184 canonical app stations. The matrix contains one entry for each of the 16,836 station pairs, with the returned fare in cents and distance converted from hundredths of a kilometre to metres. Each query starts a separate journey with zero accumulated distance and fare. The app makes no network calls.
 
-Coverage is restricted to **12 July through 25 December 2026**, using results retrieved on **29 October 2026**. CCL6 opened on 12 July and changes shortest rail distances. The [next fare adjustment](https://www.ptc.gov.sg/media-centre/newsroom/fare-review-exercise-2026/) takes effect on 26 December. The app does not apply this network and fare period to older records. See [PTC's rail fare explanation](https://ask.gov.sg/ptc/questions/cmq0md92s00785l017w6x8nog) and [LTA's CCL6 project](https://www.lta.gov.sg/content/ltagov/en/upcoming_projects/rail_expansion/circle_line_6.html).
+Coverage is restricted to **12 July through 25 December 2026**, using results retrieved on **29 October 2026**. CCL6 opened on 12 July and changes shortest rail distances. The [next fare adjustment](https://www.ptc.gov.sg/media-centre/newsroom/fare-review-exercise-2026/) takes effect on 26 December. Version 0.2.0 does not apply this network and fare period to older records. Version 0.3.0 adds the selective historical inference described below. See [PTC's rail fare explanation](https://ask.gov.sg/ptc/questions/cmq0md92s00785l017w6x8nog) and [LTA's CCL6 project](https://www.lta.gov.sg/content/ltagov/en/upcoming_projects/rail_expansion/circle_line_6.html).
 
 Adding rounded adjacent-station distances failed comparison against complete calculator journeys, so that approach is not used. The exact whole-journey distance and returned fare are retained independently. Eight calculator fares are four or six cents below the general PTC distance band for their displayed distance. An independent check of 193 reverse journeys, including all eight exceptions, returned identical distances and amounts. The app retains those observed calculator values; the validation report lists them explicitly.
 
@@ -44,3 +44,24 @@ python scripts/prepare_rail_fares.py --cache .tooling/fare-research/matrix.sqlit
 ```
 
 The exporter refuses incomplete coverage, unknown pairs, duplicate rows, invalid measurements, mismatched raw responses and inconsistent retrieval dates. Its report records the generated asset's SHA-256 checksum.
+
+
+## Selective historical fares in 0.3.0
+
+The original calculator asset and its dates remain unchanged. A separate code policy derives regular adult fares for **1 March 2025 to 11 July 2026** for **16,106 of the 16,290 pairs among the 181 stations already open**. This is an inference from current official distances and the earlier tariff, not an archived or date-specific LTA response.
+
+PTC states that rail fares use the shortest possible rail distance. Its [adult fare bands effective 27 December 2025](https://data.gov.sg/datasets/d_2ca29f673b89e0cfddbb7c74516fa4d3/view), all other timings, remained applicable in June 2026. Those 39 band amounts are included in the source under the Singapore Open Data Licence. For dates through 26 December 2025, the app uses the 39 earlier adult rail amounts from [Government Gazette No. 4168, Part 2, pages 7-8](https://assets.egazette.gov.sg/2024/Government%20Gazette/Notices%20under%20other%20Acts/4168.pdf), effective 28 December 2024. These are separate tables; the app does not subtract a fixed amount from newer fares. Coverage starts on 1 March 2025, after [Hume opened on 28 February](https://www.lta.gov.sg/content/ltagov/en/newsroom/2025/1/news-releases/hume_station_to_open.html), so every earlier endpoint was open for the entire supported day. [LTA describes CCL6](https://www.lta.gov.sg/content/ltagov/en/upcoming_projects/rail_expansion/circle_line_6.html) as the new connection between HarbourFront and Marina Bay via Keppel, Cantonment and Prince Edward Road, opened on 12 July 2026. The bundled catalogue ends at Bayshore on TEL and Expo on DTL, excluding the later TEL5/DTL3 extension.
+
+Let `d` denote a current shortest distance, `a,b` the endpoints, `u` HarbourFront and `v` Marina Bay. Any path between old stations that uses the extension must cross both `u` and `v`. Its distance is at least:
+
+```
+min(d(a,u) + d(u,v) + d(v,b), d(a,v) + d(v,u) + d(u,b))
+```
+
+Each current shortest distance is a lower bound for the corresponding segment of that path. This remains true if the current shortest segment itself uses CCL6. If this lower bound exceeds `d(a,b)`, the shortest path cannot use the extension, so removing it cannot change that pair's shortest distance. The implementation requires a difference **greater than 1,000 metres**. All observed distances have 100-metre display precision; the margin exceeds the combined rounding uncertainty of the four displayed values. Across the complete table, the largest triangle-inequality discrepancy is 100 metres. These sums are used only to exclude potentially changed routes. They are never used as fare distances or to reconstruct an older route.
+
+The policy excludes CC30, CC31 and CC32 before opening and excludes any observed fare that differs from the general PTC band. It is tied to the specific October snapshot ID, retrieval date, coverage dates, station count and distance precision. A replacement dataset does not inherit historical coverage without review.
+
+Tests check both directions of every pair, inclusive date boundaries, band boundaries, unopened stations, record preservation, and [PTC's four examples of changed fares](https://ask.gov.sg/ptc/questions/cmq0mmuip003j4f01c53tmnco). Those four routes remain unpriced before July. Punggol Coast to Bugis and Bugis to Bukit Panjang pass the exclusion check with margins of 12.1 km and 10.9 km respectively; their unchanged distances are 15.8 km and 15.3 km, both in the S$2.11 band.
+
+The result carries source `Adult fare derived for the pre-July network` and version `pre-ccl6-2024-12-28-v1` or `pre-ccl6-2025-12-27-v1`, depending on the tariff period. Existing recorded amounts and individual corrections are preserved. Uncertain earlier routes remain unpriced, as do all dates outside the supported fare periods. Automatic early-morning discounts and transfer grouping remain outside scope.

@@ -9,6 +9,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
@@ -18,7 +20,12 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 fun singaporeToday(): LocalDate = LocalDate.now(ZoneId.of("Asia/Singapore"))
-@Composable private fun FormColumn(content: @Composable ColumnScope.() -> Unit) = Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp).imePadding(), verticalArrangement = Arrangement.spacedBy(18.dp), content = content)
+@Composable private fun FormColumn(footer: @Composable ColumnScope.() -> Unit = {}, content: @Composable ColumnScope.() -> Unit) {
+    Column(Modifier.fillMaxSize().imePadding()) {
+        Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp), content = content)
+        footer()
+    }
+}
 
 @Composable fun PassForm(model: AppModel, initial: PassPeriod?, onDone: () -> Unit) {
     val today = singaporeToday()
@@ -54,12 +61,26 @@ fun singaporeToday(): LocalDate = LocalDate.now(ZoneId.of("Asia/Singapore"))
             FareQuote(recordedCents, initial.fareSource, initial.fareVersion ?: "recorded", current?.distanceMetres)
         } else current
     }
-    FormColumn {
+    FormColumn(footer = {
+        HorizontalDivider()
+        Button(onClick = {
+            val corrected = if (correction.isBlank()) null else parseMoney(correction)
+            if (correction.isNotBlank() && corrected == null) model.message = "Enter a valid corrected fare."
+            else if (correction.isNotBlank() && reason.isBlank()) model.message = "Add a short reason for the fare correction."
+            else model.saveTrip((initial ?: Trip(date = date, origin = origin, destination = destination)).copy(date = date, origin = origin, destination = destination, note = note, correctionCents = corrected, correctionReason = reason), onDone)
+        }, enabled = !model.working && validDate(date) && origin.isNotBlank() && destination.isNotBlank() && origin != destination, modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp)) { Text("Save journey") }
+    }) {
         PageTitle(if (initial == null) "Record a journey" else "Edit journey", "One entry and exit. Line changes inside the paid area are part of this journey.")
         DateField("Travel date", date) { date = it }
-        StationField("From", origin, model.stations) { origin = it }
-        TextButton(onClick = { val temp = origin; origin = destination; destination = temp }, modifier = Modifier.align(androidx.compose.ui.Alignment.CenterHorizontally)) { Icon(Icons.Outlined.SwapVert, null); Text("Swap stations") }
-        StationField("To", destination, model.stations) { destination = it }
+        Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                StationField("From", origin, model.stations) { origin = it }
+                StationField("To", destination, model.stations) { destination = it }
+            }
+            TextButton(onClick = { val temp = origin; origin = destination; destination = temp }, modifier = Modifier.width(64.dp).semantics { contentDescription = "Swap stations" }, contentPadding = PaddingValues(4.dp)) {
+                Column(horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) { Icon(Icons.Outlined.SwapVert, null); Text("Swap", style = MaterialTheme.typography.labelMedium) }
+            }
+        }
         Notice(quote?.let {
             buildString {
                 append("Regular adult fare: ${money(it.cents)}")
@@ -70,18 +91,13 @@ fun singaporeToday(): LocalDate = LocalDate.now(ZoneId.of("Asia/Singapore"))
             origin.isEmpty() || destination.isEmpty() -> "Choose two stations to see the rail distance and regular fare."
             origin == destination -> "Choose different start and end stations."
             !validDate(date) -> "Enter a valid travel date to see the fare."
-            else -> "Automatic fares are unavailable for this travel date. Bundled coverage: ${readableDate(model.fareData.validFrom)} to ${readableDate(model.fareData.validUntil)}. You can save the journey and add a checked fare or an individual correction."
+            else -> "Automatic fares are unavailable for this route and travel date. ${fareCoverage(model.repository.railFares)} Keep the correct date. You can save the journey and add a checked fare or an individual correction."
         })
         OutlinedTextField(correction, { correction = it }, Modifier.fillMaxWidth(), label = { Text("This journey's corrected fare, S$ (optional)") }, supportingText = { Text("For example, a discounted ride. Blank uses the regular fare.") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), singleLine = true)
         if (correction.isNotBlank()) OutlinedTextField(reason, { reason = it.take(500) }, Modifier.fillMaxWidth(), label = { Text("Reason for correction") })
         OutlinedTextField(note, { note = it.take(4000) }, Modifier.fillMaxWidth(), label = { Text("Note (optional)") }, minLines = 2)
         if (origin.isNotBlank() && destination.isNotBlank() && origin != destination) TextButton(onClick = { model.favourite(origin, destination) }) { Text(if ("$origin|$destination" in snapshot.preferences.favourites) "Remove from favourite routes" else "Save as a favourite route") }
-        Button(onClick = {
-            val corrected = if (correction.isBlank()) null else parseMoney(correction)
-            if (correction.isNotBlank() && corrected == null) model.message = "Enter a valid corrected fare."
-            else if (correction.isNotBlank() && reason.isBlank()) model.message = "Add a short reason for the fare correction."
-            else model.saveTrip((initial ?: Trip(date = date, origin = origin, destination = destination)).copy(date = date, origin = origin, destination = destination, note = note, correctionCents = corrected, correctionReason = reason), onDone)
-        }, enabled = !model.working, modifier = Modifier.fillMaxWidth()) { Text("Save journey") }
+
         if (initial != null) TextButton(onClick = { delete = true }, modifier = Modifier.fillMaxWidth()) { Text("Delete journey", color = MaterialTheme.colorScheme.error) }
     }
     if (delete && initial != null) Confirm("Delete this journey?", "This removes it from your recorded totals and map.", "Delete", { delete = false }) { model.deleteTrip(initial.id, onDone) }

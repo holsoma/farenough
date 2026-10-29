@@ -21,6 +21,9 @@ data class RailFarePair(val origin: String, val destination: String, val distanc
 class RailFareTable(val data: RailFareDataset) {
     private val stations = data.stationIds.toSet()
     private val pairs: Map<String, RailFarePair>
+    private val earlierPairs: Set<String>
+    val earlierValidFrom: String? get() = EarlierRailFares.validFrom.takeIf { earlierPairs.isNotEmpty() }
+    val earlierPairCount: Int get() = earlierPairs.size
 
     init {
         require(data.schemaVersion == 1) { "Unsupported rail fare data version." }
@@ -35,14 +38,24 @@ class RailFareTable(val data: RailFareDataset) {
         }
         require(indexed.size.toLong() == stations.size.toLong() * (stations.size - 1) / 2) { "Rail fare data must cover every station pair." }
         pairs = indexed.toMap()
+        earlierPairs = if (EarlierRailFares.supports(data)) {
+            data.pairs.filter { EarlierRailFares.eligible(it, ::distance) }.map { key(it.origin, it.destination) }.toSet()
+        } else emptySet()
     }
 
     fun quote(trip: Trip): FareQuote? {
-        if (!validDate(trip.date) || trip.date !in data.validFrom..data.validUntil) return null
-        val pair = pairs[key(trip.origin, trip.destination)] ?: return null
-        return FareQuote(pair.cents, data.source, data.id, pair.distanceMetres)
+        if (!validDate(trip.date)) return null
+        val pairKey = key(trip.origin, trip.destination)
+        val pair = pairs[pairKey] ?: return null
+        if (trip.date in data.validFrom..data.validUntil) return FareQuote(pair.cents, data.source, data.id, pair.distanceMetres)
+        if (trip.date in EarlierRailFares.validFrom..EarlierRailFares.validUntil && pairKey in earlierPairs) {
+            val version = if (trip.date < EarlierRailFares.tariffChange) EarlierRailFares.previousVersion else EarlierRailFares.version
+            return FareQuote(EarlierRailFares.bandFare(pair.distanceMetres, trip.date), EarlierRailFares.source, version, pair.distanceMetres)
+        }
+        return null
     }
 
+    private fun distance(a: String, b: String): Int = if (a == b) 0 else pairs.getValue(key(a, b)).distanceMetres
     private fun key(a: String, b: String): String = if (a < b) "$a|$b" else "$b|$a"
 }
 

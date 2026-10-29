@@ -26,17 +26,18 @@ import io.github.holsoma.fairenough.core.*
             item {
                 Surface(color = MaterialTheme.colorScheme.primaryContainer, shape = MaterialTheme.shapes.large) {
                     Column(Modifier.fillMaxWidth().padding(24.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                        Text(if (c.difference > 0) "Estimated savings" else if (c.difference == 0L) "Pass cost covered" else "Still to cover", style = MaterialTheme.typography.titleMedium)
-                        Text(money(if (c.difference > 0) c.difference else c.remaining), fontSize = 46.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
-                        LinearProgressIndicator(progress = { c.coverage.coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth().height(9.dp), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.surface.copy(alpha = .6f))
-                        Text("${money(c.totalCents)} in recorded fares / ${money(pass.priceCents)} pass", style = MaterialTheme.typography.bodyMedium)
+                        Text(if (c.needsFares) "Fares needed" else if (c.difference > 0) "Estimated savings" else if (c.difference == 0L) "Pass cost covered" else "Still to cover", style = MaterialTheme.typography.titleMedium)
+                        Text(if (c.needsFares) "Not priced" else money(if (c.difference > 0) c.difference else c.remaining), fontSize = 40.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        if (!c.needsFares) LinearProgressIndicator(progress = { c.coverage.coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth().height(9.dp), color = MaterialTheme.colorScheme.primary, trackColor = MaterialTheme.colorScheme.surface.copy(alpha = .6f))
+                        if (!c.needsFares) Text("${kotlin.math.round(c.coverage * 100).toInt()}% of pass price covered", style = MaterialTheme.typography.labelLarge)
+                        Text(if (c.needsFares) "${c.tripCount} trips need fares. Pass price: ${money(pass.priceCents)}." else "${money(c.totalCents)} in recorded fares / ${money(pass.priceCents)} pass", style = MaterialTheme.typography.bodyMedium)
                         Text(if (c.complete) "Regular-fare estimate. Correct discounted journeys for a closer comparison." else "Based on ${c.pricedCount} of ${c.tripCount} trips. Add missing fares before drawing a conclusion.", style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
             item { Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(20.dp)) { Metric(c.tripCount.toString(), "Recorded trips", Modifier.weight(1f)); Metric(snapshot.trips.filter { pass.contains(it.date) }.map { it.date }.distinct().size.toString(), "Travel days", Modifier.weight(1f)) } }
             item {
-                OutlinedButton(onClick = onTarget, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) { Text("How many more trips?") }
+                OutlinedButton(onClick = onTarget, modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp)) { Text(if (c.remaining == 0L) "View pass result" else "How many more trips?") }
                 if (!c.complete) TextButton(onClick = onFares, modifier = Modifier.fillMaxWidth()) { Text("Add missing route fares") }
             }
             if (snapshot.preferences.favourites.isNotEmpty()) {
@@ -58,7 +59,7 @@ import io.github.holsoma.fairenough.core.*
     LazyColumn(contentPadding = PaddingValues(20.dp, 12.dp, 20.dp, 100.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         item { PageTitle("Your journeys", "${trips.size} recorded trips${if (!allDates && pass != null) " in this pass period" else " across all dates"}.") }
         item {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 FilterChip(selected = !allDates, onClick = { allDates = false }, label = { Text("Selected pass") })
                 FilterChip(selected = allDates, onClick = { allDates = true }, label = { Text("All dates") })
                 TextButton(onClick = onImport) { Text("Import") }
@@ -87,11 +88,11 @@ import io.github.holsoma.fairenough.core.*
     var origin by rememberSaveable { mutableStateOf("") }
     var destination by rememberSaveable { mutableStateOf("") }
     LazyColumn(contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
-        item { PageTitle("Your next stop: enough", "A trip target depends on what each journey would cost.") }
+        item { PageTitle("Trips needed", "See how many more journeys would cover your pass.") }
         if (pass == null) item { Notice("Set up a pass to calculate a trip target.") } else {
             val c = compare(pass, snapshot.trips)
-            item { Notice("${money(c.remaining)} remains against a ${money(pass.priceCents)} pass. Based on ${c.pricedCount} of ${c.tripCount} recorded trips${if (c.complete) "." else "; missing fares make this incomplete."}") }
-            item { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { FilterChip(method == "average", { method = "average" }, label = { Text("My average fare") }); FilterChip(method == "route", { method = "route" }, label = { Text("A specific route") }) } }
+            item { Notice(if (c.needsFares) "Add fares for the ${c.tripCount} recorded trips before calculating a remaining-trip target. Pass price: ${money(pass.priceCents)}." else "${money(c.remaining)} remains against a ${money(pass.priceCents)} pass. Based on ${c.pricedCount} of ${c.tripCount} recorded trips${if (c.complete) "." else "; missing fares make this incomplete."}") }
+            item { FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) { FilterChip(method == "average", { method = "average" }, label = { Text("My average fare") }); FilterChip(method == "route", { method = "route" }, label = { Text("A specific route") }) } }
             if (method == "route") {
                 item { StationField("From", origin, model.stations) { origin = it } }
                 item { StationField("To", destination, model.stations) { destination = it } }
@@ -99,7 +100,7 @@ import io.github.holsoma.fairenough.core.*
             item {
                 val date = singaporeToday().toString().coerceIn(pass.start, pass.end)
                 val quote = if (method == "route") model.engine.quote(Trip(date = date, origin = origin, destination = destination), snapshot.routeFares) else null
-                val needed = if (c.remaining == 0L) 0L else if (method == "average") c.averageTripsNeeded else quote?.let { c.tripsAt(it.cents) }
+                val needed = if (c.needsFares) null else if (c.remaining == 0L) 0L else if (method == "average") c.averageTripsNeeded else quote?.let { c.tripsAt(it.cents) }
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Text(needed?.toString() ?: "?", fontSize = 80.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
                     Text(if (needed == 0L) "No more trips needed to cover the pass at the recorded fares." else "More one-way trips in this scenario", style = MaterialTheme.typography.titleLarge)

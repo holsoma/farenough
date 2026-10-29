@@ -4,6 +4,12 @@ title: Changelog
 description: Changes to the app, data formats and fare coverage.
 ---
 
+## 0.2.2
+
+Unpriced journeys now display **Not priced**, rather than appearing to have a S$0.00 total. Overview, Insights, daily totals, route rankings and pass comparisons distinguish missing fares from confirmed free journeys. Import review warns about valid journeys whose dates have no automatic fare. Fare charts and remaining-trip estimates wait for a priced journey.
+
+The automatic fare period remains 12 July through 25 December 2026. Earlier journeys keep their true dates and can use checked fares for their period.
+
 ## 0.2.1
 
 Imports now accept interchange code lists such as `BP6 / DT1` when every code identifies the same station. The formatting prompt asks for one output code per endpoint, and error messages explain how to correct rejected station values. Official names with matching codes are also accepted; conflicting codes and personal shorthand are not guessed.

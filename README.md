@@ -38,6 +38,8 @@ Record your Singapore MRT and LRT journeys. Compare their fares with your conces
 
 ## Features
 
+Compare recorded months by fares, journeys, travel days and average fare. Explore a month directly from its history bar, with labelled station connections and interactive daily charts.
+
 | | What you can do |
 | --- | --- |
 | **Pass comparison** | Compare recorded adult fares with the price and dates of your undergraduate train pass. |
@@ -48,7 +50,7 @@ Record your Singapore MRT and LRT journeys. Compare their fares with your conces
 | **Your data, on your device** | Use the app offline. Export full backups or CSV files, and restore your records when needed. |
 
 > [!NOTE]
-> **Fare coverage:** v0.2.0 includes automatic adult fares for all 16,836 station pairs among 184 MRT/LRT stations, for 12 July through 25 December 2026. Saved route fares and individual corrections override automatic amounts. Other dates need a checked fare. Automatic transfers, time discounts and bus fares are outside scope. See [data sources and coverage](DATA_SOURCES.md#automatic-fares-in-020).
+> **Fare coverage:** v0.3.0 adds derived historical adult fares for 16,106 station pairs from 1 March 2025 through 11 July 2026, using the tariff for each date and excluding routes that may have changed with CCL6. Full coverage remains 12 July through 25 December 2026 for all 16,836 pairs among 184 MRT/LRT stations. Saved fares and corrections take precedence. Uncertain routes and unsupported dates remain unpriced. Automatic transfers, time discounts and bus fares are outside scope. See [data sources and coverage](DATA_SOURCES.md#selective-historical-fares-in-030).
 
 ## Documentation
 

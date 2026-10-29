@@ -23,15 +23,17 @@ import io.github.holsoma.fairenough.core.*
     var selection by remember(review) { mutableStateOf(review?.rows?.filter { it.trip != null && it.matchesExisting == 0 }?.map { it.index }?.toSet().orEmpty()) }
     var confirmation by remember { mutableStateOf(false) }
     LazyColumn(contentPadding = PaddingValues(20.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
-        item { PageTitle("Bring your records", "Use any LLM to clarify your notes and produce the import format. Your records are only shared when you choose to paste them elsewhere.") }
-        item { OutlinedButton(onClick = { clipboard.setPrimaryClip(ClipData.newPlainText("farenough formatting prompt", formattingPrompt(model.stations))); model.message = "Formatting prompt copied." }, modifier = Modifier.fillMaxWidth()) { Text("Copy formatting prompt") } }
+        item { PageTitle("Bring your records", "Copy the instructions into your AI chat with your journey notes. Confirm station names and dates, then paste its formatted records below.") }
+        item { OutlinedButton(onClick = { clipboard.setPrimaryClip(ClipData.newPlainText("farenough formatting prompt", formattingPrompt(model.stations))); model.notification = "Formatting prompt copied." }, modifier = Modifier.fillMaxWidth()) { Text("Copy formatting prompt") } }
         if (review == null) {
-            item { Notice("Give the prompt and your old notes to an LLM. Confirm abbreviations and dates, then paste its JSON here. Each endpoint should use one station code, such as BP6 for Bukit Panjang.") }
-            item { OutlinedTextField(model.importText, { model.importText = it }, Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 320.dp), label = { Text("Normalised JSON") }, placeholder = { Text("{\"format\":\"farenough-trips\", ...}") }) }
+            item { Notice("Use one code for each start and end station, such as BP6 for Bukit Panjang. Nothing is saved until you review and confirm. Your notes leave this app only when you share them.") }
+            item { OutlinedTextField(model.importText, { model.importText = it }, Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 320.dp), label = { Text("Formatted journey records") }, supportingText = { Text("Paste the JSON returned by your AI chat.") }, placeholder = { Text("{\"format\":\"farenough-trips\", ...}") }) }
             item { Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) { TextButton(onClick = { model.importText = clipboard.primaryClip?.getItemAt(0)?.coerceToText(context)?.toString().orEmpty() }) { Text("Paste") }; TextButton(onClick = onOpenFile) { Text("Open JSON file") } } }
             item { Button(onClick = { model.review(model.importText) }, enabled = model.importText.isNotBlank() && !model.working, modifier = Modifier.fillMaxWidth()) { Text("Review journeys") } }
         } else {
             item { Notice("${review.rows.size} rows · ${review.validCount} valid · ${selection.size} selected. Nothing is saved until you confirm.") }
+            val unpriced = review.rows.count { row -> row.trip?.let { it.effectiveFare == null } == true }
+            if (unpriced > 0) item { Notice("$unpriced valid ${if (unpriced == 1) "journey has" else "journeys have"} no fare. ${fareCoverage(model.repository.railFares)} Keep the correct travel dates; you can import these journeys and add checked fares for their period.") }
             if (review.alreadyImported) item { Notice("This complete batch has already been imported. It will not be added again.") }
             if (review.rows.any { it.errors.isNotEmpty() }) item { Notice("Rows with errors cannot be imported. Edit the JSON or return to the LLM to correct them. You can still explicitly import the valid selection.") }
             if (review.rows.any { it.matchesExisting > 0 }) item { Notice("Potential duplicates start unselected. Select one only if it is another journey you actually took. Repeated journeys within this file are preserved.") }

@@ -53,8 +53,8 @@ class AppJourneyTest {
             it.onActivity { activity ->
                 assertTrue(androidx.core.view.WindowCompat.getInsetsController(activity.window, activity.window.decorView).isAppearanceLightStatusBars)
             }
-            compose.onNodeWithText("How many more trips?").performScrollTo().performClick()
-            compose.onNodeWithText("Your next stop: enough").assertIsDisplayed()
+            compose.onNodeWithText("View pass result").performScrollTo().performClick()
+            compose.onNodeWithText("Trips needed").assertIsDisplayed()
             capture("target")
             compose.onNodeWithContentDescription("Back").performClick()
             compose.onNodeWithText("Trips", useUnmergedTree = true).performClick()
@@ -62,18 +62,10 @@ class AppJourneyTest {
             capture("trips")
             compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
             compose.onNodeWithText("Copy formatting prompt").assertIsDisplayed()
-            compose.onNodeWithText("Copy formatting prompt").performClick()
-            InstrumentationRegistry.getInstrumentation().runOnMainSync {
-                val clipboard = app.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                val prompt = clipboard.primaryClip!!.getItemAt(0).coerceToText(app).toString()
-                assertTrue(prompt.contains("BP6 | Bukit Panjang | DT1"))
-                assertTrue(prompt.contains("copy exactly ONE output code"))
-                assertFalse(prompt.contains("BP6 / DT1"))
-            }
             capture("import")
             compose.onNodeWithContentDescription("Back").performClick()
             compose.onNodeWithText("Insights", useUnmergedTree = true).performClick()
-            compose.onNodeWithText("Your travels, in view").assertIsDisplayed()
+            compose.onNodeWithText("Your travel history").assertIsDisplayed()
             capture("charts")
             compose.onNodeWithText("Map", useUnmergedTree = true).performClick()
             capture("map")
@@ -134,14 +126,14 @@ class AppJourneyTest {
             compose.onNodeWithText("Rail fare distance: 5.3 km", substring = true).assertIsDisplayed()
             compose.onNodeWithText("This journey's corrected fare, S$ (optional)").performScrollTo().performTextInput("1.50")
             compose.onNodeWithText("Reason for correction").performScrollTo().performTextInput("Example discount")
-            compose.onNodeWithText("Save journey").performScrollTo().performClick()
+            compose.onNodeWithText("Save journey").performClick()
             compose.waitUntil(10_000) { runBlocking { repo.current().trips.size == 1 } }
             compose.waitUntil(15_000) { compose.onAllNodesWithText("S$46.50").fetchSemanticsNodes().isNotEmpty() }
             compose.onNodeWithText("S$46.50").assertExists()
             compose.onNodeWithText("Trips", useUnmergedTree = true).performClick()
             compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
             val text = """{"format":"farenough-trips","version":1,"trips":[{"date":"2026-10-29","origin":"BP6 / DT1","destination":"CC4 / DT15"},{"date":"2026-10-29","origin":"Stevens (DT10 / TE11)","destination":"Promenade"}]}"""
-            compose.onNodeWithText("Normalised JSON").performScrollTo().performTextInput(text)
+            compose.onNodeWithText("Formatted journey records").performScrollTo().performTextInput(text)
             compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Review journeys"))
             compose.onNodeWithText("Review journeys").performClick()
             compose.waitUntil(10_000) { compose.onAllNodesWithText("2 rows", substring = true).fetchSemanticsNodes().isNotEmpty() }
@@ -199,14 +191,14 @@ class AppJourneyTest {
             compose.onNodeWithText("Regular adult fare: S$1.49", substring = true).performScrollTo().assertIsDisplayed()
             compose.onNodeWithText("Rail fare distance: 5.2 km", substring = true).assertIsDisplayed()
             capture("automatic-fare")
-            compose.onNodeWithText("Travel date").performScrollTo().performTextReplacement("2025-10-29")
-            compose.onNodeWithText("Automatic fares are unavailable for this travel date.", substring = true).performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Travel date").performScrollTo().performTextReplacement("2025-02-01")
+            compose.onNodeWithText("Automatic fares are unavailable for this route and travel date.", substring = true).performScrollTo().assertIsDisplayed()
             compose.onNodeWithText("Regular adult fare:", substring = true).assertDoesNotExist()
             compose.onNodeWithText("Travel date").performScrollTo().performTextReplacement("2026-10-29")
-            compose.onNodeWithText("Swap stations").performScrollTo().performClick()
+            compose.onNodeWithContentDescription("Swap stations").performScrollTo().performClick()
             compose.onNodeWithText("Regular adult fare: S$1.49", substring = true).performScrollTo().assertIsDisplayed()
             assertTrue(runBlocking { repo.current().trips.isEmpty() })
-            compose.onNodeWithText("Save journey").performScrollTo().performClick()
+            compose.onNodeWithText("Save journey").performClick()
             compose.waitUntil(10_000) { runBlocking { repo.current().trips.size == 1 } }
             val saved = runBlocking { repo.current().trips.single() }
             assertEquals(149, saved.fareCents)
@@ -217,6 +209,144 @@ class AppJourneyTest {
             compose.onNodeWithText("Rail fare distance", useUnmergedTree = true).performScrollTo().assertIsDisplayed()
             compose.onNodeWithText("5.2 km", useUnmergedTree = true).assertIsDisplayed()
             capture("automatic-distance")
+        }
+    }
+
+    @Test fun unpricedJuneJourneysNeverAppearAsFreeJourneys() {
+        val repo = LocalRepository(app)
+        val trips = listOf(Trip(date = "2026-06-02", origin = "CC29", destination = "CC34"), Trip(date = "2026-06-02", origin = "CC34", destination = "CC29"))
+        runBlocking { repo.update { Snapshot(passes = listOf(PassPeriod(start = "2026-06-01", end = "2026-06-30")), trips = trips) } }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            compose.waitUntil(15_000) { compose.onAllNodesWithText("Fares needed").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("Not priced").assertIsDisplayed()
+            compose.onNodeWithText("S$0.00 in recorded fares", substring = true).assertDoesNotExist()
+            compose.onNodeWithText("Insights", useUnmergedTree = true).performClick()
+            compose.onNodeWithText("No fares recorded yet. 2 trips need fares.").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Cumulative fares").assertDoesNotExist()
+            compose.onNodeWithText("Routes").performScrollTo().performClick()
+            compose.onAllNodesWithText("Not priced · 0/1 priced").onFirst().performScrollTo().assertIsDisplayed()
+            compose.onNode(hasText("Trips") and hasClickAction()).performClick()
+            compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
+            val input = """{"format":"farenough-trips","version":1,"trips":[{"date":"2026-06-02","origin":"CC26","destination":"CC33"}]}"""
+            compose.onNodeWithText("Formatted journey records").performScrollTo().performTextInput(input)
+            compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Review journeys"))
+            compose.onNodeWithText("Review journeys").performClick()
+            compose.onNode(hasScrollToIndexAction()).performScrollToIndex(0)
+            compose.waitUntil(10_000) { compose.onAllNodesWithText("1 valid journey has no fare.", substring = true).fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("1 valid journey has no fare.", substring = true).performScrollTo().assertIsDisplayed()
+            assertEquals(trips.map { trip -> trip.id }.toSet(), runBlocking { repo.current().trips.map { trip -> trip.id }.toSet() })
+        }
+    }
+
+    @Test fun previousJuneImportIsPricedWhenAppOpens() {
+        val original = listOf(Trip(date = "2026-06-02", origin = "NE18", destination = "DT14", note = "Imported earlier", importBatchId = "june"),
+            Trip(date = "2026-06-02", origin = "DT14", destination = "BP6", sourceText = "Bugis to Bukit Panjang"))
+        val pass = PassPeriod(id = "june", start = "2026-06-01", end = "2026-06-30")
+        // Seed the existing database format directly, as an older APK stored missing fares.
+        val db = androidx.room.Room.databaseBuilder(app, io.github.holsoma.fairenough.data.LocalDatabase::class.java, "fairenough.db").build()
+        runBlocking {
+            db.records().clear()
+            db.records().insert(listOf(io.github.holsoma.fairenough.data.StoredRecord("pass", pass.id, ExchangeJson.encodeToString(PassPeriod.serializer(), pass))) +
+                original.map { io.github.holsoma.fairenough.data.StoredRecord("trip", it.id, ExchangeJson.encodeToString(Trip.serializer(), it)) })
+        }
+        db.close()
+        val repo = LocalRepository(app)
+        runBlocking { repo.selectPass(pass.id) }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            compose.waitUntil(15_000) { compose.onAllNodesWithText("S$4.22 in recorded fares / S$48.00 pass").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("S$4.22 in recorded fares / S$48.00 pass").assertIsDisplayed()
+            compose.onNodeWithText("S$43.78").assertIsDisplayed()
+            capture("june-overview")
+            compose.onNode(hasText("Trips") and hasClickAction()).performClick()
+            compose.onNodeWithText("Punggol Coast → Bugis").performScrollTo().performClick()
+            compose.onNodeWithText("Regular adult fare: S$2.11", substring = true).performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("Adult fare derived for the pre-July network", substring = true).assertIsDisplayed()
+            capture("june-derived-fare")
+            compose.onNodeWithText("Save journey").performClick()
+            compose.waitUntil(10_000) { runBlocking { repo.current().trips.first { it.id == original[0].id }.edited } }
+            val saved = runBlocking { repo.current().trips.associateBy { it.id } }
+            for (trip in original) {
+                val actual = saved.getValue(trip.id)
+                assertEquals(211, actual.fareCents)
+                assertEquals(trip.date, actual.date)
+                assertEquals(trip.note, actual.note)
+                assertEquals(trip.sourceText, actual.sourceText)
+                assertEquals(trip.importBatchId, actual.importBatchId)
+            }
+        }
+    }
+
+    @Test fun recordedMonthSelectorShowsOlderFaresAndCharts() {
+        val repo = LocalRepository(app)
+        val pass = PassPeriod(id = "current", start = "2026-06-01", end = "2026-06-30")
+        val trips = listOf(Trip(date = "2025-09-16", origin = "DT10", destination = "CC4"),
+            Trip(date = "2025-09-16", origin = "CC4", destination = "DT10"),
+            Trip(date = "2026-06-02", origin = "NE18", destination = "DT14"))
+        runBlocking { repo.update { Snapshot(passes = listOf(pass), trips = trips) }; repo.selectPass(pass.id) }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            compose.waitUntil(15_000) { compose.onAllNodesWithContentDescription("Record a journey").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("Insights", useUnmergedTree = true).performClick()
+            compose.onNodeWithText("Calendar month").performClick()
+            compose.onNodeWithText("Choose month:", substring = true).performClick()
+            compose.onNodeWithText(io.github.holsoma.fairenough.ui.monthLabel("2025-09")).performClick()
+            compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("S$2.80 in recorded fares. Based on 2 of 2 trips."))
+            compose.onNodeWithText("S$2.80 in recorded fares. Based on 2 of 2 trips.").assertIsDisplayed()
+            compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasContentDescription("Cumulative recorded fare chart. Use the day list below for values."))
+            compose.onNodeWithContentDescription("Cumulative recorded fare chart. Use the day list below for values.").performTouchInput { click(center.copy(x = center.x * 1.04f)) }
+            compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("Journeys on ${io.github.holsoma.fairenough.ui.readableDate("2025-09-16")}"))
+            compose.onNodeWithText("Journeys on ${io.github.holsoma.fairenough.ui.readableDate("2025-09-16")}").assertIsDisplayed()
+            compose.onNode(hasText("Stevens → Promenade") and hasClickAction()).performScrollTo().assertIsDisplayed()
+            compose.onNode(hasScrollToIndexAction()).performScrollToIndex(0)
+            compose.onNodeWithText("Map").performClick()
+            compose.onNodeWithContentDescription("Singapore map with 2 directional connections. The route list below provides accessible details.").performScrollTo().assertIsDisplayed()
+            capture("older-month-map")
+        }
+    }
+
+    @Test fun copyingImportInstructionsDoesNotBlockNavigation() {
+        val repo = LocalRepository(app)
+        runBlocking { repo.update { demo(repo) } }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            compose.waitUntil(15_000) { compose.onAllNodesWithContentDescription("Record a journey").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNode(hasText("Trips") and hasClickAction()).performClick()
+            compose.onNodeWithText("Import", useUnmergedTree = true).performClick()
+            compose.onNodeWithText("Copy formatting prompt").performClick()
+            InstrumentationRegistry.getInstrumentation().runOnMainSync {
+                val clipboard = app.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                val prompt = clipboard.primaryClip!!.getItemAt(0).coerceToText(app).toString()
+                assertTrue(prompt.contains("BP6 | Bukit Panjang | DT1"))
+                assertTrue(prompt.contains("copy exactly ONE output code"))
+                assertFalse(prompt.contains("BP6 / DT1"))
+                clipboard.clearPrimaryClip()
+            }
+            compose.onAllNodes(isDialog()).assertCountEquals(0)
+            compose.onNodeWithContentDescription("Back").performClick()
+            compose.onNodeWithText("Insights", useUnmergedTree = true).performClick()
+            compose.onNodeWithText("Your travel history").assertIsDisplayed()
+        }
+    }
+
+    @Test fun monthlyComparisonShowsChangesAndOpensTheSelectedMonth() {
+        val repo = LocalRepository(app)
+        val pass = PassPeriod(id = "october", start = "2026-10-01", end = "2026-10-31")
+        val trips = listOf("2025-09-10", "2025-09-11", "2026-10-01", "2026-10-02", "2026-10-03").map { Trip(date = it, origin = "DT10", destination = "CC4") }
+        runBlocking { repo.update { Snapshot(passes = listOf(pass), trips = trips) }; repo.selectPass(pass.id) }
+        ActivityScenario.launch(MainActivity::class.java).use {
+            compose.waitUntil(15_000) { compose.onAllNodesWithContentDescription("Record a journey").fetchSemanticsNodes().isNotEmpty() }
+            compose.onNodeWithText("Insights", useUnmergedTree = true).performClick()
+            compose.onNodeWithText("Compare").performScrollTo().performClick()
+            compose.onNodeWithText("Compare months").assertIsDisplayed()
+            compose.onNodeWithText("S$4.47").performScrollTo().assertIsDisplayed()
+            compose.onNodeWithText("S$1.67 more than ${io.github.holsoma.fairenough.ui.monthLabel("2025-09")}.").performScrollTo().assertIsDisplayed()
+            compose.onNode(hasScrollToIndexAction()).performScrollToIndex(0)
+            capture("month-comparison")
+            compose.onNodeWithTag("month-history-2025-09").performScrollTo().performClick()
+            compose.onNodeWithText("S$2.80").assertIsDisplayed()
+            compose.onNodeWithText("S$1.67 less than ${io.github.holsoma.fairenough.ui.monthLabel("2026-10")}.").assertIsDisplayed()
+            compose.onNodeWithText("Explore ${io.github.holsoma.fairenough.ui.monthLabel("2025-09")}").performScrollTo().performClick()
+            compose.onNodeWithText("Choose month: ${io.github.holsoma.fairenough.ui.monthLabel("2025-09")}").assertIsDisplayed()
+            compose.onNode(hasScrollToIndexAction()).performScrollToNode(hasText("S$2.80 in recorded fares. Based on 2 of 2 trips."))
+            compose.onNodeWithText("S$2.80 in recorded fares. Based on 2 of 2 trips.").assertIsDisplayed()
         }
     }
 
@@ -232,7 +362,7 @@ class AppJourneyTest {
             compose.onNodeWithText("Promenade → Stevens").performClick()
             compose.onNodeWithText("Regular adult fare: S$1.77", substring = true).performScrollTo().assertIsDisplayed()
             compose.onNodeWithText("Rail fare distance: 5.2 km", substring = true).assertIsDisplayed()
-            compose.onNodeWithText("Save journey").performScrollTo().performClick()
+            compose.onNodeWithText("Save journey").performClick()
             compose.waitUntil(10_000) { runBlocking { repo.current().trips.single().edited } }
             val retained = runBlocking { repo.current().trips.single() }
             assertEquals(177, retained.fareCents)

@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.3.0
+
+- Calculate earlier adult fares for 16,106 station pairs from 1 March 2025 through 11 July 2026, where a conservative distance check rules out any effect from CCL6.
+- Automatically price eligible existing records and new imports. Preserve recorded fares, corrections, dates, notes and import history.
+- Use the earlier fare table for dates before 27 December 2025, with the correct tariff boundary.
+- Compare any two recorded months by fares, journeys, travel days and average fare, with a selectable monthly history. Missing fares prevent a misleading monetary comparison.
+- Jump directly to recorded months in Insights and view their fare charts, journey counts and map.
+- Make charts visible sooner, add chart date labels, label the Pass action and show the percentage of pass price covered.
+- Label the busiest map stations and selected connections, keep Save journey visible, and adapt comparison layouts for larger text.
+- Replace blocking success dialogs with brief messages and simplify import instructions.
+- Identify these amounts as derived historical fares, separate from dated calculator observations.
+- Keep uncertain earlier routes, unopened stations and dates outside the supported period unpriced.
+- Include the unpriced-total improvements below and the interchange import fix from 0.2.1.
+
+For 2 June 2026, Punggol Coast to Bugis and Bugis to Bukit Panjang each calculate as S$2.11 at regular adult rates. Transfer grouping and time discounts still require corrections. Install over the existing app; reimporting is unnecessary.
+
+## 0.2.2 (unpublished, included in 0.3.0)
+
+- Show **Not priced** when recorded journeys have no fares, instead of presenting S$0.00 as their fare total.
+- Keep missing fares distinct from confirmed zero-fare journeys in Overview, Insights, daily totals, routes and pass comparisons.
+- Warn about valid but unpriced journeys before import, with the automatic fare coverage dates.
+- Hide fare charts and remaining-trip estimates until there is a priced journey. Counts and map connections remain available.
+
+Historical fare coverage is unchanged: automatic adult fares cover 12 July through 25 December 2026. A valid earlier travel date is not an import error. Keep the correct date and add a checked fare for its period.
+
 ## 0.2.1
 
 - Fix imports containing combined interchange codes such as `BP6 / DT1`.

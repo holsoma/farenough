@@ -22,9 +22,16 @@ import java.time.format.DateTimeFormatter
 fun readableDate(date: String): String = runCatching { LocalDate.parse(date).format(DateTimeFormatter.ofPattern("d MMM yyyy", java.util.Locale.UK)) }.getOrDefault(date)
 fun periodLabel(pass: PassPeriod): String = "${readableDate(pass.start)} to ${readableDate(pass.end)}"
 
+fun fareCoverage(table: RailFareTable): String = buildString {
+    append("All listed routes: ${readableDate(table.data.validFrom)} to ${readableDate(table.data.validUntil)}.")
+    table.earlierValidFrom?.let {
+        append(" Earlier fares from ${readableDate(it)} are calculated only where the July network change cannot affect the shortest distance.")
+    }
+}
+
 @Composable fun PageTitle(title: String, description: String? = null) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(title, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.SemiBold)
+        Text(title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.SemiBold)
         description?.let { Text(it, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant) }
     }
 }

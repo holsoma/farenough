@@ -25,3 +25,5 @@ The optional corrected-fare field applies to that journey alone. Add a reason, s
 Tap a journey in Trips to open it. Changing its date or stations reassesses its regular fare for that route and date. A trip-specific correction remains until you change or remove it.
 
 Deletion asks for confirmation and removes the journey from all counts, charts and maps. A full backup is useful before making extensive changes.
+
+The **Save journey** button stays at the bottom while you scroll through optional notes and corrections. **Swap** beside the station pair reverses the journey.

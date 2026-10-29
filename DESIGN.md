@@ -60,3 +60,37 @@ Capture real app screens with synthetic records. Check phone and desktop, light/
 The website uses a static comparison of recorded fares and pass price. The trip slider, fare selector, event listeners, resize observer and their styles have been removed. The import explanation follows a stop sequence from an invented note through clarification to review. Actual screenshots show the journey list and map; full screenshots remain linked.
 
 The original release's independent estimate was 7.6/10. This predates the comparison change. See `IMPLEMENTATION.md` for the tested scope and published release. These are review estimates, not awards or claims about an Awwwards submission.
+
+
+## Android history review, October 2026
+
+The current work applies the awwwards skill to the existing native Kotlin and Jetpack Compose app. Android Material 3 remains the stack because its controls support system text sizing, touch, focus, TalkBack and platform motion preferences. Website-only requirements such as SEO, GSAP, loaders and browser hover do not apply to an APK.
+
+Brief: make a personal Singapore travel history easy to inspect and compare, while keeping the pass question primary. Use real app screens with clearly synthetic demonstration data for public screenshots. The owner's supplied history is used only in ignored local test files. No invented statistics or pass savings appear in calendar comparisons.
+
+Three directions, scored originality / fit / feasibility / portability (lower portability is better):
+
+- Threshold and history: extend the existing pass destination with a month selector that updates the fare, journey and route views together. Anchor: the app compares a fixed pass price with dated journeys. Signature: selecting a month changes the comparison and its labelled bar. Feeling: immediate understanding. Screenshot: two named months, a fare difference and their journey counts. Scores 4 / 5 / 5 / 1.
+- Journey receipt: set every screen as a compact dated receipt. Anchor: individual fares and corrections. Signature: expand each receipt into its stations. Feeling: precision. Screenshot: one long fare breakdown. Scores 3 / 4 / 5 / 3.
+- Station departures: style all data as a departure board. Anchor: Singapore rail travel. Signature: rows change like service information. Feeling: familiarity. Screenshot: a grid of routes and amounts. Scores 3 / 3 / 4 / 3.
+
+Choose threshold and history because it extends the established purpose without making routine input theatrical. Stillness at rest is deliberate. Native press feedback, selected controls and immediate data changes provide feedback. No automatic number-counting or decorative movement.
+
+System: retain the teal accent, pale blue-grey surfaces, amber selection and system sans. Reduce page titles to 24sp to preserve useful space on 360dp screens. Use a 20dp outer margin, 8/12dp control gaps and 20dp section gaps. Keep touch targets at least 48dp and allow horizontal control rows to scroll at large text sizes. Set every surface tone explicitly so dialogs and menus do not introduce unrelated purple defaults. Large amounts use medium weight; table rows align their values.
+
+Composition:
+
+```
+Overview: question -> dated pass result -> coverage percentage -> trip count -> next action
+Charts: heading -> view tabs -> period selector -> compact totals -> labelled chart -> daily detail
+Compare: heading -> view tabs -> two named months -> fare total and difference -> metric rows -> month bars
+Map: heading -> view tabs -> period -> map -> totals -> ranked routes
+Import: short instructions -> copy action -> formatted records -> review -> explicit confirmation
+```
+
+The review removed a blocking copy-success dialog, unexplained import terminology, excessive chart-summary height and an ambiguous filled progress bar. Success feedback uses a snackbar. Error and destructive-action confirmations retain dialogs. Monthly fare changes are withheld if either month has unpriced journeys. Average fares identify priced coverage. Calendar fare totals are not labelled as pass savings; pass comparisons retain actual validity dates.
+
+Baseline independent screenshot review: Design 6.7, Usability 6.0, Creativity 6.5, Content 7.2, weighted 6.48. This is an adapted estimate, not an official Awwwards score. Baseline captures exposed a copy confirmation covering later screens. Final evidence must include unobscured screens, the month comparison, light and dark themes, large text, chart selection and an existing-record upgrade.
+
+
+The first signed-build review scored Design 7.0, Usability 6.5, Creativity 6.5 and Content 7.5 (weighted 6.8). Its observed large-text clipping, crowded comparison headers, unlabelled map stations and off-screen form completion action were treated as fixes. View controls now wrap, larger-text comparison rows stack, the map labels its busiest and selected stations, and journey saving stays fixed below the scrolling form. The fare chart precedes its detailed summary and labels the pass threshold before the plot.
